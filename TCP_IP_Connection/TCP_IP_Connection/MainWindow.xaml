@@ -1,0 +1,14 @@
+﻿<Window x:Class="TCP_IP_Connection.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TCP_IP_Connection"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <DockPanel Background="Black">
+        <TextBlock Name="Txtbl_input" DockPanel.Dock="left" Background="SlateGray" Margin="20 0 0 0" Height="25" Width="150" FontSize="16" Foreground="White">Data to send ...</TextBlock>
+        <Button Name="Btn_send" DockPanel.Dock="Left" Height="25" Width="100" FontSize="16" Click="Btn_send_Click">Send</Button>
+        <TextBlock Name="Txtbl_receive" DockPanel.Dock="Bottom" Background="SlateGray" Margin="20 0 0 0" Height="250" Width="150" FontSize="16" Foreground="White">received data ...</TextBlock>
+    </DockPanel>
+</Window>
