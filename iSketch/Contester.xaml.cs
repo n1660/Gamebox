@@ -28,27 +28,7 @@ namespace iSketch
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
-            if (sender == this.BTN_Clear)
-                this.MyCanvas.Children.Clear();
-
-            else if (sender == this.BTN_Submit)
-            {
-                if (this.Your_Word.Text == this.Chat_Window.Text)
-                {
-                    Stop_All();
-                    Console.Write("yay\n");
-                    this.Chat_Window.Clear();
-                    this.MyCanvas.Children.Clear();
-                    this.Your_Word.Text = Get_Random_Word();
-                    Start_All();
-                }
-                else
-                {
-                    Console.Write("No Way\n");
-                    this.Chat_Window.Clear();
-                }
-            }
-            else if (sender == this.BTN_HOME)
+            if (sender == this.BTN_HOME)
             {
                 MainWindow.win.Content = new Menu();
             }

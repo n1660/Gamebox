@@ -40,7 +40,8 @@ namespace iSketch
             this.List_Length = Get_List_Length();
             this.Your_Word.Text = Get_Random_Word();
             CreateTimer();
-            Thread counterthread = new Thread(CreateContdown); //////// !!!!!!
+            CreateContdown();
+            //Thread counterthread = new Thread(CreateContdown); //////// !!!!!!
             Start_All();
         }
 
@@ -106,8 +107,7 @@ namespace iSketch
         // For Painting  
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Point p = e.GetPosition(this.MyCanvas); // Wo bin ich mit der Maus?
-            //Console.WriteLine("Click - {0}", p.ToString());
+            Point p = e.GetPosition(this.MyCanvas); 
 
             this.lastPoint = p;
 
@@ -180,7 +180,7 @@ namespace iSketch
         {
             time.Start();
             this.Countdown.Text = counter.ToString();
-            counterthread.countdown.Start();
+            countdown.Start();
             
         }
 
