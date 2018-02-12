@@ -21,12 +21,20 @@ namespace SnakeGame
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static int sizeElem = 14;
         public static double speed, xtmp, ytmp;
         private static DispatcherTimer timer;
         private List<SnakeElem> snakebody;
         private static Random rnd = new Random();
         private Apple apple;
-        private int direction = 0, left = 4, right = 6, up = 8, down = 2, score = 0, tileIndex = 1;
+        private static int stay = 0, left = 4, right = 6, up = 8, down = 2, score = 0, tileIndex = 1;
+
+        public static int Stay { get => stay; set => stay = value; }
+        public static int Left1 { get => left; set => left = value; }
+        public static int Right { get => right; set => right = value; }
+        public static int Up { get => up; set => up = value; }
+        public static int Down { get => down; set => down = value; }
+        public static int Score { get => score; set => score = value; }
 
         public void Render()
         {
@@ -36,29 +44,11 @@ namespace SnakeGame
             if (mycanvas.Children.Contains(apple.Shape))
                 mycanvas.Children.Remove(apple.Shape);
             apple.Setfoodposition();
+            if (mycanvas.Children.Contains(apple.Shape))
+                mycanvas.Children.Remove(apple.Shape);
             mycanvas.Children.Add(apple.Shape);
-            /*---------------set Position of snakeElements --------------*/
-            xtmp = snakebody[0].X;
-            ytmp = snakebody[0].Y;
-            switch (snakebody[0].Direction) {
-                case 0:
-                    {
-                        break;
-                    }
-                default:
-                    {
-                        for (int i = snakebody.Count - 1; i > 0; i--)
-                        {
-                            snakebody[i].Direction = snakebody[i - 1].Direction;
-                            if (xtmp == snakebody[i].X && ytmp == snakebody[i].Y)
-                            {
-                                snakebody[i].X = snakebody[i - 1].X + ((snakebody[i - 1].Direction == left) ? snakebody[i - 1].Rect.Width : ((snakebody[i - 1].Direction == right) ? -snakebody[i - 1].Rect.Width : 0));
-                                snakebody[i].Y = snakebody[i - 1].Y + ((snakebody[i - 1].Direction == up) ? snakebody[i - 1].Rect.Height : ((snakebody[i - 1].Direction == down) ? -snakebody[i - 1].Rect.Height : 0));
-                            }
-                        }
-                        break;
-                    }
-            }
+
+
             /*---------------remove snakeElements from and add them again to 'myCanvas.Children'--------------*/
             if (mycanvas.Children.Count != 0)
             {
@@ -70,11 +60,8 @@ namespace SnakeGame
 
                 foreach (SnakeElem snk in snakebody)
                 {
-                    foreach (SnakeElem s in snakebody)
-                    {
-                        Canvas.SetLeft(s.Rect, s.X);
-                        Canvas.SetTop(s.Rect, s.Y);
-                    }
+                    Canvas.SetLeft(snk.Rect, (int) snk.X);
+                    Canvas.SetTop(snk.Rect, (int) snk.Y);
                     if (!(mycanvas.Children.Contains(snk.Rect)))
                         mycanvas.Children.Add(snk.Rect);
                 }
@@ -95,30 +82,66 @@ namespace SnakeGame
                     Rect = new Rectangle
                     {
                         Fill = Brushes.GreenYellow,
-                        Width = 16,
-                        Height = 16
+                        Width = sizeElem,
+                        Height = sizeElem
                     }
                 }
             };
             Render();
-            Console.WriteLine(snakebody.Count);
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 10); //speed
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 250); //speed
             timer.Tick += Time_Tick;
         }
 
-        private void MoveHead()
+        private void MoveSnake()
         {
-            snakebody[0].X -= (snakebody[0].Direction == left) ? speed : 0;
-            snakebody[0].X += (snakebody[0].Direction == right) ? speed : 0;
-            snakebody[0].Y -= (snakebody[0].Direction == up) ? speed : 0;
-            snakebody[0].Y += (snakebody[0].Direction == down) ? speed : 0;
+            
+            for (int i = snakebody.Count - 1; i >= 0; i--)
+            {
+                if (i >= 1)
+                {
+                    /*if (snakebody[i].X == xtmp && snakebody[i].Y == ytmp)
+                        snakebody[i].Direction = head.Direction;*/
+
+                    snakebody[i].X = snakebody[i - 1].X;
+                    snakebody[i].Y = snakebody[i - 1].Y;
+                    Console.WriteLine(snakebody[i].X + ", " + snakebody[i].Y);
+                }
+
+                if (i == 0)
+                {
+                    SnakeElem head = snakebody[0];
+                    /*---------------set Position of snakeElements --------------*/
+                    if (head.Direction == stay)
+                        return;
+
+                    xtmp = head.X;
+                    ytmp = head.Y;
+
+                    head.X += ((head.Direction == left) ? -sizeElem :
+                        (head.Direction == right) ? sizeElem : 0);
+                    head.Y += ((head.Direction == up) ? -sizeElem :
+                        (head.Direction == down) ? sizeElem : 0);
+
+                    if (head.X < 0)
+                        head.X = mycanvas.ActualWidth - head.Rect.Width;
+                    if (head.X > (mycanvas.ActualWidth - head.Rect.Width))
+                        head.X = 0;
+
+                    if (head.Y < 0)
+                        head.Y = mycanvas.ActualHeight - head.Rect.Height;
+                    if (head.Y > (mycanvas.ActualHeight))
+                        head.Y = 0;
+                }
+            }
+
+            Render();
         }
 
         public void Time_Tick(object sender, EventArgs e)
         {
             txtbScore.Text = score.ToString();
-            MoveHead();
             
+            MoveSnake();
 
             if ((snakebody[0].X <= apple.X + apple.Shape.Width && snakebody[0].X + snakebody[0].Rect.Width >= apple.X)
                 && (snakebody[0].Y <= apple.Y + apple.Shape.Height && snakebody[0].Y + snakebody[0].Rect.Height >= apple.Y))
@@ -126,42 +149,34 @@ namespace SnakeGame
                 mycanvas.Children.Remove(apple.Shape);
                 apple.X = rnd.Next(0, (int)mycanvas.ActualWidth - (int)apple.Shape.Width);
                 apple.Y = rnd.Next(0, (int)mycanvas.ActualHeight - (int)apple.Shape.Height);
-                Render();
                 SnakeElem snakeTmp = new SnakeElem
                 {
-                    X = (direction == up || direction == down) ? snakebody[snakebody.Count - 1].X : snakebody[snakebody.Count - 1].X + snakebody[snakebody.Count - 1].Rect.Width,
-                    Y = (direction == left || direction == right) ? snakebody[snakebody.Count - 1].Y : snakebody[snakebody.Count - 1].Y + snakebody[snakebody.Count - 1].Rect.Height,
+                    X = -100,
+                    Y = -100,
                     Rect = new Rectangle
                     {
                         Fill = Brushes.Yellow,
-                        Width = 14,
-                        Height = 14
+                        Width = sizeElem,
+                        Height = sizeElem
                     }
                 };
-                snakeTmp.X += (snakebody[0].Direction == up || snakebody[0].Direction == down) ? 1 : 0;
-                snakeTmp.Y += (snakebody[0].Direction == up || snakebody[0].Direction == down) ? 0 : 1;
+                int dirTmp = snakebody[snakebody.Count - 1].Direction;
+                snakeTmp.X = snakebody[0].X +
+                    ((dirTmp == left) ? (-sizeElem * (snakebody.Count - 2)) - sizeElem :
+                    ((dirTmp == right) ? (snakebody[snakebody.Count - 1].Rect.Width * (snakebody.Count - 1)) + sizeElem : 0));
                 snakebody.Add(snakeTmp);
+                Console.WriteLine(snakebody.Count + " | " + snakeTmp.X);
                 Render();
                 score++;
-                speed += 0.15;
+                timer.Stop();
+                if(timer.Interval.Milliseconds > 4)
+                    timer.Interval -= new TimeSpan(0, 0, 0, 0, 5);
+                timer.Start();
             }
-
-            if (snakebody[0].X < 0)
-                snakebody[0].X = mycanvas.ActualWidth - snakebody[0].Rect.Width;
-            if (snakebody[0].X > (mycanvas.ActualWidth - snakebody[0].Rect.Width))
-                snakebody[0].X = 0;
-
-            if (snakebody[0].Y < 0)
-                snakebody[0].Y = mycanvas.ActualHeight - snakebody[0].Rect.Height;
-            if (snakebody[0].Y > (mycanvas.ActualHeight))
-                snakebody[0].Y = 0;
 
             //TODO: Collisiondetection with own body
 
             Render();
-            tileIndex++;
-            if (tileIndex >= snakebody.Count)
-                tileIndex = 1;
         }
         
         public void Window_KeyDown(object sender, KeyEventArgs e)

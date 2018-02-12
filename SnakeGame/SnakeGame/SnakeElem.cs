@@ -12,7 +12,7 @@ namespace SnakeGame
 {
     public class SnakeElem
     {
-        private int direction = 0;
+        private int direction = MainWindow.Stay;
         private double x, y;
         private Rectangle rect;
 
