@@ -22,8 +22,9 @@ namespace SnakeGame
     {
         public GameOverPage()
         {
-            InitializeComponent();
+            
         }
+        
 
         private void GameOver_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
