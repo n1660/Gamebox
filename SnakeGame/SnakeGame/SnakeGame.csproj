@@ -57,7 +57,20 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Apple.cs" />
-    <Compile Include="SnakeElem.cs" />
+    <Page Include="GameOverPage.xaml.cs">
+      <DependentUpon>GameOverPage.xaml</DependentUpon>
+    </Page>
+    <Page Include="GamepageSnake.xaml.cs">
+      <DependentUpon>GamepageSnake.xaml</DependentUpon>
+    </Page>
+    <Page Include="GameOverPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GamepageSnake.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

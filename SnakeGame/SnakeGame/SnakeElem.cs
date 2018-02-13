@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Shapes;
+﻿using System.Windows.Shapes;
 
 namespace SnakeGame
 {
     public class SnakeElem
     {
-        private int direction = MainWindow.Stay;
+        private int direction = (int)MainWindow.Directions.stay;
         private double x, y;
         private Rectangle rect;
 
