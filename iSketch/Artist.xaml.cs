@@ -25,13 +25,15 @@ namespace iSketch
     {
         private static int Timer_Seconds = 10;
         private static int Timer_Minutes = 0;
-        private int counter = Timer_Seconds + (Timer_Minutes*60);
+        private static int counter = Timer_Seconds + (Timer_Minutes*60);
         private int Stroke_Thickness = 4;
         private int List_Length;
         private Point lastPoint;
         private SolidColorBrush colour = Brushes.Black;
-        private static DispatcherTimer time;
-        private static DispatcherTimer countdown;
+        //private static DispatcherTimer time;
+        // private DispatcherTimer countdown;
+        private System.Timers.Timer countdown2;
+        Thread counterthread;
 
         public Artist()
         {
@@ -39,10 +41,11 @@ namespace iSketch
 
             this.List_Length = Get_List_Length();
             this.Your_Word.Text = Get_Random_Word();
-            CreateTimer();
+            //CreateTimer();
             CreateContdown();
-            //Thread counterthread = new Thread(CreateContdown); //////// !!!!!!
-            Start_All();
+            counterthread = new Thread(CreateContdown); //////// !!!!!!
+            //counterthread.Start(); // Start Thread
+            Start_All2();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -55,12 +58,12 @@ namespace iSketch
             {
                 if (this.Your_Word.Text == this.Chat_Window.Text)
                 {
-                    Stop_All();
+                    Stop_All2(); // Thread stoppen
                     Console.Write("yay\n");
                     this.Chat_Window.Clear();
                     this.MyCanvas.Children.Clear();
                     this.Your_Word.Text = Get_Random_Word();
-                    Start_All();
+                    Start_All2(); // Thread neu
                 }
                 else
                 {
@@ -107,6 +110,7 @@ namespace iSketch
         // For Painting  
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            
             Point p = e.GetPosition(this.MyCanvas); 
 
             this.lastPoint = p;
@@ -124,64 +128,108 @@ namespace iSketch
         }
 
         // TIMER!!!!!!
-        private void CreateTimer()
-        {
-            // Create a timer with a two second interval.
-            time = new DispatcherTimer()
-            {
-                Interval = new TimeSpan(0,Timer_Minutes, Timer_Seconds) // H, M, S
-            };
-            // Hook up the Elapsed event for the timer. 
-            time.Tick += TimerEvent;
-        }
+        //private void CreateTimer()
+        //{
+        //    // Create a timer with a two second interval.
+        //    time = new DispatcherTimer()
+        //    {
+        //        Interval = new TimeSpan(0,Timer_Minutes, Timer_Seconds) // H, M, S
+        //    };
+        //    // Hook up the Elapsed event for the timer. 
+        //    time.Tick += TimerEvent;
+        //}
 
+        //private void CreateContdown()
+        //{
+        //        // Create a timer with a two second interval.
+        //        countdown = new DispatcherTimer()
+        //        {
+        //            Interval = new TimeSpan(0, 0, 1) // H, M, S
+        //        };
+        //    // Hook up the Elapsed event for the timer.  
+        //    countdown.Tick += new EventHandler(CountdownEvent); // PROBLEM: Event ist im gleichen Thread wie das Zeichnen
+        //}
 
         private void CreateContdown()
         {
-                // Create a timer with a two second interval.
-                countdown = new DispatcherTimer()
-                {
-                    Interval = new TimeSpan(0, 0, 1) // H, M, S
-                };
-            // Hook up the Elapsed event for the timer.  
-            countdown.Tick += CountdownEvent;
-
+            countdown2 = new System.Timers.Timer();
+            countdown2.Interval = 1000;
+            countdown2.Elapsed += Countdown2_Elapsed;
         }
+
+        private void Countdown2_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Console.WriteLine("Elapsed ...");
+
+            counter--;
+            Console.Write(counter); // FOR DEBUG
+
+            Dispatcher.BeginInvoke((Action) (() =>       /*  Lambda Schreibweie */
+            {
+                this.Countdown.Text = counter.ToString();
+
+                if (counter == 0)
+                {
+                    Stop_All2();
+                    this.Chat_Window.Clear();
+                    this.MyCanvas.Children.Clear();
+                    this.Your_Word.Text = Get_Random_Word();
+                    Start_All2();
+                };
+            }));
+            
+        }
+
         private void TimerEvent(object sender, EventArgs e)
         {
             Console.WriteLine("The Elapsed");
         }
 
-        private void CountdownEvent(object sender, EventArgs e)
-        {
-            counter--;
-            Console.Write(counter); // FOR DEBUG
-            this.Countdown.Text = counter.ToString();
+        //private void CountdownEvent(object sender, EventArgs e)
+        //{
 
-            if (counter == 0)
-            {
-                Stop_All();
-                this.Chat_Window.Clear();
-                this.MyCanvas.Children.Clear();
-                this.Your_Word.Text = Get_Random_Word();
-                Start_All();
-            }
-        }
-  
+        //    counter--;
+        //    Console.Write(counter); // FOR DEBUG
+        //    this.Countdown.Text = counter.ToString();
 
-        private void Stop_All()
+        //    if (counter == 0)
+        //    {
+        //        Stop_All2();
+        //        this.Chat_Window.Clear();
+        //        this.MyCanvas.Children.Clear();
+        //        this.Your_Word.Text = Get_Random_Word();
+        //        Start_All2();
+        //    }
+        //}
+
+        //private void Stop_All()
+        //{
+        //    //time.Stop();
+        //    countdown.Stop();
+        //    counter = Timer_Seconds + (Timer_Minutes * 60); // RESET countdown
+        //}
+
+        //private void Start_All()
+        //{
+        //    //time.Start();
+        //    this.Countdown.Text = counter.ToString();
+        //    countdown.Start();
+            
+        //}
+
+        private void Stop_All2()
         {
-            time.Stop();
-            countdown.Stop();
+            //time.Stop();
+            countdown2.Stop();
             counter = Timer_Seconds + (Timer_Minutes * 60); // RESET countdown
         }
 
-        private void Start_All()
+        private void Start_All2()
         {
-            time.Start();
+            //time.Start();
             this.Countdown.Text = counter.ToString();
-            countdown.Start();
-            
+            countdown2.Start();
+
         }
 
         private void MyCanvas_MouseMove(object sender, MouseEventArgs e)
@@ -203,7 +251,6 @@ namespace iSketch
                 this.MyCanvas.Children.Add(line);
 
                 this.lastPoint = p;
-
             }
         }
 
