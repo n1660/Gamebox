@@ -16,11 +16,9 @@ using System.Timers;
 using System.Windows.Threading;
 using System.Threading;
 
+
 namespace iSketch
 {
-    /// <summary>
-    /// Interaktionslogik für Artist.xaml
-    /// </summary>
     public partial class Artist : Page
     {
         private static int Timer_Seconds = 10;
@@ -28,24 +26,26 @@ namespace iSketch
         private static int counter = Timer_Seconds + (Timer_Minutes*60);
         private int Stroke_Thickness = 4;
         private int List_Length;
+
+        private string random_word1;
+        private string random_word2;
+        private string random_word3;
+
         private Point lastPoint;
         private SolidColorBrush colour = Brushes.Black;
-        //private static DispatcherTimer time;
-        // private DispatcherTimer countdown;
         private System.Timers.Timer countdown2;
-        Thread counterthread;
 
         public Artist()
         {
             InitializeComponent();
 
             this.List_Length = Get_List_Length();
-            this.Your_Word.Text = Get_Random_Word();
-            //CreateTimer();
+            //this.Your_Word.Text = Get_Random_Word();  
             CreateContdown();
-            counterthread = new Thread(CreateContdown); //////// !!!!!!
-            //counterthread.Start(); // Start Thread
-            Start_All2();
+
+            Set_MessageBox();
+            Show_MessageBox();
+            //Start_All2();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -58,12 +58,12 @@ namespace iSketch
             {
                 if (this.Your_Word.Text == this.Chat_Window.Text)
                 {
-                    Stop_All2(); // Thread stoppen
+                    Stop_All2(); 
                     Console.Write("yay\n");
                     this.Chat_Window.Clear();
                     this.MyCanvas.Children.Clear();
                     this.Your_Word.Text = Get_Random_Word();
-                    Start_All2(); // Thread neu
+                    Start_All2(); 
                 }
                 else
                 {
@@ -109,8 +109,7 @@ namespace iSketch
 
         // For Painting  
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            
+        {    
             Point p = e.GetPosition(this.MyCanvas); 
 
             this.lastPoint = p;
@@ -126,30 +125,7 @@ namespace iSketch
             ell.SetValue(Canvas.TopProperty, p.Y - Stroke_Thickness);
             this.MyCanvas.Children.Add(ell);
         }
-
-        // TIMER!!!!!!
-        //private void CreateTimer()
-        //{
-        //    // Create a timer with a two second interval.
-        //    time = new DispatcherTimer()
-        //    {
-        //        Interval = new TimeSpan(0,Timer_Minutes, Timer_Seconds) // H, M, S
-        //    };
-        //    // Hook up the Elapsed event for the timer. 
-        //    time.Tick += TimerEvent;
-        //}
-
-        //private void CreateContdown()
-        //{
-        //        // Create a timer with a two second interval.
-        //        countdown = new DispatcherTimer()
-        //        {
-        //            Interval = new TimeSpan(0, 0, 1) // H, M, S
-        //        };
-        //    // Hook up the Elapsed event for the timer.  
-        //    countdown.Tick += new EventHandler(CountdownEvent); // PROBLEM: Event ist im gleichen Thread wie das Zeichnen
-        //}
-
+       
         private void CreateContdown()
         {
             countdown2 = new System.Timers.Timer();
@@ -162,7 +138,6 @@ namespace iSketch
             Console.WriteLine("Elapsed ...");
 
             counter--;
-            Console.Write(counter); // FOR DEBUG
 
             Dispatcher.BeginInvoke((Action) (() =>       /*  Lambda Schreibweie */
             {
@@ -173,11 +148,10 @@ namespace iSketch
                     Stop_All2();
                     this.Chat_Window.Clear();
                     this.MyCanvas.Children.Clear();
-                    this.Your_Word.Text = Get_Random_Word();
-                    Start_All2();
+                    Show_MessageBox();
+                    //this.Your_Word.Text = Get_Random_Word();
                 };
-            }));
-            
+            }));        
         }
 
         private void TimerEvent(object sender, EventArgs e)
@@ -185,51 +159,16 @@ namespace iSketch
             Console.WriteLine("The Elapsed");
         }
 
-        //private void CountdownEvent(object sender, EventArgs e)
-        //{
-
-        //    counter--;
-        //    Console.Write(counter); // FOR DEBUG
-        //    this.Countdown.Text = counter.ToString();
-
-        //    if (counter == 0)
-        //    {
-        //        Stop_All2();
-        //        this.Chat_Window.Clear();
-        //        this.MyCanvas.Children.Clear();
-        //        this.Your_Word.Text = Get_Random_Word();
-        //        Start_All2();
-        //    }
-        //}
-
-        //private void Stop_All()
-        //{
-        //    //time.Stop();
-        //    countdown.Stop();
-        //    counter = Timer_Seconds + (Timer_Minutes * 60); // RESET countdown
-        //}
-
-        //private void Start_All()
-        //{
-        //    //time.Start();
-        //    this.Countdown.Text = counter.ToString();
-        //    countdown.Start();
-            
-        //}
-
         private void Stop_All2()
         {
-            //time.Stop();
             countdown2.Stop();
             counter = Timer_Seconds + (Timer_Minutes * 60); // RESET countdown
         }
 
         private void Start_All2()
         {
-            //time.Start();
             this.Countdown.Text = counter.ToString();
             countdown2.Start();
-
         }
 
         private void MyCanvas_MouseMove(object sender, MouseEventArgs e)
@@ -238,16 +177,15 @@ namespace iSketch
             {
                 Point p = e.GetPosition(this.MyCanvas);
 
-                // Eine Linie malen
                 Line line = new Line();
-                line.StrokeStartLineCap = PenLineCap.Round; // Damit die Linie nicht abgehackt ist
+                line.StrokeStartLineCap = PenLineCap.Round; 
                 line.StrokeEndLineCap = PenLineCap.Round;
                 line.X1 = this.lastPoint.X;
                 line.Y1 = this.lastPoint.Y;
                 line.X2 = p.X;
                 line.Y2 = p.Y;
-                line.Stroke = colour; // Farbe muss änderbar sein! -> In Array gespeichert
-                line.StrokeThickness = this.Stroke_Thickness; // Muss änderbar sein!
+                line.Stroke = colour; 
+                line.StrokeThickness = this.Stroke_Thickness; 
                 this.MyCanvas.Children.Add(line);
 
                 this.lastPoint = p;
@@ -270,7 +208,6 @@ namespace iSketch
             }
 
             file.Close();
-            //System.Console.WriteLine("There were {0} lines.", counter);
             return counter;
         }
 
@@ -292,6 +229,65 @@ namespace iSketch
             file.Close();
             System.Console.WriteLine(line);
             return line;
+        }
+
+        [STAThread]
+
+        public void Create_MessageBox()
+        {
+            random_word1 = Get_Random_Word();
+            while (random_word1 == null)
+            {
+                random_word1 = Get_Random_Word();
+            }
+
+            random_word2 = Get_Random_Word();
+            while (random_word2 == random_word1 || random_word2 == null) // no dubplicates allwoded
+            {
+                random_word2 = Get_Random_Word();
+            }
+
+            random_word3 = Get_Random_Word();
+            while (random_word1 == random_word3 || random_word2 == random_word3 || random_word3 == null) // no dubplicates allwoded
+            {
+                random_word3 = Get_Random_Word();
+            }
+        }
+
+        public void Set_MessageBox()
+        {
+            System.Windows.Forms.MessageBoxManager.Yes = "Word 1" ;
+            System.Windows.Forms.MessageBoxManager.No = "Word 2";
+            System.Windows.Forms.MessageBoxManager.Cancel = "Word 3";
+            System.Windows.Forms.MessageBoxManager.Register();
+        }
+
+        void Show_MessageBox()
+        {
+            Create_MessageBox();
+            string MessageBoxText = "Chose your word!\nWord 1: ";
+            MessageBoxText += random_word1;
+            MessageBoxText += "\nWord 2: ";
+            MessageBoxText += random_word2;
+            MessageBoxText += "\nWord 3: ";
+            MessageBoxText += random_word3;
+
+            MessageBoxResult result = MessageBox.Show(MessageBoxText, "Your Word", MessageBoxButton.YesNoCancel);
+            switch (result)
+            {
+                case MessageBoxResult.Yes: // if word 1 is chosen
+                    this.Your_Word.Text = random_word1;
+                    Start_All2();
+                    break;
+                case MessageBoxResult.No: // if word 2 is chosen
+                    this.Your_Word.Text = random_word2;
+                    Start_All2();
+                    break;
+                case MessageBoxResult.Cancel: // if word 3 is chosen
+                    this.Your_Word.Text = random_word3;
+                    Start_All2();
+                    break;
+            }
         }
     }
 }
