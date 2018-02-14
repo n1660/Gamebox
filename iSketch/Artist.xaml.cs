@@ -56,6 +56,8 @@ namespace iSketch
 
             else if (sender == this.BTN_Submit)
             {
+                Popup_Word.IsOpen = false;
+            
                 if (this.Your_Word.Text == this.Chat_Window.Text)
                 {
                     Stop_All2(); 
@@ -68,6 +70,7 @@ namespace iSketch
                 else
                 {
                     Console.Write("No Way\n");
+                    Compare_Imput_Word();
                     this.Chat_Window.Clear();
                 }
             }
@@ -163,6 +166,7 @@ namespace iSketch
         {
             countdown2.Stop();
             counter = Timer_Seconds + (Timer_Minutes * 60); // RESET countdown
+            Popup_Word.IsOpen = false; // Hide Popup
         }
 
         private void Start_All2()
@@ -288,6 +292,22 @@ namespace iSketch
                     Start_All2();
                     break;
             }
+        }
+
+        void Compare_Imput_Word()
+        {
+            int faulty_letters = 0;
+            if (Chat_Window.Text.Length == Your_Word.Text.Length)
+            {
+                for (int i = 0; i < Chat_Window.Text.Length; i++)
+                {
+                    if (Chat_Window.Text[i] != Your_Word.Text[i])
+                        faulty_letters++;
+                }
+            }
+
+            if (faulty_letters == 1) // Show Popup
+                Popup_Word.IsOpen = true;  
         }
     }
 }

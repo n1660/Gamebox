@@ -86,6 +86,11 @@
             </Grid.RowDefinitions>
 
             <TextBox Name="Chat_Window" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="10,10,10,10" Background="#FFC8C3C3"/>
+            <Popup Name="Popup_Word" Grid.Column="0" Grid.Row="1" PopupAnimation="Fade" AllowsTransparency="True">
+                <TextBlock Grid.Column="0" Grid.Row="1" Background="#FFD081A0" Padding="7" >
+                    Dein Wort ist fast korrekt!
+                </TextBlock>
+            </Popup>
             <Button Name="BTN_Submit" Grid.Row="1" Grid.Column="1" Margin="10,10,10.2,10" Click="Button_Click">Submit</Button>
             <Button Name="BTN_HOME" Grid.Row="2" Grid.Column="1" Margin="10,10,10.2,10" Click="Button_Click">EXIT</Button>
         </Grid>
