@@ -1,21 +1,22 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using MySnake;
+using System.Windows;
 
 
-namespace SnakeGame
+namespace MySnake
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public enum Directions
+        public MainWindow()
         {
-            stay,
-            left,
-            up,
-            right,
-            down
-        };
+            InitializeComponent();
+        }
+
+        private void BtnStartSnake_Click(object sender, RoutedEventArgs e)
+        {
+            this.Content = new GamepageSnake();
+        }
     }
 }

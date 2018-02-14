@@ -7,9 +7,9 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace SnakeGame
+namespace MySnake
 {
-    public static enum Directions
+    public enum Directions
     {
         stay = 0,
         left = 1,
@@ -22,7 +22,7 @@ namespace SnakeGame
     /// </summary>
     public partial class GamepageSnake : Page
     {
-        public static int sizeElem = 14;
+        public static int sizeElem = 14, score = 0;
         public static double speed, xtmp, ytmp;
         private static DispatcherTimer timer;
         public static List<SnakeElem> snakebody;
@@ -31,14 +31,14 @@ namespace SnakeGame
 
         private void Game_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == Key.Up && GamepageSnake.snakebody[0].Direction != GamepageSnake.down)
-                GamepageSnake.snakebody[0].Direction = GamepageSnake.up;
-            if (e.Key == Key.Down && GamepageSnake.snakebody[0].Direction != GamepageSnake.up)
-                GamepageSnake.snakebody[0].Direction = GamepageSnake.down;
-            if (e.Key == Key.Left && GamepageSnake.snakebody[0].Direction != GamepageSnake.right)
-                GamepageSnake.snakebody[0].Direction = GamepageSnake.left;
-            if (e.Key == Key.Right && GamepageSnake.snakebody[0].Direction != GamepageSnake.left)
-                GamepageSnake.snakebody[0].Direction = GamepageSnake.right;
+            if (e.Key == Key.Up && GamepageSnake.snakebody[0].Direction != (int)Directions.down)
+                GamepageSnake.snakebody[0].Direction = (int)Directions.up;
+            if (e.Key == Key.Down && GamepageSnake.snakebody[0].Direction != (int)Directions.up)
+                GamepageSnake.snakebody[0].Direction = (int)Directions.down;
+            if (e.Key == Key.Left && GamepageSnake.snakebody[0].Direction != (int)Directions.right)
+                GamepageSnake.snakebody[0].Direction = (int)Directions.left;
+            if (e.Key == Key.Right && GamepageSnake.snakebody[0].Direction != (int)Directions.left)
+                GamepageSnake.snakebody[0].Direction = (int)Directions.right;
         }
 
         public static int Score { get => score; set => score = value; }
@@ -77,7 +77,7 @@ namespace SnakeGame
 
         public GamepageSnake()
         {
-            InitializeComponent();
+            //InitializeComponent();
             speed = 1.0;
             timer = new DispatcherTimer();
             snakebody = new List<SnakeElem>
@@ -105,10 +105,10 @@ namespace SnakeGame
             for (int i = snakebody.Count - 1; i >= 0; i--)
             {
                 /*---------------collisiondetection with own body --------------*/
-                double nextX = head.X + ((head.Direction == GamepageSnake.left) ? -sizeElem :
-                    (head.Direction == GamepageSnake.right) ? sizeElem : 0);
-                double nextY = head.Y + ((head.Direction == GamepageSnake.up) ? -sizeElem :
-                    (head.Direction == GamepageSnake.down) ? sizeElem : 0);
+                double nextX = head.X + ((head.Direction == (int)Directions.left) ? -sizeElem :
+                    (head.Direction == (int)Directions.right) ? sizeElem : 0);
+                double nextY = head.Y + ((head.Direction == (int)Directions.up) ? -sizeElem :
+                    (head.Direction == (int)Directions.down) ? sizeElem : 0);
                 foreach (SnakeElem snk in snakebody)
                 {
                     if (!(nextX > snk.X
@@ -130,16 +130,16 @@ namespace SnakeGame
                 if (i == 0)
                 {
                     /*---------------set Position of snakeElements --------------*/
-                    if (head.Direction == (int) stay)
+                    if (head.Direction == (int)Directions.stay)
                         return;
 
                     xtmp = head.X;
                     ytmp = head.Y;
 
-                    head.X += ((head.Direction == GamepageSnake.left) ? -sizeElem :
-                        (head.Direction == GamepageSnake.right) ? sizeElem : 0);
-                    head.Y += ((head.Direction == GamepageSnake.up) ? -sizeElem :
-                        (head.Direction == GamepageSnake.down) ? sizeElem : 0);
+                    head.X += ((head.Direction == (int)Directions.left) ? -sizeElem :
+                        (head.Direction == (int)Directions.right) ? sizeElem : 0);
+                    head.Y += ((head.Direction == (int)Directions.up) ? -sizeElem :
+                        (head.Direction == (int)Directions.down) ? sizeElem : 0);
 
                     if (head.X < 0)
                         head.X = GameCanvas.ActualWidth - head.Rect.Width;
@@ -181,8 +181,8 @@ namespace SnakeGame
                 };
                 int dirTmp = snakebody[snakebody.Count - 1].Direction;
                 snakeTmp.X = snakebody[0].X +
-                    ((dirTmp == left) ? (-sizeElem * (snakebody.Count - 2)) - sizeElem :
-                    ((dirTmp == right) ? (snakebody[snakebody.Count - 1].Rect.Width * (snakebody.Count - 1)) + sizeElem : 0));
+                    ((dirTmp == (int)Directions.left) ? (-sizeElem * (snakebody.Count - 2)) - sizeElem :
+                    ((dirTmp == (int)Directions.right) ? (snakebody[snakebody.Count - 1].Rect.Width * (snakebody.Count - 1)) + sizeElem : 0));
                 snakebody.Add(snakeTmp);
                 Render();
                 score++;

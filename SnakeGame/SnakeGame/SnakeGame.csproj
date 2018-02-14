@@ -72,12 +72,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Apple.cs" />
-    <Page Include="GameOverPage.xaml.cs">
+    <Compile Include="GameOverPage.xaml.cs">
       <DependentUpon>GameOverPage.xaml</DependentUpon>
-    </Page>
-    <Content Include="GamepageSnake.xaml.cs">
+    </Compile>
+    <Compile Include="GamepageSnake.xaml.cs">
       <DependentUpon>GamepageSnake.xaml</DependentUpon>
-    </Content>
+    </Compile>
+    <Compile Include="SnakeElem.cs" />
     <Page Include="GameOverPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

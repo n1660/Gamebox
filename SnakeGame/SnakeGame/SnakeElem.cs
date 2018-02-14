@@ -1,10 +1,10 @@
 ﻿using System.Windows.Shapes;
 
-namespace SnakeGame
+namespace MySnake
 {
     public class SnakeElem
     {
-        private int direction = (int)MainWindow.Directions.stay;
+        private int direction = (int)Directions.stay;
         private double x, y;
         private Rectangle rect;
 

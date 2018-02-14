@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SnakeGame
+namespace MySnake
 {
     /// <summary>
     /// Interaktionslogik für GameOverPage.xaml
@@ -22,7 +22,7 @@ namespace SnakeGame
     {
         public GameOverPage()
         {
-            
+            //InitializeComponent();
         }
         
 
