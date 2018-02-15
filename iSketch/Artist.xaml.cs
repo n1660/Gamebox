@@ -27,6 +27,8 @@ namespace iSketch
         private int Stroke_Thickness = 4;
         private int List_Length;
 
+        
+
         private string random_word1;
         private string random_word2;
         private string random_word3;
@@ -41,41 +43,30 @@ namespace iSketch
             InitializeComponent();
 
             this.List_Length = Get_List_Length();
-            //this.Your_Word.Text = Get_Random_Word();  
-            CreateContdown();
+            Chat_Window.KeyDown += new KeyEventHandler(Key_Events);
 
+            CreateContdown();
             Set_MessageBox();
             Show_MessageBox();
-            //Start_All2();
+
+        }
+
+        private void Key_Events(object sender, KeyEventArgs k)
+        {
+            if (k.Key == Key.Enter)
+            {
+                Check_Input_Word();
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
             if (sender == this.BTN_Clear)
                 this.MyCanvas.Children.Clear();
 
             else if (sender == this.BTN_Submit)
             {
-                Popup_Word.IsOpen = false;
-            
-                if (this.Your_Word.Text == this.Chat_Window.Text)
-                {
-                    Stop_All2(); 
-                    Console.Write("yay\n");
-                    Set_Popup("correct");
-                    Popup_Word.IsOpen = true;
-                    this.Chat_Window.Clear();
-                    this.MyCanvas.Children.Clear();
-                    this.Your_Word.Text = Get_Random_Word();
-                    Start_All2(); 
-                }
-                else
-                {
-                    Console.Write("No Way\n");
-                    Compare_Imput_Word();
-                    this.Chat_Window.Clear();
-                }
+                Check_Input_Word();
             }
             else if (sender == this.BTN_HOME)
             {
@@ -284,6 +275,29 @@ namespace iSketch
                     this.Your_Word.Text = random_word3;
                     Start_All2();
                     break;
+            }
+        }
+
+        void Check_Input_Word()
+        {
+            Popup_Word.IsOpen = false;
+
+            if (this.Your_Word.Text == this.Chat_Window.Text)
+            {
+                Stop_All2();
+                Console.Write("yay\n"); // DEBUG
+                Set_Popup("correct");
+                Popup_Word.IsOpen = true;
+                this.Chat_Window.Clear();
+                this.MyCanvas.Children.Clear();
+                this.Your_Word.Text = Get_Random_Word();
+                Start_All2();
+            }
+            else
+            {
+                Console.Write("No Way\n"); // DEBUG
+                Compare_Imput_Word();
+                this.Chat_Window.Clear();
             }
         }
 
