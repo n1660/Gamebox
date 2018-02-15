@@ -21,7 +21,7 @@ namespace iSketch
 {
     public partial class Artist : Page
     {
-        private static int Timer_Seconds = 10;
+        private static int Timer_Seconds = 30;
         private static int Timer_Minutes = 0;
         private static int counter = Timer_Seconds + (Timer_Minutes*60);
         private int Stroke_Thickness = 4;
@@ -34,6 +34,7 @@ namespace iSketch
         private Point lastPoint;
         private SolidColorBrush colour = Brushes.Black;
         private System.Timers.Timer countdown2;
+
 
         public Artist()
         {
@@ -62,6 +63,8 @@ namespace iSketch
                 {
                     Stop_All2(); 
                     Console.Write("yay\n");
+                    Set_Popup("correct");
+                    Popup_Word.IsOpen = true;
                     this.Chat_Window.Clear();
                     this.MyCanvas.Children.Clear();
                     this.Your_Word.Text = Get_Random_Word();
@@ -132,16 +135,14 @@ namespace iSketch
         private void CreateContdown()
         {
             countdown2 = new System.Timers.Timer();
-            countdown2.Interval = 1000;
+            countdown2.Interval = 1000; // 1 second timer
             countdown2.Elapsed += Countdown2_Elapsed;
         }
 
         private void Countdown2_Elapsed(object sender, ElapsedEventArgs e)
         {
             Console.WriteLine("Elapsed ...");
-
             counter--;
-
             Dispatcher.BeginInvoke((Action) (() =>       /*  Lambda Schreibweie */
             {
                 this.Countdown.Text = counter.ToString();
@@ -152,14 +153,8 @@ namespace iSketch
                     this.Chat_Window.Clear();
                     this.MyCanvas.Children.Clear();
                     Show_MessageBox();
-                    //this.Your_Word.Text = Get_Random_Word();
                 };
             }));        
-        }
-
-        private void TimerEvent(object sender, EventArgs e)
-        {
-            Console.WriteLine("The Elapsed");
         }
 
         private void Stop_All2()
@@ -207,10 +202,8 @@ namespace iSketch
                 new System.IO.StreamReader(@"..\..\Wordlist\Montagsmaler_Liste.txt");
             while ((line = file.ReadLine()) != null)
             {
-                //System.Console.WriteLine(line);
                 counter++;
             }
-
             file.Close();
             return counter;
         }
@@ -269,11 +262,11 @@ namespace iSketch
         void Show_MessageBox()
         {
             Create_MessageBox();
-            string MessageBoxText = "Chose your word!\nWord 1: ";
+            string MessageBoxText = "Chose your word!\n\nWord 1:  ";
             MessageBoxText += random_word1;
-            MessageBoxText += "\nWord 2: ";
+            MessageBoxText += "\nWord 2:  ";
             MessageBoxText += random_word2;
-            MessageBoxText += "\nWord 3: ";
+            MessageBoxText += "\nWord 3:  ";
             MessageBoxText += random_word3;
 
             MessageBoxResult result = MessageBox.Show(MessageBoxText, "Your Word", MessageBoxButton.YesNoCancel);
@@ -297,6 +290,7 @@ namespace iSketch
         void Compare_Imput_Word()
         {
             int faulty_letters = 0;
+            Set_Popup("incorrect");
             if (Chat_Window.Text.Length == Your_Word.Text.Length)
             {
                 for (int i = 0; i < Chat_Window.Text.Length; i++)
@@ -308,6 +302,26 @@ namespace iSketch
 
             if (faulty_letters == 1) // Show Popup
                 Popup_Word.IsOpen = true;  
+        }
+       
+        void Set_Popup(string situation)
+        {
+            if(situation == "correct")
+            {
+                BrushConverter bc = new BrushConverter();
+                Brush brush = (Brush)bc.ConvertFrom("#FFCEEE97");
+                brush.Freeze();
+                Popup_Text.Background = brush;
+                Popup_Text.Text = "Your word is correct! :)";
+            }
+            else if (situation == "incorrect")
+            {
+                BrushConverter bc = new BrushConverter();
+                Brush brush = (Brush)bc.ConvertFrom("#FFF1BEE6");
+                brush.Freeze();
+                Popup_Text.Background = brush;
+                Popup_Text.Text = "Your word is almost correct!";
+            }
         }
     }
 }
