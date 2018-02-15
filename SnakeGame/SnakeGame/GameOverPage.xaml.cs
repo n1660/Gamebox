@@ -1,19 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace MySnake
+namespace SnakeGame
 {
     /// <summary>
     /// Interaktionslogik für GameOverPage.xaml
@@ -22,14 +10,16 @@ namespace MySnake
     {
         public GameOverPage()
         {
-            //InitializeComponent();
+            InitializeComponent();
+            GamepageSnake.snakebody[0].Direction = GamepageSnake.Directions.stay;
         }
-        
+
 
         private void GameOver_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-                this.Content = new GamepageSnake();
+            //if (e.Key == Key.Enter)
+            //    MainWindow.GetWindow(Canvas_GO).Content = new GamepageSnake();
+            Console.WriteLine("blubb");
         }
     }
 }

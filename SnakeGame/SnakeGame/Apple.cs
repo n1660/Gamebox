@@ -7,7 +7,7 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Controls;
 
-namespace MySnake
+namespace SnakeGame
 {
     public class Apple
     {

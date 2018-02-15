@@ -1,55 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace MySnake
+namespace SnakeGame
 {
-    public enum Directions
-    {
-        stay = 0,
-        left = 1,
-        up = 2,
-        right = 3,
-        down = 4
-    };
     /// <summary>
     /// Interaktionslogik für GamepageSnake.xaml
     /// </summary>
     public partial class GamepageSnake : Page
     {
+        public enum Directions
+        {
+            stay,
+            left,
+            up,
+            right,
+            down
+        };
+
         public static int sizeElem = 14, score = 0;
         public static double speed, xtmp, ytmp;
-        private static DispatcherTimer timer;
+        public static DispatcherTimer timer;
         public static List<SnakeElem> snakebody;
         private static Random rnd = new Random();
         private Apple apple;
-
-        private void Game_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == Key.Up && GamepageSnake.snakebody[0].Direction != (int)Directions.down)
-                GamepageSnake.snakebody[0].Direction = (int)Directions.up;
-            if (e.Key == Key.Down && GamepageSnake.snakebody[0].Direction != (int)Directions.up)
-                GamepageSnake.snakebody[0].Direction = (int)Directions.down;
-            if (e.Key == Key.Left && GamepageSnake.snakebody[0].Direction != (int)Directions.right)
-                GamepageSnake.snakebody[0].Direction = (int)Directions.left;
-            if (e.Key == Key.Right && GamepageSnake.snakebody[0].Direction != (int)Directions.left)
-                GamepageSnake.snakebody[0].Direction = (int)Directions.right;
-        }
 
         public static int Score { get => score; set => score = value; }
 
         public void Render()
         {
+            GameCanvas.Children.Clear();
             /*---------------add Apple to 'myCanvas.Children' if needed--------------*/
             if (apple == null)
                 apple = new Apple(rnd.Next(0, 26), rnd.Next(0, 26));
-            if (GameCanvas.Children.Contains(apple.Shape))
-                GameCanvas.Children.Remove(apple.Shape);
             apple.Setfoodposition();
             if (GameCanvas.Children.Contains(apple.Shape))
                 GameCanvas.Children.Remove(apple.Shape);
@@ -57,7 +43,7 @@ namespace MySnake
 
 
             /*---------------remove snakeElements from and add them again to 'myCanvas.Children'--------------*/
-            if (GameCanvas.Children.Count != 0)
+            if (GameCanvas.Children.Count > 2)
             {
                 foreach (SnakeElem snkEl in snakebody)
                 {
@@ -74,12 +60,16 @@ namespace MySnake
                 }
             }
         }
+        
 
         public GamepageSnake()
         {
-            //InitializeComponent();
+            InitializeComponent();
             speed = 1.0;
-            timer = new DispatcherTimer();
+            timer = new DispatcherTimer
+            {
+                Interval = new TimeSpan(0, 0, 0, 0, 250), //speed
+            };
             snakebody = new List<SnakeElem>
             {
                 new SnakeElem
@@ -94,9 +84,9 @@ namespace MySnake
                     }
                 }
             };
-            Render();
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 250); //speed
             timer.Tick += Time_Tick;
+            timer.Start();
+            Render();
         }
 
         private void MoveSnake()
@@ -105,10 +95,10 @@ namespace MySnake
             for (int i = snakebody.Count - 1; i >= 0; i--)
             {
                 /*---------------collisiondetection with own body --------------*/
-                double nextX = head.X + ((head.Direction == (int)Directions.left) ? -sizeElem :
-                    (head.Direction == (int)Directions.right) ? sizeElem : 0);
-                double nextY = head.Y + ((head.Direction == (int)Directions.up) ? -sizeElem :
-                    (head.Direction == (int)Directions.down) ? sizeElem : 0);
+                double nextX = head.X + ((head.Direction == Directions.left) ? -sizeElem :
+                    (head.Direction == Directions.right) ? sizeElem : 0);
+                double nextY = head.Y + ((head.Direction == Directions.up) ? -sizeElem :
+                    (head.Direction == Directions.down) ? sizeElem : 0);
                 foreach (SnakeElem snk in snakebody)
                 {
                     if (!(nextX > snk.X
@@ -117,7 +107,8 @@ namespace MySnake
                         && nextY < (snk.Y + snk.Rect.Height)))
                     {
                         GameCanvas.Children.Clear();
-                        this.Content = new GameOverPage();
+                        Console.WriteLine("bla");
+                        //this.Content = new GameOverPage();
                     }
                 }
                 /*---------------make body follow the head --------------*/
@@ -136,10 +127,10 @@ namespace MySnake
                     xtmp = head.X;
                     ytmp = head.Y;
 
-                    head.X += ((head.Direction == (int)Directions.left) ? -sizeElem :
-                        (head.Direction == (int)Directions.right) ? sizeElem : 0);
-                    head.Y += ((head.Direction == (int)Directions.up) ? -sizeElem :
-                        (head.Direction == (int)Directions.down) ? sizeElem : 0);
+                    head.X += ((head.Direction == Directions.left) ? -sizeElem :
+                        (head.Direction == Directions.right) ? sizeElem : 0);
+                    head.Y += ((head.Direction == Directions.up) ? -sizeElem :
+                        (head.Direction == Directions.down) ? sizeElem : 0);
 
                     if (head.X < 0)
                         head.X = GameCanvas.ActualWidth - head.Rect.Width;
@@ -159,6 +150,7 @@ namespace MySnake
         public void Time_Tick(object sender, EventArgs e)
         {
             txtbScore.Text = score.ToString();
+            Console.WriteLine(GamepageSnake.snakebody[0].Direction);
 
             MoveSnake();
 
@@ -179,10 +171,10 @@ namespace MySnake
                         Height = sizeElem
                     }
                 };
-                int dirTmp = snakebody[snakebody.Count - 1].Direction;
+                Directions dirTmp = snakebody[snakebody.Count - 1].Direction;
                 snakeTmp.X = snakebody[0].X +
-                    ((dirTmp == (int)Directions.left) ? (-sizeElem * (snakebody.Count - 2)) - sizeElem :
-                    ((dirTmp == (int)Directions.right) ? (snakebody[snakebody.Count - 1].Rect.Width * (snakebody.Count - 1)) + sizeElem : 0));
+                    ((dirTmp == Directions.left) ? (-sizeElem * (snakebody.Count - 2)) - sizeElem :
+                    ((dirTmp == Directions.right) ? (snakebody[snakebody.Count - 1].Rect.Width * (snakebody.Count - 1)) + sizeElem : 0));
                 snakebody.Add(snakeTmp);
                 Render();
                 score++;

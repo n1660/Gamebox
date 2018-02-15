@@ -1,15 +1,15 @@
-﻿<Window x:Class="MySnake.MainWindow"
+﻿<Window x:Class="SnakeGame.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MySnake"
+        xmlns:local="clr-namespace:SnakeGame"
         mc:Ignorable="d"
         Title="MainWindow" Height="400" Width="700" KeyDown="Window_KeyDown">
 
-    <Button Name="BtnStartSnake" Click="BtnStartSnake_Click" Width="250" Height="250" HorizontalContentAlignment="Left" Foreground="OrangeRed" FontSize="30" FontWeight="Bold">Start
-        <Button.Background>
+    <Button Name="BtnStartSnake" Click="BtnStartSnake_Click" Width="150" Height="150" HorizontalContentAlignment="Center" Foreground="OrangeRed" FontSize="30" FontWeight="Bold">Start
+        <!--<Button.Background>
             <ImageBrush ImageSource="../Snakehead.jpg"/>
-        </Button.Background>
+        </Button.Background>-->
     </Button>
 </Window>

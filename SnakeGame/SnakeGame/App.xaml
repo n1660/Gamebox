@@ -1,7 +1,7 @@
-﻿<Application x:Class="MySnake.App"
+﻿<Application x:Class="SnakeGame.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:MySnake"
+             xmlns:local="clr-namespace:SnakeGame"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
