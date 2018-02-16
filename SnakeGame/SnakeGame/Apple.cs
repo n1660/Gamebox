@@ -18,8 +18,8 @@ namespace SnakeGame
             shape = new Ellipse
             {
                 Fill = Brushes.Red,
-                Width = 15,
-                Height = 15
+                Width = GamepageSnake.sizeElem,
+                Height = GamepageSnake.sizeElem
             };
             x = left;
             y = top;

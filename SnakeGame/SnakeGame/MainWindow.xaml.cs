@@ -18,13 +18,12 @@ namespace SnakeGame
         
         private void BtnStartSnake_Click(object sender, RoutedEventArgs e)
         {
-            this.Content = new GamepageSnake();
-            GamepageSnake.timer.IsEnabled = true;
+            this.Content = new GamepageSnake(true);
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (this.Content.GetType() == (new GamepageSnake()).GetType())
+            if (this.Content.GetType() == (new GamepageSnake(false)).GetType())
             {
                 if (e.Key == Key.Up && GamepageSnake.snakebody[0].Direction != GamepageSnake.Directions.down)
                     GamepageSnake.snakebody[0].Direction = GamepageSnake.Directions.up;
@@ -34,6 +33,14 @@ namespace SnakeGame
                     GamepageSnake.snakebody[0].Direction = GamepageSnake.Directions.left;
                 if (e.Key == Key.Right && GamepageSnake.snakebody[0].Direction != GamepageSnake.Directions.left)
                     GamepageSnake.snakebody[0].Direction = GamepageSnake.Directions.right;
+
+                if(GamepageSnake.dead)
+                {
+                    if(e.Key == Key.Space)
+                    {
+                        GamepageSnake.dead = false;
+                    }
+                }
             }
         }
     }

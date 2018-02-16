@@ -13,7 +13,7 @@
             <ColumnDefinition Width="99*"/>
             <ColumnDefinition Width="35*"/>
         </Grid.ColumnDefinitions>
-        <Canvas Grid.Column="0" Name="GameCanvas" Background="Green"></Canvas>
+        <Canvas Grid.Column="0" Name="GameCanvas"></Canvas>
         <Canvas Grid.Column="1" Background="#FFA9EEE4" VerticalAlignment="Top">
             <StackPanel Orientation="Horizontal" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Name="txtsc" FontSize="22" FontWeight="Bold" TextAlignment="Center">Score:</TextBlock>
