@@ -18,12 +18,12 @@ namespace SnakeGame
         
         private void BtnStartSnake_Click(object sender, RoutedEventArgs e)
         {
-            this.Content = new GamepageSnake(true);
+            this.Content = new GamepageSnake();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (this.Content.GetType() == (new GamepageSnake(false)).GetType())
+            if (this.Content.ToString() == (new GamepageSnake().ToString()))
             {
                 if (e.Key == Key.Up && GamepageSnake.snakebody[0].Direction != GamepageSnake.Directions.down)
                     GamepageSnake.snakebody[0].Direction = GamepageSnake.Directions.up;

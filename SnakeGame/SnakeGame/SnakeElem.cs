@@ -4,7 +4,7 @@ namespace SnakeGame
 {
     public class SnakeElem
     {
-        private GamepageSnake.Directions direction = GamepageSnake.Directions.stay;
+        private GamepageSnake.Directions direction = GamepageSnake.Directions.up;
         private double x, y;
         private Rectangle rect;
 
