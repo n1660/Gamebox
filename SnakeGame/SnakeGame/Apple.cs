@@ -16,7 +16,7 @@ namespace SnakeGame
         private Ellipse shape;
         private ImageBrush applepic = new ImageBrush
         {
-            ImageSource = new BitmapImage(new Uri("../../Images/apple.jpg", UriKind.RelativeOrAbsolute))
+            ImageSource = new BitmapImage(new Uri("../../Images/apple.png", UriKind.RelativeOrAbsolute))
         };
 
         public Apple(double left,double top)

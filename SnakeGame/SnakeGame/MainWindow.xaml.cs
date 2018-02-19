@@ -16,11 +16,7 @@ namespace SnakeGame
         public MainWindow()
         {
             InitializeComponent();
-            ImageBrush btnstartpic = new ImageBrush
-            {
-                ImageSource = new BitmapImage(new Uri("../../Images/snake.jpg", UriKind.RelativeOrAbsolute))
-            };
-            BtnStartSnake.Background = btnstartpic;
+            btnbgimg.Source = new BitmapImage(new Uri("../../Images/snakestart.png", UriKind.RelativeOrAbsolute));
         }
 
         private void BtnStartSnake_Click(object sender, RoutedEventArgs e)
@@ -32,8 +28,9 @@ namespace SnakeGame
         {
             if (this.Content.GetType().Name == (typeof(GamepageSnake).Name))
             {
-                RotateTransform rotateTransform = new RotateTransform((int)GamepageSnake.snakebody[0].Direction * 4);
-                GamepageSnake.snakebody[0].Rect.RenderTransform = rotateTransform;
+                GamepageSnake.Directions dirPrevHead = GamepageSnake.snakebody[0].Direction;
+                RotateTransform rotateTransform = new RotateTransform(((GamepageSnake.snakebody[0].Direction - dirPrevHead) + ((GamepageSnake.snakebody[0].Direction - dirPrevHead) < 0 ? 4 : 0)) * 90);
+                GamepageSnake.snakebody[0].Rect.LayoutTransform = rotateTransform;
 
                 if (e.Key == Key.Up && GamepageSnake.snakebody[0].Direction != GamepageSnake.Directions.down)
                     GamepageSnake.snakebody[0].Direction = GamepageSnake.Directions.up;
@@ -48,7 +45,8 @@ namespace SnakeGame
                 {
                     if(e.Key == Key.Space)
                     {
-                        GamepageSnake.dead = false;
+                        Console.WriteLine(this.Content.GetType().Name + " | " + (typeof(GamepageSnake).Name));
+                        Win.Content = new GamepageSnake();
                     }
                 }
             }
