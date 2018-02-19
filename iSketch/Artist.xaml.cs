@@ -19,35 +19,48 @@ using System.Threading;
 
 namespace iSketch
 {
+    // TODO: PROBLEM: Absenden der Lsg bei 2 Sek übrig: Counter beginnt von vorne
+    //                ----- // -----   bei 1 Sek übirg: wird nicht mehr gezählt
+    
+
     public partial class Artist : Page
     {
-        private static int Timer_Seconds = 30;
+        private static int Timer_Seconds = 20;
         private static int Timer_Minutes = 0;
-        private static int counter = Timer_Seconds + (Timer_Minutes*60);
-        private int Stroke_Thickness = 4;
+        public  int counter = Timer_Seconds + (Timer_Minutes*60);
+        private System.Timers.Timer countdown2;
+
+        public static bool registered = false;
+
         private int List_Length;
-
-        
-
         private string random_word1;
         private string random_word2;
         private string random_word3;
 
+        private int Stroke_Thickness = 4;
         private Point lastPoint;
         private SolidColorBrush colour = Brushes.Black;
-        private System.Timers.Timer countdown2;
 
+        private int Max_Score = 500;
+        private static int Max_Time;
+        public string Current_Artist;
+        public int Current_Artist_Num;
 
+        
         public Artist()
         {
             InitializeComponent();
 
+            Max_Time = counter;
+
             this.List_Length = Get_List_Length();
             Chat_Window.KeyDown += new KeyEventHandler(Key_Events);
-
             CreateContdown();
-            Set_MessageBox();
+
+            if(!registered) // Set MessageBox only one time!
+                Set_MessageBox();
             Show_MessageBox();
+            Show_Scores();
 
         }
 
@@ -132,7 +145,6 @@ namespace iSketch
 
         private void Countdown2_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine("Elapsed ...");
             counter--;
             Dispatcher.BeginInvoke((Action) (() =>       /*  Lambda Schreibweie */
             {
@@ -185,7 +197,7 @@ namespace iSketch
         // Manage Words
         public int Get_List_Length()
         {
-            int counter = 0;
+            int count = 0;
             string line;
 
             // Read the file and display it line by line.  
@@ -193,10 +205,10 @@ namespace iSketch
                 new System.IO.StreamReader(@"..\..\Wordlist\Montagsmaler_Liste.txt");
             while ((line = file.ReadLine()) != null)
             {
-                counter++;
+                count++;
             }
             file.Close();
-            return counter;
+            return count;
         }
 
         public string Get_Random_Word()
@@ -215,7 +227,6 @@ namespace iSketch
             }
 
             file.Close();
-            System.Console.WriteLine(line);
             return line;
         }
 
@@ -248,17 +259,13 @@ namespace iSketch
             System.Windows.Forms.MessageBoxManager.No = "Word 2";
             System.Windows.Forms.MessageBoxManager.Cancel = "Word 3";
             System.Windows.Forms.MessageBoxManager.Register();
+            registered = true;
         }
 
         void Show_MessageBox()
         {
             Create_MessageBox();
-            string MessageBoxText = "Chose your word!\n\nWord 1:  ";
-            MessageBoxText += random_word1;
-            MessageBoxText += "\nWord 2:  ";
-            MessageBoxText += random_word2;
-            MessageBoxText += "\nWord 3:  ";
-            MessageBoxText += random_word3;
+            string MessageBoxText = "Chose your word!\n\nWord 1:  " + random_word1 + "\nWord 2:  " + random_word2 + "\nWord 3:  " + random_word3;
 
             MessageBoxResult result = MessageBox.Show(MessageBoxText, "Your Word", MessageBoxButton.YesNoCancel);
             switch (result)
@@ -276,6 +283,8 @@ namespace iSketch
                     Start_All2();
                     break;
             }
+
+            Show_Scores();
         }
 
         void Check_Input_Word()
@@ -284,18 +293,18 @@ namespace iSketch
 
             if (this.Your_Word.Text == this.Chat_Window.Text)
             {
+                Menu.MemberList[0].Score += Calculate_Points();
+
                 Stop_All2();
-                Console.Write("yay\n"); // DEBUG
                 Set_Popup("correct");
                 Popup_Word.IsOpen = true;
                 this.Chat_Window.Clear();
                 this.MyCanvas.Children.Clear();
-                this.Your_Word.Text = Get_Random_Word();
+
                 Start_All2();
             }
             else
             {
-                Console.Write("No Way\n"); // DEBUG
                 Compare_Imput_Word();
                 this.Chat_Window.Clear();
             }
@@ -336,6 +345,30 @@ namespace iSketch
                 Popup_Text.Background = brush;
                 Popup_Text.Text = "Your word is almost correct!";
             }
+        }
+
+        public int Calculate_Points()
+        {
+            double  percent = 0;
+
+            percent = (double) counter / (double) Max_Time;
+
+            Console.WriteLine("Counter: "+ counter);
+            Console.WriteLine("Percent: "+ percent);
+
+            return  (int) (Max_Score * percent);
+        }
+
+        void Show_Scores()
+        {
+            string ScoreTxt ="Score:\n";
+            foreach(Member member in Menu.MemberList)
+            {
+                ScoreTxt += member.Username + ":  " + member.Score + "\n" ;
+            }
+
+            Scores.Text = ScoreTxt;
+
         }
     }
 }

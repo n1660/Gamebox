@@ -54,6 +54,14 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        
+
+        <Popup Name="Popup_Username" Grid.Column="1" Grid.Row="2" PopupAnimation="Fade" AllowsTransparency="True" Placement="Center">
+            <StackPanel>
+                <TextBlock Background="#FF9DEA52">Your Username: </TextBlock>
+                <TextBox Name="username" Background="white" Width="150" Height="30" BorderThickness="5" BorderBrush="#FF9DEA52"/>
+                <Button Name="Submit" Click="Button_Click_Menu" BorderThickness="5" BorderBrush="#FF9DEA52">Submit</Button>
+            </StackPanel>
+        </Popup>
+
     </Grid>
 </Page>

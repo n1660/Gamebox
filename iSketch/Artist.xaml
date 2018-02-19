@@ -31,7 +31,7 @@
         <TextBlock Name="Your_Word" Grid.Row="0" Grid.Column="0" FontSize="16" FontFamily="Consolas" Margin="10,10,0,0"/>
         <TextBlock Name="Countdown" Grid.Row="0" Grid.Column="1" FontSize="16" FontFamily="Consolas" Margin="150,10,10,0"/>
 
-        <Canvas Name="MyCanvas" Grid.Row="1" Grid.Column="0" Background="White" Margin="10,10,10,10" MouseDown="MyCanvas_MouseDown" MouseMove="MyCanvas_MouseMove" >
+        <Canvas Name="MyCanvas" Grid.Row="1" Grid.Column="0" Background="White" Margin="10" MouseDown="MyCanvas_MouseDown" MouseMove="MyCanvas_MouseMove" >
 
         </Canvas>
 
@@ -93,6 +93,8 @@
             <Button Name="BTN_Submit" Grid.Row="1" Grid.Column="1" Margin="10,10,10.2,10" Click="Button_Click">Submit</Button>
             <Button Name="BTN_HOME" Grid.Row="2" Grid.Column="1" Margin="10,10,10.2,10" Click="Button_Click">EXIT</Button>
         </Grid>
+
+        <TextBlock Name="Scores" Grid.Row="1" Grid.Column="1" Margin="10"></TextBlock>
 
     </Grid>
 
