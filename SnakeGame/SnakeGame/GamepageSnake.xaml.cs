@@ -16,11 +16,11 @@ namespace SnakeGame
     {
         public enum Directions
         {
-            stay,
+            right,
+            down,
             left,
             up,
-            right,
-            down
+            stay
         };
 
         public static bool started, dead = started = false;
@@ -30,17 +30,34 @@ namespace SnakeGame
         public static List<SnakeElem> snakebody;
         public static Random rnd = new Random();
         public Apple apple;
+        private int startlength = 3;
+
+        private ImageBrush snakeElemPic = new ImageBrush
+        {
+            ImageSource = new BitmapImage(new Uri("../../Images/snakeElem.jpg", UriKind.RelativeOrAbsolute))
+        };
+
+        private ImageBrush tailpic = new ImageBrush
+        {
+            ImageSource = new BitmapImage(new Uri("../../Images/snaketail.jpg", UriKind.RelativeOrAbsolute))
+        };
+
+        private ImageBrush bgpic = new ImageBrush
+        {
+            ImageSource = new BitmapImage(new Uri("../../Images/snake.jpg", UriKind.RelativeOrAbsolute))
+        };
 
         public void Render()
         {
             if (snakebody == null || snakebody.Count == 0)
                 return;
 
-            if (apple != null && !GameCanvas.Children.Contains(apple.Shape))
+            if (apple == null)
+                SpawnFood();
+            else
             {
                 Canvas.SetLeft(apple.Shape, apple.X);
                 Canvas.SetTop(apple.Shape, apple.Y);
-                GameCanvas.Children.Add(apple.Shape);
             }
 
             SnakeElem head = snakebody[0];
@@ -49,10 +66,10 @@ namespace SnakeGame
                 if (snk == head)
                     continue;
 
-                if (head.X >= snk.X
-                    && head.X <= (snk.X + snk.Rect.ActualWidth)
-                    && head.Y >= snk.Y
-                    && head.Y <= (snk.Y + snk.Rect.ActualHeight))
+                if (head.X > snk.X
+                    && head.X < (snk.X + snk.Rect.ActualWidth)
+                    && head.Y > snk.Y
+                    && head.Y < (snk.Y + snk.Rect.ActualHeight))
                 {
                     GameOver();
                 }
@@ -63,7 +80,7 @@ namespace SnakeGame
                 if (GameCanvas.IsInitialized)
                 {
                     //wrap-around
-                    if (head.Direction != (int)Directions.stay)
+                    if (head.Direction != Directions.stay)
                     {
                         if (head.X < 0)
                             head.X = GameCanvas.ActualWidth - head.Rect.ActualWidth;
@@ -91,16 +108,12 @@ namespace SnakeGame
             }
         }
 
-
         public GamepageSnake()
         {
             InitializeComponent();
                 
             GameCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             GameCanvas.Arrange(new Rect(0, 0, Application.Current.MainWindow.DesiredSize.Width, Application.Current.MainWindow.DesiredSize.Height));
-
-            GameCanvas.Background = Brushes.Green;
-            SpawnFood();
 
             timer = new DispatcherTimer
             {
@@ -110,20 +123,39 @@ namespace SnakeGame
             if (!started)
             {
                 snakebody = null;
+                ImageBrush headpic = new ImageBrush
+                {
+                    ImageSource = new BitmapImage(new Uri("../../Images/snakehead.jpg", UriKind.RelativeOrAbsolute))
+                };
                 snakebody = new List<SnakeElem>
                 {
-                    new SnakeElem
+                new SnakeElem
                     {
                         X = 100,
                         Y = 100,
+                        Direction = Directions.stay,
                         Rect = new Rectangle
                         {
-                            Fill = Brushes.GreenYellow,
+                            Fill = headpic,
                             Width = sizeElem,
                             Height = sizeElem
                         }
                     }
                 };
+                for (int i = 0; i < startlength; i++)
+                {
+                    snakebody.Add(new SnakeElem
+                    {
+                        X = 100 - (i + 1) * sizeElem,
+                        Y = 100,
+                        Rect = new Rectangle
+                        {
+                            Fill = snakeElemPic,
+                            Width = sizeElem,
+                            Height = sizeElem
+                        }
+                    });
+                }
                 GameCanvas.Children.Add(snakebody[0].Rect);
                 started = true;
             }
@@ -132,49 +164,66 @@ namespace SnakeGame
 
             timer.Tick += Time_Tick;
             timer.Start();
-
-            if (apple != null)
-                Render();
+            
+            Render();
         }
 
         private void MoveSnake()
         {
-
+            if (snakebody[0].Direction == Directions.stay)
+                return;
             SnakeElem head = snakebody[0];
+
+            //move head
+            head.X += ((head.Direction == Directions.left) ? -sizeElem :
+                (head.Direction == Directions.right) ? sizeElem : 0);
+            head.Y += ((head.Direction == Directions.up) ? -sizeElem :
+                (head.Direction == Directions.down) ? sizeElem : 0);
+
             if (GameCanvas.IsInitialized)
             {
-                for (int i = snakebody.Count - 1; i >= 0; i--)
+                for (int i = snakebody.Count - 1; i > 0; i--)
                 {
-                    //move head
-                    head.X += ((head.Direction == Directions.left) ? -sizeElem :
-                        (head.Direction == Directions.right) ? sizeElem : 0);
-                    head.Y += ((head.Direction == Directions.up) ? -sizeElem :
-                        (head.Direction == Directions.down) ? sizeElem : 0);
-
                     //make body follow the head
-                    if (i > 0)
+                    if (i > 1)
                     {
                         snakebody[i].X = snakebody[i - 1].X;
                         snakebody[i].Y = snakebody[i - 1].Y;
                     }
 
-                    if (i == 0)
+                    //rotate texture
+                    if (i == 1)
                     {
-                        xtmp = head.X;
-                        ytmp = head.Y;
+                        snakebody[i].X = head.X + ((head.Direction == Directions.right) ? -sizeElem :
+                            (head.Direction == Directions.left) ? sizeElem : 0);
+                        snakebody[i].Y = head.Y + ((head.Direction == Directions.down) ? -sizeElem :
+                            (head.Direction == Directions.up) ? sizeElem : 0);
                     }
                 }
-            }snakebody[0] = head;
+            }
+            snakebody[0] = head;
         }
 
         public void Time_Tick(object sender, EventArgs e)
         {
-            if(txtbScore != null)
-                txtbScore.Text = score.ToString();
-            
+            txtbScore.Text = score.ToString();
+
+            snakebody[snakebody.Count - 1].Rect.Fill = tailpic;
+            snakebody[snakebody.Count - 2].Rect.Fill = snakeElemPic;
+
             MoveSnake();
             SnakeEat();
             Render();
+        }
+
+        private void BtnPause_Click(object sender, RoutedEventArgs e)
+        {
+            started = !started;
+        }
+
+        private void BtnExit_Click(object sender, RoutedEventArgs e)
+        {
+            GameOver();
         }
 
         public void SnakeEat()
@@ -185,30 +234,28 @@ namespace SnakeGame
                     && (snakebody[0].Y <= apple.Y + apple.Shape.ActualHeight && snakebody[0].Y + snakebody[0].Rect.ActualHeight >= apple.Y)
                     && snakebody[0].Direction != Directions.stay)
                 {
-                    Console.WriteLine("in eatfunc");
                     GameCanvas.Children.Remove(apple.Shape);
+                    apple = null;
                     SpawnFood();
                     SnakeElem lastElem = snakebody[snakebody.Count - 1];
                     SnakeElem snakeTmp = new SnakeElem
                     {
-                        X = lastElem.X +
-                            ((lastElem.Direction == Directions.left) ? -sizeElem :
-                            ((lastElem.Direction == Directions.right)? sizeElem : 0)),
-                        Y = lastElem.Y +
-                            ((lastElem.Direction == Directions.down) ? -sizeElem :
-                            ((lastElem.Direction == Directions.up) ? sizeElem : 0)),
+                        X = lastElem.X + 1,
+                        Y = lastElem.Y + 1,
                         Rect = new Rectangle
                         {
-                            Fill = Brushes.Yellow,
+                            Fill = snakeElemPic,
                             Width = sizeElem,
                             Height = sizeElem
                         }
                     };
                     Render();
+                    snakebody.Add(snakeTmp);
                     score++;
                     timer.Stop();
-                    if (timer.Interval.Milliseconds > 150)
-                        timer.Interval -= new TimeSpan(0, 0, 0, 0, 1);
+                    if (timer.Interval.Milliseconds > 50)
+                        timer.Interval = new TimeSpan(0, 0, 0, 0, timer.Interval.Milliseconds - 5);
+                    Console.WriteLine(timer.Interval.Milliseconds);
                     timer.Start();
                 }
             }
@@ -218,6 +265,8 @@ namespace SnakeGame
         {
             if(apple == null)
                 apple = new Apple(rnd.Next(0, (int)GameCanvas.ActualWidth - sizeElem), rnd.Next(0, (int)GameCanvas.ActualHeight - sizeElem));
+
+            Console.WriteLine(apple.X + " | " + apple.Y);
         }
 
         public void GameOver()

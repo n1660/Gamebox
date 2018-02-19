@@ -5,11 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnakeGame"
         mc:Ignorable="d"
-        Title="MainWindow" Height="400" Width="700" KeyDown="Window_KeyDown" Name="win">
-
-    <Button Name="BtnStartSnake" Click="BtnStartSnake_Click" Width="150" Height="150" HorizontalContentAlignment="Center" Foreground="OrangeRed" FontSize="30" FontWeight="Bold">Start
-        <!--<Button.Background>
-            <ImageBrush ImageSource="../Snakehead.jpg"/>
-        </Button.Background>-->
-    </Button>
+        Title="MainWindow" Height="400" Width="700" KeyDown="Window_KeyDown" Background="#ff77aa77">
+    <Grid>
+        <Button Name="BtnStartSnake" Click="BtnStartSnake_Click" Width="150" Height="89" HorizontalContentAlignment="Center" Foreground="LightGreen" FontSize="30" FontWeight="Bold" Background="#ff444444">Start</Button>
+    </Grid>
 </Window>
