@@ -16,7 +16,7 @@ namespace SnakeGame
         public MainWindow()
         {
             InitializeComponent();
-            btnbgimg.Source = new BitmapImage(new Uri("../../Images/snakestart.png", UriKind.RelativeOrAbsolute));
+            btnbgimg.Source = new BitmapImage(new Uri("SnakeGame/Images/snakestart.png", UriKind.RelativeOrAbsolute));
         }
 
         private void BtnStartSnake_Click(object sender, RoutedEventArgs e)
@@ -30,7 +30,7 @@ namespace SnakeGame
             {
                 GamepageSnake.Directions dirPrevHead = GamepageSnake.snakebody[0].Direction;
                 RotateTransform rotateTransform = new RotateTransform(((GamepageSnake.snakebody[0].Direction - dirPrevHead) + ((GamepageSnake.snakebody[0].Direction - dirPrevHead) < 0 ? 4 : 0)) * 90);
-                GamepageSnake.snakebody[0].Rect.LayoutTransform = rotateTransform;
+                GamepageSnake.snakebody[0].Rect.Fill.Transform = rotateTransform;
 
                 if (e.Key == Key.Up && GamepageSnake.snakebody[0].Direction != GamepageSnake.Directions.down)
                     GamepageSnake.snakebody[0].Direction = GamepageSnake.Directions.up;
