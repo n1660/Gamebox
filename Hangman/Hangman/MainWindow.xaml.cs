@@ -20,7 +20,7 @@ namespace Hangman
     {
         string randomWord = Spiel.NewWord();
         string solution;
-        int maxfehler = 5;
+        int maxfehler = 9;
         int anzfehler = 0;
         Label[] lbls = new Label[15];
 
@@ -32,8 +32,11 @@ namespace Hangman
 
         private void Start()
         {
+            randomWord = Spiel.NewWord();
+            anzfehler = 0;
             Show_Lines();
             Show_Buttons();
+            Show_Image();
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -49,11 +52,13 @@ namespace Hangman
             if(containsLetter)
             {
                 ShowNewWord(letter);
+                
             }
             else
             { 
                 MessageBox.Show(String.Format("Buchstabe {0} nicht enthalten!", letter));
                 anzfehler++;
+                Show_Image();
                 if (anzfehler == maxfehler)
                 { 
                     MessageBox.Show("Leider verloren!");
@@ -79,6 +84,17 @@ namespace Hangman
                         lbls[pos4].Content = letter;
                 }
             }
+            string lbl = "";
+            for(int i = 0; i < randomWord.Length; i++)
+            {
+                lbl += lbls[i];
+            }
+            int won = lbl.IndexOf("_");
+            if (won == -1)
+            {
+                MessageBox.Show("Gewonnen!");
+                QuitGame();
+            }
         }
 
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
@@ -95,6 +111,7 @@ namespace Hangman
                 MessageBox.Show("Leider das falsche Wort!");
                 textbox.Text = "";
                 anzfehler++;
+                Show_Image();
                 if (anzfehler == maxfehler)
                 {
                     MessageBox.Show("Leider verloren!");
@@ -164,10 +181,27 @@ namespace Hangman
                 }
             }
         }
-
+        private void Show_Image()
+        {
+            bild.Source = GetImage(@"D:\ProjektMultiplayer\Hangman\Hangman\Images\" + anzfehler +".png");
+        }
+        private static BitmapImage GetImage(string imageUri)
+        {
+            var bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.UriSource = new Uri(imageUri, UriKind.RelativeOrAbsolute);
+            bitmapImage.EndInit();
+            return bitmapImage;
+        }
         private void QuitGame()
         {
-
+            for(int i = 0; i< randomWord.Length; i++)
+            {
+                canvas.Children.Remove(lbls[i]);
+            }
+            Start();
         }
+
+        
     }
 }
