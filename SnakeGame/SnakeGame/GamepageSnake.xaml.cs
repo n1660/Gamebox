@@ -65,11 +65,10 @@ namespace SnakeGame
 
             if (apple == null)
                 SpawnFood();
-            else
-            {
-                Canvas.SetLeft(apple.Shape, apple.X);
-                Canvas.SetTop(apple.Shape, apple.Y);
-            }
+            
+            Canvas.SetLeft(apple.Shape, apple.X);
+            Canvas.SetTop(apple.Shape, apple.Y);
+            Canvas.SetZIndex(apple.Shape, 1);
 
             SnakeElem head = snakebody[0];
             SnakeElem tail = snakebody[snakebody.Count - 1];
@@ -103,6 +102,7 @@ namespace SnakeGame
                         snk.Rect.Fill = tailpic;
                     }
 
+                    Canvas.SetZIndex(snk.Rect, 0);
                     Canvas.SetLeft(snk.Rect, (int)snk.X);
                     Canvas.SetTop(snk.Rect, (int)snk.Y);
                     GameCanvas.Children.Add(snk.Rect);
@@ -112,7 +112,10 @@ namespace SnakeGame
 
         public GamepageSnake()
         {
+            bgpic.Opacity = 0.8;
+
             score = 0;
+            dead = false;
             InitializeComponent();
 
             if(snakebody.Count != 0)
@@ -164,7 +167,6 @@ namespace SnakeGame
 
         private void MoveSnake()
         {
-
             SnakeElem head = snakebody[0];
 
             if (started)
@@ -259,7 +261,6 @@ namespace SnakeGame
 
         private void BtnExit_Click(object sender, RoutedEventArgs e)
         {
-            dead = true;
             GameOver();
         }
 

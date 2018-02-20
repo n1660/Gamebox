@@ -13,10 +13,15 @@ namespace SnakeGame
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static ImageBrush startpic = new ImageBrush
+        {
+            ImageSource = new BitmapImage(new Uri("../../Images/snakestart.png", UriKind.RelativeOrAbsolute))
+        };
+
         public MainWindow()
         {
             InitializeComponent();
-            btnbgimg.Source = new BitmapImage(new Uri("SnakeGame/Images/snakestart.png", UriKind.RelativeOrAbsolute));
+            BtnStartSnake.Background = startpic;
         }
 
         private void BtnStartSnake_Click(object sender, RoutedEventArgs e)
@@ -44,7 +49,7 @@ namespace SnakeGame
                         GamepageSnake.snakebody[0].Direction = GamepageSnake.Directions.right;
                 }
 
-                //reload head- and tail pics for the new direction
+                //reload headpic for the new direction
                 GamepageSnake.headpic = new ImageBrush
                 {
                     ImageSource = new BitmapImage(new Uri("../../Images/snakehead/snakehead_" + GamepageSnake.snakebody[0].Direction.ToString() + ".png", UriKind.RelativeOrAbsolute))

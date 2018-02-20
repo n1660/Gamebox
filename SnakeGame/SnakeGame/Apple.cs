@@ -14,7 +14,7 @@ namespace SnakeGame
     {
         private double x,y;
         private Ellipse shape;
-        private ImageBrush applepic = new ImageBrush
+        public static ImageBrush applepic = new ImageBrush
         {
             ImageSource = new BitmapImage(new Uri("../../Images/apple.png", UriKind.RelativeOrAbsolute))
         };
@@ -24,8 +24,8 @@ namespace SnakeGame
             shape = new Ellipse
             {
                 Fill = applepic,
-                Width = GamepageSnake.sizeElem + 10,
-                Height = GamepageSnake.sizeElem + 10,
+                Width = GamepageSnake.sizeElem * 2,
+                Height = GamepageSnake.sizeElem * 2,
                 Stretch = Stretch.Fill
             };
             x = left;
