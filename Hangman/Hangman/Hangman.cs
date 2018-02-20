@@ -43,7 +43,6 @@ namespace Hangman
             Console.WriteLine("Anzahl der Buchstaben: {0}", geheimwort.Length);
             Console.WriteLine("Geheimwort: " + suchwort);
             
-
             while (fehler < anzfehler && suchwort != geheimwort)
             {
                 char eingabe;
