@@ -17,10 +17,8 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Canvas Grid.Column="0" Grid.RowSpan="2" Name="GameCanvas"></Canvas>
-        <DockPanel Grid.Column="1" Grid.Row="0" Background="LightGray">
+        <DockPanel Grid.Column="1" Grid.Row="0" Background="LightGray" Name="dpScores">
             <StackPanel Orientation="Horizontal" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Name="txtsc" FontSize="22" FontWeight="Bold" TextAlignment="Center">Score:</TextBlock>
-                <TextBlock Name="txtbScore" FontSize="22" FontWeight="Bold" Margin="25, 0 ,0 ,0"  TextAlignment="Center">0</TextBlock>
             </StackPanel>
         </DockPanel>
         <DockPanel Grid.Column="1" Grid.Row="1" Background="LightGray">

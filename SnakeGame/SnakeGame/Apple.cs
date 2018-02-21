@@ -12,7 +12,7 @@ namespace SnakeGame
 {
     public class Apple
     {
-        private double x,y;
+        private double x = -1.0, y = -1.0;
         private Ellipse shape;
         public static ImageBrush applepic = new ImageBrush
         {
@@ -24,8 +24,8 @@ namespace SnakeGame
             shape = new Ellipse
             {
                 Fill = applepic,
-                Width = GamepageSnake.sizeElem * 2,
-                Height = GamepageSnake.sizeElem * 2,
+                Width = SnakePlayer.SIZEELEM * 2,
+                Height = SnakePlayer.SIZEELEM * 2,
                 Stretch = Stretch.Fill
             };
             x = left;

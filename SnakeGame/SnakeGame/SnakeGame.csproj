@@ -76,6 +76,7 @@
       <DependentUpon>GamepageSnake.xaml</DependentUpon>
     </Compile>
     <Compile Include="SnakeElem.cs" />
+    <Compile Include="Snake_Player.cs" />
     <Page Include="GamepageSnake.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -132,19 +133,64 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="snake.jpg" />
-    <Resource Include="snakehead.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="snakeElem.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="snaketail.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="snakestart.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="snakepause.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="snakehead_down_Blue.png" />
+    <Resource Include="snakehead_left_Blue.png" />
+    <Resource Include="snakehead_right_Blue.png" />
+    <Resource Include="snakehead_up_Blue.png" />
+    <Resource Include="snaketail_down_Blue.png" />
+    <Resource Include="snaketail_left_Blue.png" />
+    <Resource Include="snaketail_right_Blue.png" />
+    <Resource Include="snaketail_up_Blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="snakehead_down_Green.png" />
+    <Resource Include="snakehead_left_Green.png" />
+    <Resource Include="snakehead_right_Green.png" />
+    <Resource Include="snakehead_up_Green.png" />
+    <Resource Include="snaketail_down_Green.png" />
+    <Resource Include="snaketail_left_Green.png" />
+    <Resource Include="snaketail_right_Green.png" />
+    <Resource Include="snaketail_up_Green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="snakehead_down_Purple.png" />
+    <Resource Include="snakehead_left_Purple.png" />
+    <Resource Include="snakehead_right_Purple.png" />
+    <Resource Include="snakehead_up_Purple.png" />
+    <Resource Include="snaketail_down_Purple.png" />
+    <Resource Include="snaketail_left_Purple.png" />
+    <Resource Include="snaketail_right_Purple.png" />
+    <Resource Include="snaketail_up_Purple.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="snakehead_down_Red.png" />
+    <Resource Include="snakehead_left_Red.png" />
+    <Resource Include="snakehead_right_Red.png" />
+    <Resource Include="snakehead_up_Red.png" />
+    <Resource Include="snaketail_down_Red.png" />
+    <Resource Include="snaketail_left_Red.png" />
+    <Resource Include="snaketail_right_Red.png" />
+    <Resource Include="snaketail_up_Red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="snakeElem_Green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="snakeElem_Blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="snakeElem_Purple.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="snakeElem_Red.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
