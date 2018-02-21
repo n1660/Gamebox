@@ -41,12 +41,13 @@ namespace SnakeGame
                 if (gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake.Count == 0)
                     return;
 
-                if (!GamepageSnake.started)
+                if (e.Key == Key.Space && !GamepageSnake.STARTED)
                 {
-                    GamepageSnake.started = true;
+                    GamepageSnake.STARTED = true;
                 }
-                else
+                else if(GamepageSnake.STARTED)
                 {
+                    Console.WriteLine(gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction);
                     if (e.Key == Key.Up && gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction != GamepageSnake.Directions.down)
                         gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction = GamepageSnake.Directions.up;
                     if (e.Key == Key.Down && gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction != GamepageSnake.Directions.up)
@@ -58,7 +59,7 @@ namespace SnakeGame
                 }
 
                 //reload headpic for the new direction
-                gamePage.Snakeplayers[gamePage.PlayerID - 1].Pictures[Pictures.Head.ToString()] = new ImageBrush
+                gamePage.Snakeplayers[gamePage.PlayerID - 1].Pictures["Head"] = new ImageBrush
                 {
                     ImageSource = new BitmapImage(new Uri("../../Images/" + gamePage.Snakeplayers[gamePage.PlayerID - 1].Color + "/snakehead_" + gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction.ToString() + "_" + gamePage.Snakeplayers[gamePage.PlayerID - 1].Color.ToString() + ".png", UriKind.RelativeOrAbsolute))
                 };

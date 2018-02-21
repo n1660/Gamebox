@@ -17,10 +17,9 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Canvas Grid.Column="0" Grid.RowSpan="2" Name="GameCanvas"></Canvas>
-        <DockPanel Grid.Column="1" Grid.Row="0" Background="LightGray" Name="dpScores">
-            <StackPanel Orientation="Horizontal" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center">
-            </StackPanel>
-        </DockPanel>
+        <StackPanel Grid.Column="1" Grid.Row="0" Background="LightGray" Name="spScores">
+            
+        </StackPanel>
         <DockPanel Grid.Column="1" Grid.Row="1" Background="LightGray">
             <Button Name="BtnExit" DockPanel.Dock="Right" VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="Red" Foreground="White" Width="40" Click="BtnExit_Click">X</Button>
             <Button Name="BtnPause" DockPanel.Dock="Right" VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#FF222222" Foreground="White" Width="40" Click="BtnPause_Click">ll</Button>
