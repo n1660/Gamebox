@@ -38,33 +38,42 @@ namespace SnakeGame
         {
             if (this.Content.GetType().Name == (typeof(GamepageSnake).Name))
             {
-                if (gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake.Count == 0)
+                if (GamepageSnake.Snakeplayers[gamePage.PlayerID - 1].Snake.Count == 0)
                     return;
 
-                if (!GamepageSnake.started)
+                if (e.Key == Key.Space && !GamepageSnake.STARTED)
                 {
-                    GamepageSnake.started = true;
+                    GamepageSnake.STARTED = true;
                 }
-                else
+                else if(GamepageSnake.STARTED)
                 {
-                    if (e.Key == Key.Up && gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction != GamepageSnake.Directions.down)
-                        gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction = GamepageSnake.Directions.up;
-                    if (e.Key == Key.Down && gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction != GamepageSnake.Directions.up)
-                        gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction = GamepageSnake.Directions.down;
-                    if (e.Key == Key.Left && gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction != GamepageSnake.Directions.right)
-                        gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction = GamepageSnake.Directions.left;
-                    if (e.Key == Key.Right && gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction != GamepageSnake.Directions.left)
-                        gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction = GamepageSnake.Directions.right;
+                    if (e.Key == Key.W && GamepageSnake.Snakeplayers[0].Snake[0].Direction != GamepageSnake.Directions.down)
+                        GamepageSnake.Snakeplayers[0].Snake[0].Direction = GamepageSnake.Directions.up;
+                    if (e.Key == Key.S && GamepageSnake.Snakeplayers[0].Snake[0].Direction != GamepageSnake.Directions.up)
+                        GamepageSnake.Snakeplayers[0].Snake[0].Direction = GamepageSnake.Directions.down;
+                    if (e.Key == Key.A && GamepageSnake.Snakeplayers[0].Snake[0].Direction != GamepageSnake.Directions.right)
+                        GamepageSnake.Snakeplayers[0].Snake[0].Direction = GamepageSnake.Directions.left;
+                    if (e.Key == Key.D && GamepageSnake.Snakeplayers[0].Snake[0].Direction != GamepageSnake.Directions.left)
+                        GamepageSnake.Snakeplayers[0].Snake[0].Direction = GamepageSnake.Directions.right;
+
+                    if (e.Key == Key.Up && GamepageSnake.Snakeplayers[1].Snake[0].Direction != GamepageSnake.Directions.down)
+                        GamepageSnake.Snakeplayers[1].Snake[0].Direction = GamepageSnake.Directions.up;
+                    if (e.Key == Key.Down && GamepageSnake.Snakeplayers[1].Snake[0].Direction != GamepageSnake.Directions.up)
+                        GamepageSnake.Snakeplayers[1].Snake[0].Direction = GamepageSnake.Directions.down;
+                    if (e.Key == Key.Left && GamepageSnake.Snakeplayers[1].Snake[0].Direction != GamepageSnake.Directions.right)
+                        GamepageSnake.Snakeplayers[1].Snake[0].Direction = GamepageSnake.Directions.left;
+                    if (e.Key == Key.Right && GamepageSnake.Snakeplayers[1].Snake[0].Direction != GamepageSnake.Directions.left)
+                        GamepageSnake.Snakeplayers[1].Snake[0].Direction = GamepageSnake.Directions.right;
                 }
 
                 //reload headpic for the new direction
-                gamePage.Snakeplayers[gamePage.PlayerID - 1].Pictures[Pictures.Head.ToString()] = new ImageBrush
+                GamepageSnake.Snakeplayers[gamePage.PlayerID - 1].Pictures["Head"] = new ImageBrush
                 {
-                    ImageSource = new BitmapImage(new Uri("../../Images/" + gamePage.Snakeplayers[gamePage.PlayerID - 1].Color + "/snakehead_" + gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction.ToString() + "_" + gamePage.Snakeplayers[gamePage.PlayerID - 1].Color.ToString() + ".png", UriKind.RelativeOrAbsolute))
+                    ImageSource = new BitmapImage(new Uri("../../Images/" + GamepageSnake.Snakeplayers[gamePage.PlayerID - 1].Color + "/snakehead_" + GamepageSnake.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Direction.ToString() + "_" + GamepageSnake.Snakeplayers[gamePage.PlayerID - 1].Color.ToString() + ".png", UriKind.RelativeOrAbsolute))
                 };
                 /*----------------------------------------------*/
 
-                gamePage.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Rect.Fill = gamePage.Snakeplayers[gamePage.PlayerID - 1].Pictures[Pictures.Head.ToString()];
+                GamepageSnake.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Rect.Fill = GamepageSnake.Snakeplayers[gamePage.PlayerID - 1].Pictures[Pictures.Head.ToString()];
             }
         }
     }

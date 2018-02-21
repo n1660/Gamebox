@@ -23,34 +23,43 @@ namespace SnakeGame
             up
         };
 
+        //membervariables
         private int playerID = 1; // TODO: NO HARDCODE
-        public static bool started = true;
-        public static DispatcherTimer timer;
-        private List<SnakePlayer> snakeplayers;
-        public static Random rnd = new Random();
-        public static Apple apple;
-        
+        private static List<SnakePlayer> snakeplayers = new List<SnakePlayer>();
+
+        //globals
+        public static bool STARTED = false;
+        public static DispatcherTimer TIMER;
+        public static Random RANDOM = new Random();
+        public static Apple APPLE;
+
+        //images
         public static ImageBrush bgpic = new ImageBrush
         {
             ImageSource = new BitmapImage(new Uri("../../Images/snake.jpg", UriKind.RelativeOrAbsolute))
         };
-
+        public static ImageBrush gopic = new ImageBrush
+        {
+            ImageSource = new BitmapImage(new Uri("../../Images/Snake_Gameover.png", UriKind.RelativeOrAbsolute))
+        };
         public static ImageBrush snakePausePic = new ImageBrush
         {
             ImageSource = new BitmapImage(new Uri("../../Images/snakepause.jpeg", UriKind.RelativeOrAbsolute))
         };
 
+        //properties
         public int PlayerID { get => playerID; set => playerID = value; }
-        internal List<SnakePlayer> Snakeplayers { get => snakeplayers; set => snakeplayers = value; }
+        public static List<SnakePlayer> Snakeplayers { get => snakeplayers; set => snakeplayers = value; }
 
+        //methods
         public void Render()
         {
-            foreach(SnakePlayer p in snakeplayers)
+            List<SnakePlayer> toDie = new List<SnakePlayer>();
+            foreach (SnakePlayer p in snakeplayers)
             {
                 p.Render();
-                dpScores.Children.Remove(p.Scoretext);
-                dpScores.Children.Add(p.Scoretext);
             }
+            
             if (snakeplayers[0].Snake.Count != 0) {
                 int survivecount = snakeplayers.Count;
                 foreach (SnakePlayer p in snakeplayers)
@@ -58,8 +67,13 @@ namespace SnakeGame
                     if (p.Dead)
                         survivecount--;
                 }
-                //if (survivecount == 0)
-                //TODO: GAMEOVER!
+                if (survivecount == 0)
+                {
+                    Console.WriteLine("ALL DEAD!");
+                    TIMER.Stop();
+                    GameCanvas.Children.Clear();
+                    GameCanvas.Background = gopic;
+                }
             }
             SpawnFood();
         }
@@ -71,20 +85,21 @@ namespace SnakeGame
             bgpic.Opacity = 0.8;
             InitializeComponent();
             GameCanvas.Background = bgpic;
-            snakeplayers = new List<SnakePlayer> {
-                AddPlayerToGame("player1", new IPEndPoint(IPAddress.Loopback, 1337), GameCanvas)
-            };
+            snakeplayers.Add(AddPlayerToGame("player1", new IPEndPoint(IPAddress.Loopback, 1337), GameCanvas)
+            );
+            snakeplayers.Add(AddPlayerToGame("player2", new IPEndPoint(IPAddress.Loopback, 1338), GameCanvas)
+            );
 
             GameCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             GameCanvas.Arrange(new Rect(0, 0, Application.Current.MainWindow.DesiredSize.Width, Application.Current.MainWindow.DesiredSize.Height));
 
-            timer = new DispatcherTimer
+            TIMER = new DispatcherTimer
             {
                 Interval = new TimeSpan(0, 0, 0, 0, 200), //speed
             };
 
-            timer.Tick += Time_Tick;
-            timer.Start();
+            TIMER.Tick += Time_Tick;
+            TIMER.Start();
             Render();
         }
 
@@ -96,44 +111,39 @@ namespace SnakeGame
         private void BtnPause_Click(object sender, RoutedEventArgs e)
         {
             UIElementCollection gameElems = new UIElementCollection(GameCanvas, this);
-            if (!started)
+            if (!STARTED)
             {
                 GameCanvas.Background = bgpic;
                 foreach(UIElement elem in gameElems)
                 {
                     GameCanvas.Children.Add(elem);
                 }
-                timer.Start();
+                TIMER.Start();
             }
             else
             {
                 gameElems = GameCanvas.Children;
                 GameCanvas.Children.Clear();
                 GameCanvas.Background = snakePausePic;
-                timer.Stop();
+                TIMER.Stop();
             }
-            started = !started;
+            STARTED = !STARTED;
         }
 
         private void BtnExit_Click(object sender, RoutedEventArgs e)
         {
-
-            ImageBrush gopic = new ImageBrush
-            {
-                ImageSource = new BitmapImage(new Uri("../../Images/snake_gameover.png", UriKind.RelativeOrAbsolute))
-            };
-            GameCanvas.Background = gopic;
+            App.Current.Shutdown();
         }
 
         public void SpawnFood()
         {
-            if (apple == null)
+            if (APPLE == null)
             {
-                apple = new Apple(rnd.Next(0, (int)GameCanvas.ActualWidth - SnakePlayer.SIZEELEM - 30), rnd.Next(0, (int)GameCanvas.ActualHeight - SnakePlayer.SIZEELEM - 10));
-                Canvas.SetLeft(apple.Shape, apple.X);
-                Canvas.SetTop(apple.Shape, apple.Y);
-                Canvas.SetZIndex(apple.Shape, 1);
-                GameCanvas.Children.Add(apple.Shape);
+                APPLE = new Apple(RANDOM.Next(0, (int)GameCanvas.ActualWidth - SnakePlayer.SIZEELEM - 30), RANDOM.Next(0, (int)GameCanvas.ActualHeight - SnakePlayer.SIZEELEM - 10));
+                Canvas.SetLeft(APPLE.Shape, APPLE.X);
+                Canvas.SetTop(APPLE.Shape, APPLE.Y);
+                Canvas.SetZIndex(APPLE.Shape, 1);
+                GameCanvas.Children.Add(APPLE.Shape);
             }
         }
 
@@ -142,12 +152,17 @@ namespace SnakeGame
             return GameCanvas;
         }
 
+        public StackPanel GetScoreSP()
+        {
+            return spScores;
+        }
+
         public SnakePlayer AddPlayerToGame(String name, IPEndPoint ip_port, Canvas gamecanv)
         {
             SnakePlayer.AMOUNT_PLAYERS++;
             SnakePlayer player = new SnakePlayer(name, ip_port, gamecanv);
 
-            dpScores.Children.Add(new TextBlock
+            spScores.Children.Add(new TextBlock
             {
                 Name = "LblPlayer" + player.Id,
                 FontSize = 22,
