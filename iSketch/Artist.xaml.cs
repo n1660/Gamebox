@@ -61,7 +61,6 @@ namespace iSketch
                 Set_MessageBox();
             Show_MessageBox();
             Show_Scores();
-
         }
 
         private void Key_Events(object sender, KeyEventArgs k)
@@ -83,6 +82,7 @@ namespace iSketch
             }
             else if (sender == this.BTN_HOME)
             {
+                Stop_All2();
                 MainWindow.win.Content = new Menu();
             }
 
@@ -295,13 +295,13 @@ namespace iSketch
             {
                 Menu.MemberList[0].Score += Calculate_Points();
 
-                Stop_All2();
+                //Stop_All2();
                 Set_Popup("correct");
                 Popup_Word.IsOpen = true;
                 this.Chat_Window.Clear();
                 this.MyCanvas.Children.Clear();
 
-                Start_All2();
+                //Start_All2();
             }
             else
             {
