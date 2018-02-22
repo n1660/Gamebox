@@ -55,25 +55,39 @@ namespace SnakeGame
         public void Render()
         {
             List<SnakePlayer> toDie = new List<SnakePlayer>();
+            restart:
             foreach (SnakePlayer p in snakeplayers)
             {
+                if (p.Dead)
+                {
+                    GamepageSnake.Snakeplayers.Remove(p);
+                    goto restart;
+                }
+
                 p.Render();
             }
             
-            if (snakeplayers[0].Snake.Count != 0) {
-                int survivecount = snakeplayers.Count;
-                foreach (SnakePlayer p in snakeplayers)
+            foreach(SnakePlayer p in SnakePlayer.TODIE)
+            {
+                p.Dead = true;
+            }
+
+            if(SnakePlayer.TODIE.Count != 0)
+            {
+                SnakePlayer.TODIE.Clear();
+            }
+
+            if (SnakePlayer.TODIE.Count == 1)
+            {
+                GameCanvas.Children.Clear();
+                GameCanvas.Background = Brushes.Gold;
+                GameCanvas.Children.Add(new TextBox
                 {
-                    if (p.Dead)
-                        survivecount--;
-                }
-                if (survivecount == 0)
-                {
-                    Console.WriteLine("ALL DEAD!");
-                    TIMER.Stop();
-                    GameCanvas.Children.Clear();
-                    GameCanvas.Background = gopic;
-                }
+                    Foreground = Brushes.DarkGoldenrod,
+                    FontStyle = FontStyles.Italic,
+                    Text = SnakePlayer.TODIE[0].Name + " won this round with a score of " + SnakePlayer.TODIE[0].score,
+                    TextAlignment = TextAlignment.Center
+                });
             }
             SpawnFood();
         }
@@ -85,13 +99,14 @@ namespace SnakeGame
             bgpic.Opacity = 0.8;
             InitializeComponent();
             GameCanvas.Background = bgpic;
-            snakeplayers.Add(AddPlayerToGame("player1", new IPEndPoint(IPAddress.Loopback, 1337), GameCanvas)
-            );
-            snakeplayers.Add(AddPlayerToGame("player2", new IPEndPoint(IPAddress.Loopback, 1338), GameCanvas)
-            );
 
             GameCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             GameCanvas.Arrange(new Rect(0, 0, Application.Current.MainWindow.DesiredSize.Width, Application.Current.MainWindow.DesiredSize.Height));
+
+            for (int i = 0; i < SnakePlayer.AMOUNT_PLAYERS; i++)
+            {
+                snakeplayers.Add(AddPlayerToGame(("player" + (i + 1).ToString()), new IPEndPoint(IPAddress.Loopback, 1337), GameCanvas));
+            }
 
             TIMER = new DispatcherTimer
             {
@@ -159,18 +174,7 @@ namespace SnakeGame
 
         public SnakePlayer AddPlayerToGame(String name, IPEndPoint ip_port, Canvas gamecanv)
         {
-            SnakePlayer.AMOUNT_PLAYERS++;
             SnakePlayer player = new SnakePlayer(name, ip_port, gamecanv);
-
-            spScores.Children.Add(new TextBlock
-            {
-                Name = "LblPlayer" + player.Id,
-                FontSize = 22,
-                FontWeight = FontWeights.Bold,
-                TextAlignment = TextAlignment.Center,
-                Text = player.Name + ": ",
-                Foreground = (player.Dead) ? Brushes.Gray : Brushes.Black
-            });
             return player;
         }
     }

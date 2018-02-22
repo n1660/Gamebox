@@ -45,6 +45,7 @@ namespace SnakeGame
         public static int SIZEELEM = 14;
         private int STARTLENGTH = 3;
         public static int AMOUNT_PLAYERS = 0;
+        public static List<SnakePlayer> TODIE = new List<SnakePlayer>();
 
         //Properties
         public int Id { get => id; set => id = value; }
@@ -71,6 +72,7 @@ namespace SnakeGame
             {
                 Name = "LblScorePlayer" + this.Id,
                 FontSize = 22,
+                FontWeight = FontWeights.Bold,
                 TextAlignment = TextAlignment.Center,
             };
             this.Scoretext[1] = new TextBlock
@@ -169,8 +171,6 @@ namespace SnakeGame
 
         public void MoveSnake()
         {
-            List<SnakePlayer> toDie = new List<SnakePlayer>();
-
             if (App.Current.MainWindow.Content.GetType().Name != (typeof(GamepageSnake).Name))
                 return;
 
@@ -193,7 +193,7 @@ namespace SnakeGame
                 head.Y += ((head.Direction == GamepageSnake.Directions.up) ? -SIZEELEM :
                     (head.Direction == GamepageSnake.Directions.down) ? SIZEELEM : 0);
 
-                //detect collision with any snakebody
+                //detect collision with any other snakebody
                 foreach (SnakePlayer p in GamepageSnake.Snakeplayers)
                 {
                     foreach (SnakePlayer pl in GamepageSnake.Snakeplayers)
@@ -207,17 +207,14 @@ namespace SnakeGame
                                     && (p.Snake[0].Y < snk.Y + snk.Rect.ActualHeight)
                                     && (p.Snake[0].Y + p.Snake[0].Rect.ActualHeight > snk.Y))
                                 {
-                                    toDie.Add(p);
+                                    TODIE.Add(p);
                                 }
                             }
                         }
                     }
                 }
-                foreach (SnakePlayer p in toDie)
-                {
-                    p.Dead = true;
-                }
 
+                //detect collision with own snakebody
                 foreach (SnakeElem snk in this.snake)
                 {
                     if (snk == head)
@@ -258,6 +255,13 @@ namespace SnakeGame
 
         public void Render()
         {
+            //reload headpic for the new direction
+            this.Pictures["Head"] = new ImageBrush
+            {
+                ImageSource = new BitmapImage(new Uri("../../Images/" + this.Color + "/snakehead_" + this.Snake[0].Direction.ToString() + "_" + this.Color.ToString() + ".png", UriKind.RelativeOrAbsolute))
+            };
+            /*----------------------------------------------*/
+
             if (this.snake == null || this.snake.Count == 0 || this.gameCanvas == null)
                 return;
 
