@@ -1,6 +1,8 @@
 ﻿using SnakeGame;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,7 +22,7 @@ namespace SnakeGame
         private bool keysInitialized = false;
 
         //globals
-        public static Dictionary<String, Dictionary<String, Key>> PLAYERKEYS = new Dictionary<string, Dictionary<String, Key>>();
+        public static Dictionary<String, Dictionary<Key, GamepageSnake.Directions>> PLAYERKEYS = new Dictionary<String, Dictionary<Key, GamepageSnake.Directions>>();
 
         //images
         public static ImageBrush startpic = new ImageBrush
@@ -47,39 +49,41 @@ namespace SnakeGame
 
         private void InitializePlayerKeys()
         {
-            Dictionary<String, Key> pg = new Dictionary<string, Key>
+            Dictionary<Key, GamepageSnake.Directions> pg = new Dictionary<Key, GamepageSnake.Directions>
             {
-                {"upG",  Key.Up},
-                {"downG", Key.Down},
-                {"leftG", Key.Left},
-                {"rightG", Key.Right}
+                {Key.Right, GamepageSnake.Directions.right},
+                {Key.Down, GamepageSnake.Directions.down},
+                {Key.Left, GamepageSnake.Directions.left},
+                {Key.Up, GamepageSnake.Directions.up
+}
             };
             PLAYERKEYS.Add("playerGreen", pg);
 
-            Dictionary<String, Key> pb = new Dictionary<string, Key>
+            Dictionary<Key, GamepageSnake.Directions> pb = new Dictionary<Key, GamepageSnake.Directions>
             {
-                {"upB",  Key.W},
-                {"downB", Key.S},
-                {"leftB", Key.A},
-                {"rightB", Key.D}
+                {Key.D, GamepageSnake.Directions.right},
+                {Key.S, GamepageSnake.Directions.down},
+                {Key.A, GamepageSnake.Directions.left},
+                {Key.W, GamepageSnake.Directions.up}
             };
             PLAYERKEYS.Add("playerBlue", pb);
 
-            Dictionary<String, Key> pr = new Dictionary<string, Key>
+            Dictionary<Key, GamepageSnake.Directions> pr = new Dictionary<Key, GamepageSnake.Directions>
             {
-                {"upR",  Key.Up },
-                {"downR", Key.Down},
-                {"leftR", Key.Left},
-                {"rightR", Key.Right}
+                {Key.NumPad6, GamepageSnake.Directions.right},
+                {Key.NumPad5, GamepageSnake.Directions.down},
+                {Key.NumPad4, GamepageSnake.Directions.left},
+                {Key.NumPad8, GamepageSnake.Directions.up
+}
             };
             PLAYERKEYS.Add("playerRed", pr);
 
-            Dictionary<String, Key> pp = new Dictionary<string, Key>
+            Dictionary<Key, GamepageSnake.Directions> pp = new Dictionary<Key, GamepageSnake.Directions>
             {
-                {"upP",  Key.Up },
-                {"downP", Key.Down},
-                {"leftP", Key.Left},
-                {"rightP", Key.Right}
+                {Key.L, GamepageSnake.Directions.right},
+                {Key.K, GamepageSnake.Directions.down},
+                {Key.J, GamepageSnake.Directions.left},
+                {Key.I, GamepageSnake.Directions.up}
             };
             PLAYERKEYS.Add("playerPurple", pp);
             keysInitialized = true;
@@ -89,37 +93,28 @@ namespace SnakeGame
         {
             if (this.Content.GetType().Name == (typeof(GamepageSnake).Name))
             {
-                if (GamepageSnake.Snakeplayers.Count == 0)
-                    return;
-
                 if (!keysInitialized)
                     InitializePlayerKeys();
 
-                if (e.Key == Key.Space && !GamepageSnake.STARTED)
+                if (e.Key == Key.P && !GamepageSnake.STARTED)
                 {
                     GamepageSnake.STARTED = true;
                 }
-                else if(GamepageSnake.STARTED)
+                else
                 {
-                    foreach (SnakePlayer p in GamepageSnake.Snakeplayers)
+                    //keyrequests for changing direction
+                    if (e.Key != Key.P && GamepageSnake.STARTED)
                     {
-                        foreach (GamepageSnake.Directions dir in Enum.GetValues(typeof(GamepageSnake.Directions)))
+                        foreach (SnakePlayer p in GamepageSnake.Snakeplayers)
                         {
-                            if (e.Key == PLAYERKEYS["player" + (p.Color.ToString())][dir.ToString() + p.Color.ToString()[0]] && p.Snake[0].Direction != dir + (((int) dir > 1) ? -2 : 2))
-                                p.Snake[0].Direction = dir;
+                            foreach (Colors c in Enum.GetValues(typeof(Colors)))
+                            {
+                                if (p.Color.ToString() == c.ToString() && PLAYERKEYS["player" + c.ToString()].ContainsKey(e.Key) && PLAYERKEYS["player" + c.ToString()][e.Key] != p.DisabledDirection)
+                                    p.Snake[0].Direction = PLAYERKEYS["player" + c.ToString()][e.Key];
+                            }
                         }
-
-                        //if (e.Key == PLAYERKEYS["player" + (p.Color.ToString())]["Up" + p.Color.ToString()[0]] && p.Snake[0].Direction != GamepageSnake.Directions.down)
-                        //    p.Snake[0].Direction = GamepageSnake.Directions.up;
-                        //if (e.Key == PLAYERKEYS["player" + (p.Color.ToString())]["Down" + p.Color.ToString()[0]] && p.Snake[0].Direction != GamepageSnake.Directions.up)
-                        //    p.Snake[0].Direction = GamepageSnake.Directions.down;
-                        //if (e.Key == PLAYERKEYS["player" + (p.Color.ToString())]["Left" + p.Color.ToString()[0]] && p.Snake[0].Direction != GamepageSnake.Directions.right)
-                        //    p.Snake[0].Direction = GamepageSnake.Directions.left;
-                        //if (e.Key == PLAYERKEYS["player" + (p.Color.ToString())]["Right" + p.Color.ToString()[0]] && p.Snake[0].Direction != GamepageSnake.Directions.left)
-                        //    p.Snake[0].Direction = GamepageSnake.Directions.right;
                     }
                 }
-                GamepageSnake.Snakeplayers[gamePage.PlayerID - 1].Snake[0].Rect.Fill = GamepageSnake.Snakeplayers[gamePage.PlayerID - 1].Pictures[Pictures.Head.ToString()];
             }
         }
     }

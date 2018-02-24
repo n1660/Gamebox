@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -37,15 +38,18 @@ namespace SnakeGame
         private List<SnakeElem> snake = new List<SnakeElem>();
         private IPEndPoint address;
         private bool dead = false;
+        private GamepageSnake.Directions disabledDirection;
         private Canvas gameCanvas;
         public int score = 0;
         public List<SnakeElem> snakeTmp = new List<SnakeElem>();
 
         //globals
+        public static int CURPARTICIPANTS = 0;
         public static int SIZEELEM = 14;
-        private int STARTLENGTH = 3;
-        public static int AMOUNT_PLAYERS = 0;
+        public static int STARTLENGTH = 5;
+        public static int AMOUNT_PLAYERS = 3;
         public static List<SnakePlayer> TODIE = new List<SnakePlayer>();
+        public static int SURVIVORS;
 
         //Properties
         public int Id { get => id; set => id = value; }
@@ -56,14 +60,19 @@ namespace SnakeGame
         public bool Dead { get => dead; set => dead = value; }
         public Canvas GameCanvas { get => gameCanvas; set => gameCanvas = value; }
         public TextBlock[] Scoretext { get => scoretext; set => scoretext = value; }
+        public GamepageSnake.Directions DisabledDirection { get => disabledDirection; set => disabledDirection = value; }
 
         //c'tor
         public SnakePlayer(String name, IPEndPoint adr, Canvas gamecanv)
         {
-            if (AMOUNT_PLAYERS > 3)
+            CURPARTICIPANTS++;
+            if (CURPARTICIPANTS > 4)
+            {
+                CURPARTICIPANTS--;
                 return;
+            }
 
-            this.id = AMOUNT_PLAYERS;
+            this.id = CURPARTICIPANTS - 1;
             this.name = name;
             this.gameCanvas = gamecanv;
             this.dead = false;
@@ -82,150 +91,169 @@ namespace SnakeGame
                 FontWeight = FontWeights.Bold,
                 TextAlignment = TextAlignment.Center,
             };
-            this.color = (Colors) (AMOUNT_PLAYERS - 1);
+            this.color = (Colors)(CURPARTICIPANTS - 1);
             this.address = adr;
-            InitializeColors();
 
-            if (this.gameCanvas != null)
+            if (this.gameCanvas != null) {
                 this.snake = InitializeSnake();
+                this.disabledDirection = ((int)this.snake[0].Direction < 2) ? (GamepageSnake.Directions)((int)this.snake[0].Direction + 2) : (GamepageSnake.Directions)((int)this.snake[0].Direction - 2);
+            }
 
+            UpdateRanking();
             this.UpdateScore();
-            foreach(SnakeElem snk in this.snake)
+            foreach (SnakeElem snk in this.snake)
             {
                 this.gameCanvas.Children.Add(snk.Rect);
             }
         }
 
         //methods
-        public void InitializeColors()
+        public void InitializePictures(List<SnakeElem> snake)
         {
-            pictures.Add(SnakeGame.Pictures.Elem.ToString(), new ImageBrush
+            this.pictures.Add(SnakeGame.Pictures.Elem.ToString(), new ImageBrush
             {
                 ImageSource = new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snakeElem_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute))
             });
 
-            pictures.Add(SnakeGame.Pictures.Head.ToString(), new ImageBrush
+            this.pictures.Add(SnakeGame.Pictures.Head.ToString(), new ImageBrush
             {
-                ImageSource = ((AMOUNT_PLAYERS % 2 == 0) ? new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snakehead_down_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute)) : new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snakehead_up_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute)))
+                ImageSource = new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snakehead_" + snake[0].Direction.ToString() + "_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute))
             });
 
-            pictures.Add(SnakeGame.Pictures.Tail.ToString(), new ImageBrush
+            this.pictures.Add(SnakeGame.Pictures.Tail.ToString(), new ImageBrush
             {
-                ImageSource = ((AMOUNT_PLAYERS % 2 == 0) ? new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snaketail_down_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute)) : new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snaketail_up_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute)))
+                ImageSource = new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snaketail_" + snake[0].Direction.ToString() + "_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute))
             });
         }
 
         public List<SnakeElem> InitializeSnake()
         {
-            this.snakeTmp.Add(
-                new SnakeElem
+            this.snakeTmp.Add(new SnakeElem
+            {
+                X = (CURPARTICIPANTS * 50),
+                Y = 50 + ((this.id % 2 == 0) ? 2 * SIZEELEM : 0),
+                Direction = ((this.id % 2 == 0) ? GamepageSnake.Directions.down : GamepageSnake.Directions.up),
+                Rect = new Rectangle
                 {
-                    X = ((AMOUNT_PLAYERS % 2 == 0) ? 100 : (this.gameCanvas.ActualWidth - 100)),
-                    Y = ((AMOUNT_PLAYERS % 2 == 0) ? (this.gameCanvas.ActualHeight - 100) : 100),
-                    Direction = ((AMOUNT_PLAYERS % 2 == 0) ? GamepageSnake.Directions.up : GamepageSnake.Directions.down),
-                    Rect = new Rectangle
-                    {
-                        Fill = this.pictures["Head"],
-                        Width = SIZEELEM,
-                        Height = SIZEELEM
-                    }
-                });
-
-            Canvas.SetLeft(snakeTmp[0].Rect, (int)snakeTmp[0].X);
-            Canvas.SetTop(snakeTmp[0].Rect, (int)snakeTmp[0].Y);
+                    Width = SIZEELEM,
+                    Height = SIZEELEM
+                }
+            });
 
             for (int i = 1; i < STARTLENGTH - 1; i++)
             {
                 this.snakeTmp.Add(new SnakeElem
                 {
-                    X = 100,
-                    Y = 100 - (i + 1) * SIZEELEM,
-                    Direction = ((AMOUNT_PLAYERS % 2 == 0) ? GamepageSnake.Directions.up : GamepageSnake.Directions.down),
+                    X = snakeTmp[0].X,
+                    Y = snakeTmp[0].Y + ((this.id % 2 == 0) ? -(i * SIZEELEM) : (i * SIZEELEM)),
+                    Direction = ((this.id % 2 == 0) ? GamepageSnake.Directions.down : GamepageSnake.Directions.up),
                     Rect = new Rectangle
                     {
-                        Fill = this.pictures["Elem"],
                         Width = SIZEELEM,
                         Height = SIZEELEM
                     }
                 });
-
-                Console.WriteLine(i);
-                Canvas.SetLeft(snakeTmp[i].Rect, (int)snakeTmp[i].X);
-                Canvas.SetTop(snakeTmp[i].Rect, (int)snakeTmp[i].Y);
             }
 
             this.snakeTmp.Add(new SnakeElem
             {
-                X = 100,
-                Y = 100 - (this.snake.Count) * SIZEELEM,
-                Direction = ((AMOUNT_PLAYERS % 2 == 0) ? GamepageSnake.Directions.up : GamepageSnake.Directions.down),
+                X = this.snakeTmp[0].X,
+                Y = this.snakeTmp[0].Y + ((this.id % 2 == 0) ? -(2 * SIZEELEM) : 2 * SIZEELEM),
+                Direction = ((this.id % 2 == 0) ? GamepageSnake.Directions.down : GamepageSnake.Directions.up),
                 Rect = new Rectangle
                 {
-                    Fill = this.pictures["Tail"],
                     Width = SIZEELEM,
                     Height = SIZEELEM
                 }
             });
+
+            InitializePictures(snakeTmp);
+
+            foreach (SnakeElem snk in snakeTmp)
+            {
+                if (snk == snakeTmp[0]) {
+                    snk.Rect.Fill = this.pictures["Head"];
+                    continue;
+                }
+                if (snk == snakeTmp[STARTLENGTH - 1])
+                {
+                    snk.Rect.Fill = this.pictures["Tail"];
+                    break;
+                }
+                snk.Rect.Fill = this.Pictures["Elem"];
+            }
+
+            foreach (SnakeElem snk in snakeTmp)
+            {
+                Canvas.SetLeft(snk.Rect, (int)snk.X);
+                Canvas.SetTop(snk.Rect, (int)snk.Y);
+            }
+
             return snakeTmp;
         }
 
         public void MoveSnake()
         {
-            if (App.Current.MainWindow.Content.GetType().Name != (typeof(GamepageSnake).Name))
+            if (this.snake == null || this.snake.Count == 0 || this.dead)
                 return;
+
+            if (GamepageSnake.STARTED)
+                this.disabledDirection = ((int)this.disabledDirection < 2) ? (GamepageSnake.Directions)((int)this.snake[0].Direction + 2) : (GamepageSnake.Directions)((int)this.snake[0].Direction - 2);
 
             SnakeElem head = this.snake[0];
 
-            if (GamepageSnake.STARTED)
+            if (GamepageSnake.STARTED && !this.dead)
             {
-                if(this.dead)
-                {
-                    foreach(SnakeElem snk in this.snake)
-                    {
-                        this.gameCanvas.Children.Remove(snk.Rect);
-                    }
-                    GamepageSnake.Snakeplayers.Remove(this);
-                }
-
                 //move head
-                head.X += ((head.Direction == GamepageSnake.Directions.left) ? -SIZEELEM :
-                    (head.Direction == GamepageSnake.Directions.right) ? SIZEELEM : 0);
-                head.Y += ((head.Direction == GamepageSnake.Directions.up) ? -SIZEELEM :
-                    (head.Direction == GamepageSnake.Directions.down) ? SIZEELEM : 0);
+                head.X += ((head.Direction == GamepageSnake.Directions.left) ? -GamepageSnake.TICKMOVE:
+                    (head.Direction == GamepageSnake.Directions.right) ? GamepageSnake.TICKMOVE : 0);
+                head.Y += ((head.Direction == GamepageSnake.Directions.up) ? -GamepageSnake.TICKMOVE :
+                    (head.Direction == GamepageSnake.Directions.down) ? GamepageSnake.TICKMOVE : 0);
 
                 //detect collision with any other snakebody
                 foreach (SnakePlayer p in GamepageSnake.Snakeplayers)
                 {
+                    if (p.dead)
+                    {
+                        continue;
+                    }
                     foreach (SnakePlayer pl in GamepageSnake.Snakeplayers)
                     {
+                        if (pl.dead || p == pl)
+                            continue;
+
                         foreach (SnakeElem snk in pl.Snake)
                         {
-                            if (p != pl)
+                            if ((p.Snake[0].X < snk.X + snk.Rect.ActualWidth)
+                                && (p.Snake[0].X > snk.X)
+                                && (p.Snake[0].Y < snk.Y + snk.Rect.ActualHeight)
+                                && (p.Snake[0].Y > snk.Y))
                             {
-                                if ((p.Snake[0].X < snk.X + snk.Rect.ActualWidth)
-                                    && (p.Snake[0].X + p.Snake[0].Rect.ActualWidth > snk.X)
-                                    && (p.Snake[0].Y < snk.Y + snk.Rect.ActualHeight)
-                                    && (p.Snake[0].Y + p.Snake[0].Rect.ActualHeight > snk.Y))
-                                {
+                                if (snk == pl.snake[0] && !pl.dead && !TODIE.Contains(pl))
+                                    TODIE.Add(pl);
+
+                                if (!p.dead && !TODIE.Contains(p))
                                     TODIE.Add(p);
-                                }
                             }
                         }
                     }
                 }
 
                 //detect collision with own snakebody
-                foreach (SnakeElem snk in this.snake)
+                if (!this.dead)
                 {
-                    if (snk == head)
-                        continue;
-
-                    if ((head.X < snk.X + snk.Rect.ActualWidth)
-                        && (head.X + head.Rect.ActualWidth > snk.X)
-                        && (head.Y < snk.Y + snk.Rect.ActualHeight)
-                        && (head.Y + head.Rect.ActualHeight > snk.Y))
+                    foreach (SnakeElem snk in this.snake)
                     {
-                        this.dead = true;
+                        if (snk == head)
+                            continue;
+
+                        if ((head.X < snk.X + snk.Rect.ActualWidth)
+                            && (head.X > snk.X)
+                            && (head.Y < snk.Y + snk.Rect.ActualHeight)
+                            && (head.Y > snk.Y))
+                        {
+                            this.dead = true;
+                        }
                     }
                 }
 
@@ -249,27 +277,38 @@ namespace SnakeGame
 
                 }
             }
+
             this.snake[0] = head;
             this.SnakeEat();
         }
 
         public void Render()
         {
-            //reload headpic for the new direction
-            this.Pictures["Head"] = new ImageBrush
-            {
-                ImageSource = new BitmapImage(new Uri("../../Images/" + this.Color + "/snakehead_" + this.Snake[0].Direction.ToString() + "_" + this.Color.ToString() + ".png", UriKind.RelativeOrAbsolute))
-            };
-            /*----------------------------------------------*/
-
-            if (this.snake == null || this.snake.Count == 0 || this.gameCanvas == null)
+            if (App.Current.MainWindow.Content.GetType().Name != (typeof(GamepageSnake).Name))
                 return;
 
-            SnakeElem head = this.snake[0];
-            SnakeElem tail = this.snake[this.snake.Count - 1];
+            if (TODIE.Contains(this))
+            {
+                GamepageSnake.TICKMOVE *= CURPARTICIPANTS - 1;
+                GamepageSnake.TICKMOVE /= CURPARTICIPANTS;
+                Console.WriteLine(GamepageSnake.TICKMOVE);
+            }
 
             if (!this.dead && GamepageSnake.STARTED)
             {
+                if (this.snake == null || this.snake.Count == 0 || this.gameCanvas == null || this.pictures == null || this.pictures.Count == 0)
+                    return;
+
+                SnakeElem head = this.snake[0];
+                SnakeElem tail = this.snake[this.snake.Count - 1];
+
+                //reload headpic for the new direction
+                this.Pictures["Head"] = new ImageBrush
+                {
+                    ImageSource = new BitmapImage(new Uri("../../Images/" + this.Color + "/snakehead_" + this.Snake[0].Direction.ToString() + "_" + this.Color.ToString() + ".png", UriKind.RelativeOrAbsolute))
+                };
+                /*----------------------------------------------*/
+
                 //wrap-around
                 if (head.X < 0)
                     head.X = gameCanvas.ActualWidth - head.Rect.ActualWidth;
@@ -300,13 +339,13 @@ namespace SnakeGame
                     this.gameCanvas.Children.Add(snk.Rect);
                 }
             }
-            if (GamepageSnake.APPLE == null)
+            if (GamepageSnake.APPLE == null || this.gameCanvas == null)
                 return;
 
-            if (this.gameCanvas.Children.Contains(GamepageSnake.APPLE.Shape))
+            if (!this.gameCanvas.Children.Contains(GamepageSnake.APPLE.Shape))
                 this.gameCanvas.Children.Remove(GamepageSnake.APPLE.Shape);
 
-            if (GamepageSnake.APPLE != null)
+            if (GamepageSnake.APPLE != null && !gameCanvas.Children.Contains(GamepageSnake.APPLE.Shape) && GamepageSnake.STARTED)
                 gameCanvas.Children.Add(GamepageSnake.APPLE.Shape);
             
             this.MoveSnake();
@@ -341,6 +380,7 @@ namespace SnakeGame
                     this.snake[this.snake.Count - 2].Rect.Fill = this.pictures[SnakeGame.Pictures.Elem.ToString()];
                     this.score++;
                     this.UpdateScore();
+                    UpdateRanking();
                 }
             }
         }
@@ -360,9 +400,31 @@ namespace SnakeGame
             }
         }
 
-        public void GameOver()
+        public static void UpdateRanking()
         {
-            this.dead = true;
+            GamepageSnake.Snakeplayers.Sort(delegate (SnakePlayer x, SnakePlayer y)
+            {
+                if (x.score == y.score)
+                    return -(x.id.CompareTo(y.id));
+                else if (x.score > y.score)
+                    return 1;
+                else
+                    return -1;
+            });
+            GamepageSnake.Snakeplayers.Reverse();
+            UpdateSurvivors();
+        }
+
+        public static void UpdateSurvivors()
+        {
+            SURVIVORS = 0;
+            foreach (SnakePlayer p in GamepageSnake.Snakeplayers)
+            {
+                if (!p.dead)
+                {
+                    SURVIVORS++;
+                }
+            }
         }
     }
 }
