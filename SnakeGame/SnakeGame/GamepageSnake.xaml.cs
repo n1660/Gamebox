@@ -26,6 +26,7 @@ namespace SnakeGame
         //membervariables
         private static int speedUp = -1;
         private static List<SnakePlayer> snakeplayers = new List<SnakePlayer>();
+        private static TextBlock txtp;
 
         //globals
         public static bool STARTED = false;
@@ -34,7 +35,11 @@ namespace SnakeGame
         public static Apple APPLE;
         public static int TICKMOVE = SnakePlayer.SIZEELEM;
 
-        //buttons
+        //UIElements
+        public Canvas GameCanvas = new Canvas();
+        public StackPanel spScores = new StackPanel();
+        public DockPanel dpButtons = new DockPanel();
+
         public Button BtnNew = new Button
         {
             Background = Brushes.DarkGoldenrod,
@@ -51,9 +56,29 @@ namespace SnakeGame
             VerticalContentAlignment = VerticalAlignment.Center
         };
 
+        public Button BtnAddPlayer = new Button
+        {
+            VerticalAlignment = VerticalAlignment.Top,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            Background = Brushes.DarkSeaGreen,
+            Foreground = Brushes.White,
+            Width = 40,
+            Content = "+"
+        };
+
+        public Button BtnRemovePlayer = new Button
+        {
+            VerticalAlignment = VerticalAlignment.Top,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            Background = Brushes.DarkSeaGreen,
+            Foreground = Brushes.White,
+            Width = 40,
+            Content = "-"
+        };
+
         public Button BtnExit = new Button
         {
-            VerticalAlignment = VerticalAlignment.Bottom,
+            VerticalAlignment = VerticalAlignment.Top,
             HorizontalAlignment = HorizontalAlignment.Right,
             Background = Brushes.Red,
             Foreground = Brushes.White,
@@ -63,12 +88,35 @@ namespace SnakeGame
 
         public Button BtnPause = new Button
         {
-            VerticalAlignment = VerticalAlignment.Bottom,
+            VerticalAlignment = VerticalAlignment.Top,
             HorizontalAlignment = HorizontalAlignment.Right,
             Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x22, 0x22, 0x22)),
             Foreground = Brushes.White,
             Width = 40,
             Content = "ll"
+        };
+
+        public TextBlock txtPlayers = new TextBlock
+        {
+            Background = Brushes.Olive,
+            Foreground = Brushes.Green,
+            FontWeight = FontWeights.Bold,
+            FontStyle = FontStyles.Italic,
+            FontSize = 15,
+            Width = 75,
+            VerticalAlignment = VerticalAlignment.Top,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            TextAlignment = TextAlignment.Center,
+        };
+
+        public TextBlock txtWinner = new TextBlock
+        {
+            Foreground = Brushes.DarkGoldenrod,
+            FontStyle = FontStyles.Italic,
+            FontSize = 30,
+            Height = 400,
+            VerticalAlignment = VerticalAlignment.Top,
+            TextAlignment = TextAlignment.Center,
         };
 
         //images
@@ -87,6 +135,74 @@ namespace SnakeGame
 
         //properties
         public static List<SnakePlayer> Snakeplayers { get => snakeplayers; set => snakeplayers = value; }
+
+        //c'tor
+        public GamepageSnake()
+        {
+            MainWindow.GamePage = this;
+            STARTED = false;
+
+            bgpic.Opacity = 0.8;
+            InitializeComponent();
+
+            txtp = txtPlayers;
+
+            Grid.SetColumn(GameCanvas, 0);
+            Grid.SetRowSpan(GameCanvas, 2);
+            GridGamepage.Children.Add(GameCanvas);
+
+            Grid.SetColumn(spScores, 1);
+            Grid.SetRow(spScores, 0);
+            GridGamepage.Children.Add(spScores);
+
+            Grid.SetColumn(dpButtons, 1);
+            Grid.SetRow(dpButtons, 1);
+            GridGamepage.Children.Add(dpButtons);
+
+            GameCanvas.Background = bgpic;
+            dpButtons.Background = spScores.Background = Brushes.LightGray;
+
+            DockPanel.SetDock(BtnExit, Dock.Right);
+            BtnExit.Click += BtnExit_Click;
+            dpButtons.Children.Add(BtnExit);
+
+            DockPanel.SetDock(BtnPause, Dock.Right);
+            BtnPause.Click += BtnPause_Click;
+            dpButtons.Children.Add(BtnPause);
+
+            BtnAddPlayer.Click += BtnAddPlayer_Click;
+            dpButtons.Children.Add(BtnAddPlayer);
+
+            foreach (UIElement el in dpButtons.Children)
+            {
+                el.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                el.Arrange(new Rect(0, 0, Application.Current.MainWindow.DesiredSize.Width, Application.Current.MainWindow.DesiredSize.Height));
+            }
+
+            txtPlayers.Text = "players: " + SnakePlayer.CURPARTICIPANTS.ToString();
+            txtPlayers.Height = BtnAddPlayer.ActualHeight;
+            dpButtons.Children.Add(txtPlayers);
+
+            BtnRemovePlayer.Click += BtnRemovePlayer_Click;
+            dpButtons.Children.Add(BtnRemovePlayer);
+            
+            Snakeplayers.Clear();
+            SnakePlayer.CURPARTICIPANTS = 0;
+            TICKMOVE = SnakePlayer.SIZEELEM;
+
+            if (TIMER != null)
+                TIMER = null;
+
+            TIMER = new DispatcherTimer
+            {
+                Interval = new TimeSpan(0, 0, 0, 0, 150), //speed
+            };
+
+            SnakePlayer.SURVIVORS = snakeplayers.Count;
+
+            TIMER.Tick += Time_Tick;
+            TIMER.Start();
+        }
 
         //methods
         public void Render()
@@ -159,19 +275,12 @@ namespace SnakeGame
                 STARTED = false;
                 GameCanvas.Children.Clear();
                 GameCanvas.Background = Brushes.Gold;
-                TextBlock txtWinner = new TextBlock
-                {
-                    Foreground = Brushes.DarkGoldenrod,
-                    FontStyle = FontStyles.Italic,
-                    FontSize = 30,
-                    Width = GameCanvas.ActualWidth,
-                    Height = 400,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    Text = winner.Name.ToUpper() + "\nwon this round\n with a score of\n".ToUpper() + winner.score.ToString(),
-                    TextAlignment = TextAlignment.Center,
-                };
+
+                txtWinner.Width = GameCanvas.ActualWidth;
+                txtWinner.Text = winner.Name.ToUpper() + "\nwon this round!\nsurvivng with a score of\n".ToUpper() + winner.score.ToString();
                 txtWinner.Typography.Capitals = FontCapitals.AllSmallCaps;
                 GameCanvas.Children.Add(txtWinner);
+
                 Canvas.SetTop(BtnNew, (GameCanvas.ActualHeight / 2));
                 Canvas.SetLeft(BtnNew, ((GameCanvas.ActualWidth - BtnNew.Width) / 2));
                 BtnNew.Click += (object sender, RoutedEventArgs e) =>
@@ -180,7 +289,7 @@ namespace SnakeGame
                     App.Current.MainWindow.Content = new GamepageSnake();
                 };
             }
-            if(SnakePlayer.SURVIVORS == 1 || SnakePlayer.SURVIVORS == 0)
+            if((SnakePlayer.SURVIVORS == 1 || SnakePlayer.SURVIVORS == 0) && STARTED)
                 GameCanvas.Children.Add(BtnNew);
 
             if (SnakePlayer.SURVIVORS == 0 && STARTED)
@@ -201,55 +310,15 @@ namespace SnakeGame
             if(STARTED)
                 SpawnFood();
         }
-
-        public GamepageSnake()
-        {
-            MainWindow.GamePage = this;
-            STARTED = false;
-            
-            DockPanel.SetDock(BtnExit, Dock.Right);
-            DockPanel.SetDock(BtnPause, Dock.Right);
-            
-            bgpic.Opacity = 0.8;
-            InitializeComponent();
-            GameCanvas.Background = bgpic;
-
-            BtnExit.Click += BtnExit_Click;
-            dp_buttons.Children.Add(BtnExit);
-
-            BtnPause.Click += BtnPause_Click;
-            dp_buttons.Children.Add(BtnPause);
-
-            GameCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            GameCanvas.Arrange(new Rect(0, 0, Application.Current.MainWindow.DesiredSize.Width, Application.Current.MainWindow.DesiredSize.Height));
-            Snakeplayers.Clear();
-            SnakePlayer.CURPARTICIPANTS = 0;
-            TICKMOVE = SnakePlayer.SIZEELEM;
-
-            for (int i = 0; i < SnakePlayer.AMOUNT_PLAYERS; i++)
-            {
-                SnakePlayer playerTmp = AddPlayerToGame(("player " + (i + 1).ToString()), new IPEndPoint(IPAddress.Loopback, 1337 + i), GameCanvas);
-                if(playerTmp != null)
-                    snakeplayers.Add(playerTmp);
-            }
-
-            if (TIMER != null)
-                TIMER = null;
-
-            TIMER = new DispatcherTimer
-            {
-                Interval = new TimeSpan(0, 0, 0, 0, 150), //speed
-            };
-
-            SnakePlayer.SURVIVORS = snakeplayers.Count;
-
-            TIMER.Tick += Time_Tick;
-            TIMER.Start();
-        }
-
+                
         public void Time_Tick(object sender, EventArgs e)
         {
-            foreach(SnakePlayer p in snakeplayers)
+            if(STARTED)
+                BtnAddPlayer.IsEnabled = BtnRemovePlayer.IsEnabled = false;
+            else
+                BtnAddPlayer.IsEnabled = BtnRemovePlayer.IsEnabled = true;
+
+            foreach (SnakePlayer p in snakeplayers)
             {
                 if (p.Dead)
                     SnakePlayer.TODIE.Add(p);
@@ -320,9 +389,40 @@ namespace SnakeGame
                     return null;
                 }
             }
-
             SnakePlayer player = new SnakePlayer(name, ip_port, gamecanv);
             return player;
         }
+
+        public static TextBlock GetDPButtons()
+        {
+            return txtp;
+        }
+
+        private void BtnAddPlayer_Click(object sender, RoutedEventArgs e)
+        {
+            SnakePlayer playerTmp = AddPlayerToGame(("player " + (snakeplayers.Count + 1).ToString()), new IPEndPoint(IPAddress.Loopback, 1337 + snakeplayers.Count), GameCanvas);
+            if (playerTmp != null)
+                snakeplayers.Add(playerTmp);
+
+            if (SnakePlayer.CURPARTICIPANTS > 3)
+                BtnAddPlayer.IsEnabled = false;
+            if (SnakePlayer.CURPARTICIPANTS > 1)
+                BtnRemovePlayer.IsEnabled = true;
+        }
+
+        private void BtnRemovePlayer_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (SnakeElem snk in snakeplayers[snakeplayers.Count - 1].Snake)
+            {
+                GameCanvas.Children.Remove(snk.Rect);
+            }
+            snakeplayers[snakeplayers.Count - 1].Dead = true;
+            snakeplayers.Remove(snakeplayers[snakeplayers.Count - 1]);
+            SnakePlayer.CURPARTICIPANTS--;
+            if (SnakePlayer.CURPARTICIPANTS < 1)
+                BtnRemovePlayer.IsEnabled = false;
+            BtnAddPlayer.IsEnabled = true;
+        }
+
     }
 }

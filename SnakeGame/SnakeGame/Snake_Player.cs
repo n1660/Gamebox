@@ -105,6 +105,8 @@ namespace SnakeGame
             {
                 this.gameCanvas.Children.Add(snk.Rect);
             }
+            GamepageSnake.GetDPButtons().Text = "players: " + SnakePlayer.CURPARTICIPANTS.ToString();
+
         }
 
         //methods
@@ -131,7 +133,7 @@ namespace SnakeGame
             this.snakeTmp.Add(new SnakeElem
             {
                 X = (CURPARTICIPANTS * 50),
-                Y = 50 + ((this.id % 2 == 0) ? 2 * SIZEELEM : 0),
+                Y = ((this.id % 2 == 0) ? 50 : (this.GameCanvas.ActualHeight - 50)),
                 Direction = ((this.id % 2 == 0) ? GamepageSnake.Directions.down : GamepageSnake.Directions.up),
                 Rect = new Rectangle
                 {
@@ -405,13 +407,12 @@ namespace SnakeGame
             GamepageSnake.Snakeplayers.Sort(delegate (SnakePlayer x, SnakePlayer y)
             {
                 if (x.score == y.score)
-                    return -(x.id.CompareTo(y.id));
+                    return (x.id.CompareTo(y.id));
                 else if (x.score > y.score)
                     return 1;
                 else
                     return -1;
             });
-            GamepageSnake.Snakeplayers.Reverse();
             UpdateSurvivors();
         }
 

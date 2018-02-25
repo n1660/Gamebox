@@ -24,6 +24,22 @@ namespace SnakeGame
         //globals
         public static Dictionary<String, Dictionary<Key, GamepageSnake.Directions>> PLAYERKEYS = new Dictionary<String, Dictionary<Key, GamepageSnake.Directions>>();
 
+        //UIElements
+        public Canvas BtnCanvStartSnake = new Canvas
+        {
+            Height = 180,
+            Width = 150
+        };
+
+        public TextBlock BtnTBStartSnake = new TextBlock
+        {
+            Background = Brushes.Transparent,
+            Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0x77, 0xAA, 0x77)),
+            FontSize = 30,
+            FontWeight = FontWeights.Bold,
+            Text = "start"
+        };
+
         //images
         public static ImageBrush startpic = new ImageBrush
         {
@@ -37,8 +53,14 @@ namespace SnakeGame
         public MainWindow()
         {
             InitializeComponent();
+            BtnCanvStartSnake.MouseDown += BtnStartSnake_Click;
+            BtnTBStartSnake.Typography.Capitals = FontCapitals.AllSmallCaps;
+            Canvas.SetBottom(BtnTBStartSnake, -40);
+            Canvas.SetLeft(BtnTBStartSnake, 40);
+            BtnCanvStartSnake.Background = startpic;
 
-            BtnStartSnake.Background = startpic;
+            BtnCanvStartSnake.Children.Add(BtnTBStartSnake);
+            GridMenu.Children.Add(BtnCanvStartSnake);
         }
 
         //methods

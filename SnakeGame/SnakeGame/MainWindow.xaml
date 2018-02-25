@@ -6,9 +6,5 @@
         xmlns:local="clr-namespace:SnakeGame"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="1000" KeyDown="Window_KeyDown" Name="Win">
-    <Grid>
-        <Canvas Name="BtnStartSnake" MouseDown="BtnStartSnake_Click" Width="150" Height="180">
-            <TextBlock Background="Transparent" Canvas.Bottom="-40" Canvas.Left="40" Foreground="#ff77aa77" FontSize="30" FontWeight="Bold">Start</TextBlock>
-        </Canvas>
-    </Grid>
+    <Grid Name="GridMenu"/>
 </Window>

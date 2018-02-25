@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
       Title="SnakeGame.GamepageSnake">
 
-    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <Grid Name="GridGamepage" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="1*"/>
@@ -16,8 +16,5 @@
             <RowDefinition Height="15*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <Canvas Grid.Column="0" Grid.RowSpan="2" Name="GameCanvas"></Canvas>
-        <StackPanel Grid.Column="1" Grid.Row="0" Background="LightGray" Name="spScores"/>
-        <DockPanel Name="dp_buttons" Grid.Column="1" Grid.Row="1" Background="LightGray"/>
     </Grid>
 </Page>
