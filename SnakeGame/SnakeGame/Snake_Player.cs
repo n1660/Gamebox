@@ -109,7 +109,7 @@ namespace SnakeGame
 
         }
 
-        //methods
+        //initializations
         public void InitializePictures(List<SnakeElem> snake)
         {
             this.pictures.Add(SnakeGame.Pictures.Elem.ToString(), new ImageBrush
@@ -194,6 +194,7 @@ namespace SnakeGame
             return snakeTmp;
         }
 
+        //methods
         public void MoveSnake()
         {
             if (this.snake == null || this.snake.Count == 0 || this.dead)
@@ -270,10 +271,10 @@ namespace SnakeGame
 
                     if (i == 1)
                     {
-                        this.snake[i].X = head.X + ((head.Direction == GamepageSnake.Directions.right) ? -SIZEELEM :
-                            (head.Direction == GamepageSnake.Directions.left) ? SIZEELEM : 0);
-                        this.snake[i].Y = head.Y + ((head.Direction == GamepageSnake.Directions.down) ? -SIZEELEM :
-                            (head.Direction == GamepageSnake.Directions.up) ? SIZEELEM : 0);
+                        this.snake[i].X = head.X + ((head.Direction == GamepageSnake.Directions.right) ? -GamepageSnake.TICKMOVE :
+                            (head.Direction == GamepageSnake.Directions.left) ? GamepageSnake.TICKMOVE : 0);
+                        this.snake[i].Y = head.Y + ((head.Direction == GamepageSnake.Directions.down) ? -GamepageSnake.TICKMOVE :
+                            (head.Direction == GamepageSnake.Directions.up) ? GamepageSnake.TICKMOVE : 0);
                     }
                     this.snake[i].Direction = this.snake[i - 1].Direction;
 
@@ -293,7 +294,6 @@ namespace SnakeGame
             {
                 GamepageSnake.TICKMOVE *= CURPARTICIPANTS - 1;
                 GamepageSnake.TICKMOVE /= CURPARTICIPANTS;
-                Console.WriteLine(GamepageSnake.TICKMOVE);
             }
 
             if (!this.dead && GamepageSnake.STARTED)
@@ -369,8 +369,8 @@ namespace SnakeGame
                     SnakeElem tail = this.snake[this.snake.Count - 1];
                     SnakeElem snakeTmp = new SnakeElem
                     {
-                        X = tail.X + 1,
-                        Y = tail.Y + 1,
+                        X = tail.X + (int)SIZEELEM,
+                        Y = tail.Y + (int)SIZEELEM,
                         Rect = new Rectangle
                         {
                             Fill = this.pictures[SnakeGame.Pictures.Tail.ToString()],
@@ -409,9 +409,9 @@ namespace SnakeGame
                 if (x.score == y.score)
                     return (x.id.CompareTo(y.id));
                 else if (x.score > y.score)
-                    return 1;
-                else
                     return -1;
+                else
+                    return 1;
             });
             UpdateSurvivors();
         }
