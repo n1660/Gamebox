@@ -274,6 +274,7 @@ namespace SnakeGame
             newPlayerPrompt.Children.Add(BtnCancelNewPlayer);
             newPlayerPrompt.Children.Add(BtnSubmitNewPlayer);
             newPlayerPrompt.Children.Add(LblError);
+            Canvas.SetZIndex(BtnNew, 2);
             Canvas.SetZIndex(newPlayerPrompt, 2);
             Canvas.SetLeft(newPlayerPrompt, GameCanvas.ActualWidth - newPlayerPrompt.Width / 2);
             Canvas.SetTop(newPlayerPrompt, GameCanvas.ActualHeight - newPlayerPrompt.Height / 2);
@@ -363,7 +364,7 @@ namespace SnakeGame
                 BtnPause.Visibility = Visibility.Visible;
                 LblError.Visibility = Visibility.Hidden;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 LblError.Visibility = Visibility.Visible;
             }

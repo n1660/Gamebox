@@ -133,7 +133,7 @@ namespace SnakeGame
             this.snakeTmp.Add(new SnakeElem
             {
                 X = (CURPARTICIPANTS * 50),
-                Y = ((this.id % 2 == 0) ? 50 : (this.GameCanvas.ActualHeight - 50)),
+                Y = ((this.id % 2 == 0) ? 50 : ((int)this.GameCanvas.ActualHeight - 50)),
                 Direction = ((this.id % 2 == 0) ? GamepageSnake.Directions.down : GamepageSnake.Directions.up),
                 Rect = new Rectangle
                 {
@@ -309,16 +309,17 @@ namespace SnakeGame
                 {
                     ImageSource = new BitmapImage(new Uri("../../Images/" + this.Color + "/snakehead_" + this.Snake[0].Direction.ToString() + "_" + this.Color.ToString() + ".png", UriKind.RelativeOrAbsolute))
                 };
+                this.snake[0].Rect.Fill = this.pictures["Head"];
                 /*----------------------------------------------*/
 
                 //wrap-around
                 if (head.X < 0)
-                    head.X = gameCanvas.ActualWidth - head.Rect.ActualWidth;
+                    head.X = (int)(gameCanvas.ActualWidth - head.Rect.ActualWidth);
                 if (head.X > gameCanvas.ActualWidth - head.Rect.ActualWidth)
                     head.X = 0;
 
                 if (head.Y < 0)
-                    head.Y = gameCanvas.ActualHeight - head.Rect.ActualHeight;
+                    head.Y = (int)(gameCanvas.ActualHeight - head.Rect.ActualHeight);
                 if (head.Y > (gameCanvas.ActualHeight))
                     head.Y = 0;
 
