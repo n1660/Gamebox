@@ -133,6 +133,9 @@ namespace SnakeGame
                             {
                                 if (p.Color.ToString() == c.ToString() && PLAYERKEYS["player" + c.ToString()].ContainsKey(e.Key) && PLAYERKEYS["player" + c.ToString()][e.Key] != p.DisabledDirection)
                                     p.Snake[0].Direction = PLAYERKEYS["player" + c.ToString()][e.Key];
+                                
+                                if (GamepageSnake.STARTED)
+                                    p.DisabledDirection = ((int)p.DisabledDirection < 2) ? (GamepageSnake.Directions)((int)p.Snake[0].Direction + 2) : (GamepageSnake.Directions)((int)p.Snake[0].Direction - 2);
                             }
                         }
                     }

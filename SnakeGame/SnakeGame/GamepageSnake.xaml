@@ -6,7 +6,6 @@
       xmlns:local="clr-namespace:SnakeGame"
       mc:Ignorable="d" 
       Title="SnakeGame.GamepageSnake">
-
     <Grid Name="GridGamepage" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
