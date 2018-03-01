@@ -15,14 +15,11 @@ using System.Windows.Shapes;
 using System.Timers;
 using System.Windows.Threading;
 using System.Threading;
+using System.Net;
 
-
+// PROBLEM: Button word3_B reagiert ab und zu kurz oder gar nicht -> Code genau wie bei den anderen, die Funktionieren
 namespace iSketch
 {
-    // TODO: PROBLEM: Absenden der Lsg bei 2 Sek übrig: Counter beginnt von vorne
-    //                ----- // -----   bei 1 Sek übirg: wird nicht mehr gezählt
-    
-
     public partial class Artist : Page
     {
         private static int Timer_Seconds = 20;
@@ -57,10 +54,12 @@ namespace iSketch
             Chat_Window.KeyDown += new KeyEventHandler(Key_Events);
             CreateContdown();
 
-            if(!registered) // Set MessageBox only one time!
-                Set_MessageBox();
-            Show_MessageBox();
+            //if(!registered) // Set MessageBox only one time!
+            //    Set_MessageBox();
+            //Show_MessageBox();
+            Set_ChooseWords();
             Show_Scores();
+
         }
 
         private void Key_Events(object sender, KeyEventArgs k)
@@ -82,7 +81,7 @@ namespace iSketch
             }
             else if (sender == this.BTN_HOME)
             {
-                Stop_All2();
+                Stop_All2(); // Close Timer Thread!
                 MainWindow.win.Content = new Menu();
             }
 
@@ -115,6 +114,32 @@ namespace iSketch
 
             else if (sender == this.Size_3)
                 this.Stroke_Thickness = 2;
+
+            // Choose Word
+            else if(sender == this.word1_B)
+            {
+                this.ChooseWordCanvas.Visibility = Visibility.Hidden;
+                this.word1_B.IsEnabled = false;
+                this.Your_Word.Text = this.word1.Text;
+                this.MyCanvas.IsEnabled = true;
+                Start_All2();
+            }
+            else if (sender == this.word2_B)
+            {
+                this.ChooseWordCanvas.Visibility = Visibility.Hidden;
+                this.word2_B.IsEnabled = false;
+                this.Your_Word.Text = this.word2.Text;
+                this.MyCanvas.IsEnabled = true;
+                Start_All2();
+            }
+            else if (sender == this.word3_B)
+            {
+                this.ChooseWordCanvas.Visibility = Visibility.Hidden;
+                this.word3_B.IsEnabled = false;
+                this.Your_Word.Text = this.word3.Text;
+                this.MyCanvas.IsEnabled = true;
+                Start_All2();
+            }
         }
 
         // For Painting  
@@ -155,7 +180,8 @@ namespace iSketch
                     Stop_All2();
                     this.Chat_Window.Clear();
                     this.MyCanvas.Children.Clear();
-                    Show_MessageBox();
+                    Set_ChooseWords();
+                    //Show_MessageBox();
                 };
             }));        
         }
@@ -228,6 +254,36 @@ namespace iSketch
 
             file.Close();
             return line;
+        }
+
+        public void Set_ChooseWords()
+        { 
+            word1.Text = Get_Random_Word();
+            while (word1.Text == null)
+            {
+                word1.Text = Get_Random_Word();
+            }
+
+            word2.Text = Get_Random_Word();
+            while (word2.Text == word1.Text || word2.Text == null) // no dubplicates allwoded
+            {
+                word2.Text = Get_Random_Word();
+            }
+
+            word3.Text = Get_Random_Word();
+            while (word1.Text == word3.Text || word2.Text == word3.Text || word3.Text == null) // no dubplicates allwoded
+            {
+                word3.Text = Get_Random_Word();
+            }
+
+            this.word1_B.IsEnabled = true;
+            this.word2_B.IsEnabled = true;
+            this.word3_B.IsEnabled = true;
+
+            this.ChooseWordCanvas.Visibility = Visibility.Visible;
+
+            this.MyCanvas.IsEnabled = false;
+
         }
 
         [STAThread]

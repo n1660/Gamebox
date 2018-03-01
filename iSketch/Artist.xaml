@@ -28,11 +28,40 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+
         <TextBlock Name="Your_Word" Grid.Row="0" Grid.Column="0" FontSize="16" FontFamily="Consolas" Margin="10,10,0,0"/>
         <TextBlock Name="Countdown" Grid.Row="0" Grid.Column="1" FontSize="16" FontFamily="Consolas" Margin="150,10,10,0"/>
 
-        <Canvas Name="MyCanvas" Grid.Row="1" Grid.Column="0" Background="White" Margin="10" MouseDown="MyCanvas_MouseDown" MouseMove="MyCanvas_MouseMove" >
-
+        <Canvas Name="MyCanvas" Grid.Row="1" Grid.Column="0" Background="White" Margin="10" MouseDown="MyCanvas_MouseDown" MouseMove="MyCanvas_MouseMove" />
+        <TextBlock Name="Scores" Grid.Row="1" Grid.Column="1" Margin="10" />
+        <Canvas Name="ChooseWordCanvas" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="81,79.6,81,66.6">
+            <Canvas.Background>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#FF256F69"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </Canvas.Background>
+            <Grid Height="133" Width="603">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="8*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"  Margin="10" Text="Choose your word!" FontSize="25" TextAlignment="Center" Foreground="White"/>
+                <Button Name="word1_B" Grid.Column="0" Grid.Row="1" Margin="10" Click="Button_Click">
+                    <TextBlock Name="word1" ></TextBlock>
+                </Button>
+                <Button Name="word2_B" Grid.Column="1" Grid.Row="1" Margin="10" Click="Button_Click">
+                    <TextBlock Name="word2"></TextBlock>
+                </Button>
+                <Button Name="word3_B" Grid.Column="2" Grid.Row="1" Margin="10" Click="Button_Click">
+                    <TextBlock Name="word3"></TextBlock>
+                </Button>
+            </Grid>
         </Canvas>
 
         <Grid Grid.Row="2" Grid.Column="0">
@@ -74,6 +103,8 @@
 
         </Grid>
 
+
+
         <Grid Grid.Row="2" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
@@ -94,7 +125,7 @@
             <Button Name="BTN_HOME" Grid.Row="2" Grid.Column="1" Margin="10,10,10.2,10" Click="Button_Click">EXIT</Button>
         </Grid>
 
-        <TextBlock Name="Scores" Grid.Row="1" Grid.Column="1" Margin="10"></TextBlock>
+
 
     </Grid>
 
