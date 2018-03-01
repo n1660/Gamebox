@@ -156,7 +156,8 @@ namespace SnakeGame
         {
             Background = Brushes.LightSeaGreen,
             Foreground = Brushes.Black,
-            TextAlignment = TextAlignment.Center,
+            Text = "player " + (snakeplayers.Count + 1).ToString(),
+        TextAlignment = TextAlignment.Center,
             Width = 80
         };
 
@@ -389,8 +390,9 @@ namespace SnakeGame
                 BtnPause.IsEnabled = true;
                 BtnPause.Visibility = Visibility.Visible;
                 LblError.Visibility = Visibility.Hidden;
+                InputName.Text = "player " + (snakeplayers.Count + 1).ToString();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 LblError.Visibility = Visibility.Visible;
             }
@@ -599,7 +601,6 @@ namespace SnakeGame
 
         public void InitializePrompt()
         {
-            InputName.Text = "player " + (snakeplayers.Count + 1).ToString();
             InputIP.Text = IPAddress.Loopback.ToString();
             InputPort.Text = "1337";
         }

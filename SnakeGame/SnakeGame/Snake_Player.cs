@@ -103,11 +103,10 @@ namespace SnakeGame
                 this.gameCanvas.Children.Add(snk.Rect);
             }
             GamepageSnake.GetDPButtons().Text = "players: " + SnakePlayer.CURPARTICIPANTS.ToString();
-
         }
 
         //initializations
-        public void InitializePictures(List<SnakeElem> snake)
+        public void InitializePictures()
         {
             this.pictures.Add(SnakeGame.Pictures.Elem.ToString(), new ImageBrush
             {
@@ -131,14 +130,14 @@ namespace SnakeGame
         {
             this.snakeTmp.Add(new SnakeElem
             {
-                X = (CURPARTICIPANTS * 50),
+                X = ((this.id < 2) ? 50 : ((int)this.GameCanvas.ActualWidth - 50)),
                 Y = ((this.id % 2 == 0) ? 50 : ((int)this.GameCanvas.ActualHeight - 50)),
                 Direction = ((this.id % 2 == 0) ? GamepageSnake.Directions.down : GamepageSnake.Directions.up),
                 Rect = new Rectangle
                 {
                     Width = SIZEELEM,
-                    Height = SIZEELEM
-                }
+                    Height = SIZEELEM,
+        }
             });
 
             for (int i = 1; i < STARTLENGTH - 1; i++)
@@ -151,7 +150,7 @@ namespace SnakeGame
                     Rect = new Rectangle
                     {
                         Width = SIZEELEM,
-                        Height = SIZEELEM
+                        Height = SIZEELEM,
                     }
                 });
             }
@@ -164,29 +163,20 @@ namespace SnakeGame
                 Rect = new Rectangle
                 {
                     Width = SIZEELEM,
-                    Height = SIZEELEM
+                    Height = SIZEELEM,
                 }
             });
 
-            InitializePictures(snakeTmp);
+            InitializePictures();
+            snakeTmp[0].Rect.Fill = this.pictures["Head_" + this.snakeTmp[0].Direction.ToString() + "_" + this.color.ToString()];
+            snakeTmp[snakeTmp.Count - 1].Rect.Fill = this.pictures["Tail_" + this.snakeTmp[STARTLENGTH - 1].Direction.ToString() + "_" + this.color.ToString()];
 
             foreach (SnakeElem snk in snakeTmp)
             {
-                if (snk == snakeTmp[0])
+                if(snk != snakeTmp[0] && snk != snakeTmp[snakeTmp.Count - 1])
                 {
-                    snk.Rect.Fill = this.pictures["Head_" + this.snake[0].Direction.ToString() + "_" + this.color.ToString()];
-                    continue;
+                    snk.Rect.Fill = this.Pictures["Elem"];
                 }
-                if (snk == snakeTmp[STARTLENGTH - 1])
-                {
-                    snk.Rect.Fill = this.pictures["Tail_" + this.snake[STARTLENGTH - 1].Direction.ToString() + "_" + this.color.ToString()];
-                    break;
-                }
-                snk.Rect.Fill = this.Pictures["Elem"];
-            }
-
-            foreach (SnakeElem snk in snakeTmp)
-            {
                 Canvas.SetLeft(snk.Rect, (int)snk.X);
                 Canvas.SetTop(snk.Rect, (int)snk.Y);
             }
