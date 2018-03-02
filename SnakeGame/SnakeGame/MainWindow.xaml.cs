@@ -18,94 +18,62 @@ namespace SnakeGame
     public partial class MainWindow : Window
     {
         //membervariables
-        private static GamepageSnake gamePage;
-        private bool keysInitialized = false;
+        private bool keysInitialized;
 
         //globals
-        public static Dictionary<String, Dictionary<Key, GamepageSnake.Directions>> PLAYERKEYS = new Dictionary<String, Dictionary<Key, GamepageSnake.Directions>>();
+        public Dictionary<String, Dictionary<Key, Directions>> PLAYERKEYS = new Dictionary<string, Dictionary<Key, Directions>>();
 
         //UIElements
-        public Canvas BtnCanvStartSnake = new Canvas
-        {
-            Height = 180,
-            Width = 150
-        };
-
-        public TextBlock BtnTBStartSnake = new TextBlock
-        {
-            Background = Brushes.Transparent,
-            Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0x77, 0xAA, 0x77)),
-            FontSize = 30,
-            FontWeight = FontWeights.Bold,
-            Text = "start"
-        };
 
         //images
-        public static ImageBrush startpic = new ImageBrush
-        {
-            ImageSource = new BitmapImage(new Uri("../../Images/snakestart.png", UriKind.RelativeOrAbsolute))
-        };
 
         //properties
-        public static GamepageSnake GamePage { get => gamePage; set => gamePage = value; }
 
         //c'tor
         public MainWindow()
         {
             InitializeComponent();
-            BtnCanvStartSnake.MouseDown += BtnStartSnake_Click;
-            BtnTBStartSnake.Typography.Capitals = FontCapitals.AllSmallCaps;
-            Canvas.SetBottom(BtnTBStartSnake, -40);
-            Canvas.SetLeft(BtnTBStartSnake, 40);
-            BtnCanvStartSnake.Background = startpic;
-
-            BtnCanvStartSnake.Children.Add(BtnTBStartSnake);
-            GridMenu.Children.Add(BtnCanvStartSnake);
+            this.Content = new MenupageSnake();
         }
 
         //methods
-        private void BtnStartSnake_Click(object sender, RoutedEventArgs e)
-        {
-            this.Content = new GamepageSnake();
-        }
-
         private void InitializePlayerKeys()
         {
-            Dictionary<Key, GamepageSnake.Directions> pg = new Dictionary<Key, GamepageSnake.Directions>
+            Dictionary<Key, Directions> pg = new Dictionary<Key, Directions>
             {
-                {Key.Right, GamepageSnake.Directions.right},
-                {Key.Down, GamepageSnake.Directions.down},
-                {Key.Left, GamepageSnake.Directions.left},
-                {Key.Up, GamepageSnake.Directions.up
+                {Key.Right, Directions.right},
+                {Key.Down, Directions.down},
+                {Key.Left, Directions.left},
+                {Key.Up, Directions.up
 }
             };
             PLAYERKEYS.Add("playerGreen", pg);
 
-            Dictionary<Key, GamepageSnake.Directions> pb = new Dictionary<Key, GamepageSnake.Directions>
+            Dictionary<Key, Directions> pb = new Dictionary<Key, Directions>
             {
-                {Key.D, GamepageSnake.Directions.right},
-                {Key.S, GamepageSnake.Directions.down},
-                {Key.A, GamepageSnake.Directions.left},
-                {Key.W, GamepageSnake.Directions.up}
+                {Key.D, Directions.right},
+                {Key.S, Directions.down},
+                {Key.A, Directions.left},
+                {Key.W, Directions.up}
             };
             PLAYERKEYS.Add("playerBlue", pb);
 
-            Dictionary<Key, GamepageSnake.Directions> pr = new Dictionary<Key, GamepageSnake.Directions>
+            Dictionary<Key, Directions> pr = new Dictionary<Key, Directions>
             {
-                {Key.NumPad6, GamepageSnake.Directions.right},
-                {Key.NumPad5, GamepageSnake.Directions.down},
-                {Key.NumPad4, GamepageSnake.Directions.left},
-                {Key.NumPad8, GamepageSnake.Directions.up
+                {Key.NumPad6, Directions.right},
+                {Key.NumPad5, Directions.down},
+                {Key.NumPad4, Directions.left},
+                {Key.NumPad8, Directions.up
 }
             };
             PLAYERKEYS.Add("playerRed", pr);
 
-            Dictionary<Key, GamepageSnake.Directions> pp = new Dictionary<Key, GamepageSnake.Directions>
+            Dictionary<Key, Directions> pp = new Dictionary<Key, Directions>
             {
-                {Key.L, GamepageSnake.Directions.right},
-                {Key.K, GamepageSnake.Directions.down},
-                {Key.J, GamepageSnake.Directions.left},
-                {Key.I, GamepageSnake.Directions.up}
+                {Key.L, Directions.right},
+                {Key.K, Directions.down},
+                {Key.J, Directions.left},
+                {Key.I, Directions.up}
             };
             PLAYERKEYS.Add("playerPurple", pp);
             keysInitialized = true;
@@ -113,7 +81,7 @@ namespace SnakeGame
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (this.Content.GetType().Name == (typeof(GamepageSnake).Name))
+            if (App.Current.MainWindow.Content.GetType().Name == (typeof(GamepageSnake).Name))
             {
                 if (!keysInitialized)
                     InitializePlayerKeys();
@@ -132,10 +100,10 @@ namespace SnakeGame
                             foreach (Colors c in Enum.GetValues(typeof(Colors)))
                             {
                                 if (p.Color.ToString() == c.ToString() && PLAYERKEYS["player" + c.ToString()].ContainsKey(e.Key) && PLAYERKEYS["player" + c.ToString()][e.Key] != p.DisabledDirection)
-                                    p.Snake[0].Direction = PLAYERKEYS["player" + c.ToString()][e.Key];
-                                
+                                    p.Snake[0].Direction = p.Direction = PLAYERKEYS["player" + c.ToString()][e.Key];
+
                                 if (GamepageSnake.STARTED)
-                                    p.DisabledDirection = ((int)p.DisabledDirection < 2) ? (GamepageSnake.Directions)((int)p.Snake[0].Direction + 2) : (GamepageSnake.Directions)((int)p.Snake[0].Direction - 2);
+                                    p.DisabledDirection = ((int)p.Direction < 2) ? (Directions)((int)p.Snake[0].Direction + 2) : (Directions)((int)p.Snake[0].Direction - 2);
                             }
                         }
                     }

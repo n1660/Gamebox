@@ -13,6 +13,14 @@ using System.Windows.Shapes;
 
 namespace SnakeGame
 {
+    public enum Directions
+    {
+        right,
+        down,
+        left,
+        up
+    };
+
     public enum Pictures
     {
         Elem,
@@ -30,21 +38,20 @@ namespace SnakeGame
     public class SnakePlayer
     {
         //membervariables
-        private int id = 1;
+        private int id;
         private String name;
         private Colors color;
         private TextBlock[] scoretext = new TextBlock[2];
         private Dictionary<String, ImageBrush> pictures = new Dictionary<String, ImageBrush>();
-        private List<SnakeElem> snake = new List<SnakeElem>();
+        private List<SnakeElem> snake = new List<SnakeElem>(), snakeTmp = new List<SnakeElem>();
         private IPEndPoint address;
         private bool dead = false;
-        private GamepageSnake.Directions direction, disabledDirection;
+        private Directions direction, disabledDirection;
         private Canvas gameCanvas;
-        public int score = 0;
-        public List<SnakeElem> snakeTmp = new List<SnakeElem>();
+        public int score;
 
         //globals
-        public static int CURPARTICIPANTS = 0, SIZEELEM = 14, STARTLENGTH = 5, AMOUNT_PLAYERS = 3, SURVIVORS;
+        public static int CURPARTICIPANTS = 0, SIZEELEM = 14, STARTLENGTH = 5, SURVIVORS;
         public static List<SnakePlayer> TODIE = new List<SnakePlayer>();
 
         //Properties
@@ -56,8 +63,8 @@ namespace SnakeGame
         public bool Dead { get => dead; set => dead = value; }
         public Canvas GameCanvas { get => gameCanvas; set => gameCanvas = value; }
         public TextBlock[] Scoretext { get => scoretext; set => scoretext = value; }
-        public GamepageSnake.Directions Direction { get => direction; set => direction = value; }
-        public GamepageSnake.Directions DisabledDirection { get => disabledDirection; set => disabledDirection = value; }
+        public Directions Direction { get => direction; set => direction = value; }
+        public Directions DisabledDirection { get => disabledDirection; set => disabledDirection = value; }
 
         //c'tor
         public SnakePlayer(String name, IPEndPoint adr, Canvas gamecanv)
@@ -74,13 +81,14 @@ namespace SnakeGame
             this.gameCanvas = gamecanv;
             this.dead = false;
             this.score = 0;
+            this.color = (Colors)(CURPARTICIPANTS - 1);
             this.scoretext[0] = new TextBlock
             {
                 Name = "LblScorePlayer" + this.Id,
                 FontSize = 22,
                 FontWeight = FontWeights.Bold,
                 TextAlignment = TextAlignment.Center,
-            };
+        };
             this.Scoretext[1] = new TextBlock
             {
                 Name = "TxtScorePlayer" + this.Id,
@@ -88,13 +96,10 @@ namespace SnakeGame
                 FontWeight = FontWeights.Bold,
                 TextAlignment = TextAlignment.Center,
             };
-            this.color = (Colors)(CURPARTICIPANTS - 1);
             this.address = adr;
 
-            if (this.gameCanvas != null) {
-                this.snake = InitializeSnake();
-                this.disabledDirection = ((int)this.snake[0].Direction < 2) ? (GamepageSnake.Directions)((int)this.snake[0].Direction + 2) : (GamepageSnake.Directions)((int)this.snake[0].Direction - 2);
-            }
+            this.snake = InitializeSnake();
+            this.disabledDirection = ((int)this.snake[0].Direction < 2) ? (Directions)((int)this.snake[0].Direction + 2) : (Directions)((int)this.snake[0].Direction - 2);
 
             UpdateRanking();
             this.UpdateScore();
@@ -102,7 +107,8 @@ namespace SnakeGame
             {
                 this.gameCanvas.Children.Add(snk.Rect);
             }
-            GamepageSnake.GetDPButtons().Text = "players: " + SnakePlayer.CURPARTICIPANTS.ToString();
+
+            this.direction = this.snake[0].Direction;
         }
 
         //initializations
@@ -112,7 +118,7 @@ namespace SnakeGame
             {
                 ImageSource = new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snakeElem_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute))
             });
-            foreach (GamepageSnake.Directions dir in Enum.GetValues(typeof(GamepageSnake.Directions)))
+            foreach (Directions dir in Enum.GetValues(typeof(Directions)))
             {
                 this.pictures.Add(SnakeGame.Pictures.Head.ToString() + "_" + dir.ToString() + "_" + this.color.ToString(), new ImageBrush
                 {
@@ -130,9 +136,9 @@ namespace SnakeGame
         {
             this.snakeTmp.Add(new SnakeElem
             {
-                X = ((this.id < 2) ? 50 : ((int)this.GameCanvas.ActualWidth - 50)),
+                X = ((this.id < 2) ? 50 : ((int)this.GameCanvas.ActualWidth - 50)) + this.id * -SIZEELEM,
                 Y = ((this.id % 2 == 0) ? 50 : ((int)this.GameCanvas.ActualHeight - 50)),
-                Direction = ((this.id % 2 == 0) ? GamepageSnake.Directions.down : GamepageSnake.Directions.up),
+                Direction = ((this.id % 2 == 0) ? Directions.down : Directions.up),
                 Rect = new Rectangle
                 {
                     Width = SIZEELEM,
@@ -146,7 +152,7 @@ namespace SnakeGame
                 {
                     X = snakeTmp[0].X,
                     Y = snakeTmp[0].Y + ((this.id % 2 == 0) ? -(i * SIZEELEM) : (i * SIZEELEM)),
-                    Direction = ((this.id % 2 == 0) ? GamepageSnake.Directions.down : GamepageSnake.Directions.up),
+                    Direction = ((this.id % 2 == 0) ? Directions.down : Directions.up),
                     Rect = new Rectangle
                     {
                         Width = SIZEELEM,
@@ -159,7 +165,7 @@ namespace SnakeGame
             {
                 X = this.snakeTmp[0].X,
                 Y = this.snakeTmp[0].Y + ((this.id % 2 == 0) ? -(2 * SIZEELEM) : 2 * SIZEELEM),
-                Direction = ((this.id % 2 == 0) ? GamepageSnake.Directions.down : GamepageSnake.Directions.up),
+                Direction = ((this.id % 2 == 0) ? Directions.down : Directions.up),
                 Rect = new Rectangle
                 {
                     Width = SIZEELEM,
@@ -195,67 +201,11 @@ namespace SnakeGame
             if (GamepageSnake.STARTED && !this.dead)
             {
                 //move head
-                head.X += ((head.Direction == GamepageSnake.Directions.left) ? -SIZEELEM:
-                    (head.Direction == GamepageSnake.Directions.right) ? SIZEELEM : 0);
-                head.Y += ((head.Direction == GamepageSnake.Directions.up) ? -SIZEELEM :
-                    (head.Direction == GamepageSnake.Directions.down) ? SIZEELEM : 0);
-
-                //detect collision with any other snakebody
-                foreach (SnakePlayer p in GamepageSnake.Snakeplayers)
-                {
-                    if (p.dead)
-                    {
-                        continue;
-                    }
-                    foreach (SnakePlayer pl in GamepageSnake.Snakeplayers)
-                    {
-                        Console.WriteLine("p: " + p.name + " | pl: " + pl.name);
-                        if (pl.dead || p == pl)
-                        {
-                            if (pl.dead)
-                                Console.WriteLine(pl.name + " is dead, continue!");
-                            else
-                                Console.WriteLine("p = pl, continue!");
-                            continue;
-                        }
-
-                        foreach (SnakeElem snk in pl.Snake)
-                        {
-                            if ((p.Snake[0].X < snk.X + snk.Rect.ActualWidth)
-                                && (p.Snake[0].X > snk.X)
-                                && (p.Snake[0].Y < snk.Y + snk.Rect.ActualHeight)
-                                && (p.Snake[0].Y > snk.Y))
-                            {
-                                Console.WriteLine("in collision-if");
-
-                                if (snk == pl.snake[0] && !TODIE.Contains(pl))
-                                    TODIE.Add(pl);
-
-                                if (!TODIE.Contains(p))
-                                    TODIE.Add(p);
-                            }
-                        }
-                    }
-                }
-
-                //detect collision with own snakebody
-                if (!this.dead)
-                {
-                    foreach (SnakeElem snk in this.snake)
-                    {
-                        if (snk == head)
-                            continue;
-
-                        if ((head.X < snk.X + snk.Rect.ActualWidth)
-                            && (head.X > snk.X)
-                            && (head.Y < snk.Y + snk.Rect.ActualHeight)
-                            && (head.Y > snk.Y))
-                        {
-                            this.dead = true;
-                        }
-                    }
-                }
-
+                head.X += ((head.Direction == Directions.left) ? -SIZEELEM:
+                    (head.Direction == Directions.right) ? SIZEELEM : 0);
+                head.Y += ((head.Direction == Directions.up) ? -SIZEELEM :
+                    (head.Direction == Directions.down) ? SIZEELEM : 0);
+                
                 //make body follow the head
                 for (int i = this.snake.Count - 1; i > 0; i--)
                 {
@@ -267,17 +217,14 @@ namespace SnakeGame
 
                     if (i == 1)
                     {
-                        this.snake[i].X = head.X + ((head.Direction == GamepageSnake.Directions.right) ? -SIZEELEM :
-                            (head.Direction == GamepageSnake.Directions.left) ? SIZEELEM : 0);
-                        this.snake[i].Y = head.Y + ((head.Direction == GamepageSnake.Directions.down) ? -SIZEELEM :
-                            (head.Direction == GamepageSnake.Directions.up) ? SIZEELEM : 0);
+                        this.snake[i].X = head.X + ((head.Direction == Directions.right) ? -SIZEELEM :
+                            (head.Direction == Directions.left) ? SIZEELEM : 0);
+                        this.snake[i].Y = head.Y + ((head.Direction == Directions.down) ? -SIZEELEM :
+                            (head.Direction == Directions.up) ? SIZEELEM : 0);
                     }
                     this.snake[i].Direction = this.snake[i - 1].Direction;
-
                 }
             }
-
-            this.snake[0] = head;
             this.SnakeEat();
         }
 
@@ -295,11 +242,7 @@ namespace SnakeGame
                 SnakeElem tail = this.snake[this.snake.Count - 1];
 
                 //reload headpic for the new direction
-                this.Pictures["Head"] = new ImageBrush
-                {
-                    ImageSource = new BitmapImage(new Uri("../../Images/" + this.Color + "/snakehead_" + this.Snake[0].Direction.ToString() + "_" + this.Color.ToString() + ".png", UriKind.RelativeOrAbsolute))
-                };
-                this.snake[0].Rect.Fill = this.pictures["Head"];
+                this.snake[0].Rect.Fill = this.pictures["Head_" + this.direction.ToString() + "_" + this.color.ToString()];
                 /*----------------------------------------------*/
 
                 //wrap-around
@@ -323,11 +266,9 @@ namespace SnakeGame
                         this.gameCanvas.Children.Remove(snk.Rect);
                     if (snk == tail)
                     {
-                        this.pictures[SnakeGame.Pictures.Tail.ToString()] = new ImageBrush
-                        {
-                            ImageSource = new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snaketail_" + snk.Direction + "_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute))
-                        };
-                        snk.Rect.Fill = this.pictures[SnakeGame.Pictures.Tail.ToString()];
+                        //reload tailpic for the current direction
+                        snk.Rect.Fill = this.pictures["Tail_" + snk.Direction.ToString() + "_" + this.color.ToString()];
+                        /*----------------------------------------------*/
                     }
                     this.gameCanvas.Children.Add(snk.Rect);
                 }
@@ -358,23 +299,24 @@ namespace SnakeGame
                     gameCanvas.Children.Remove(GamepageSnake.APPLE.Shape);
                     GamepageSnake.APPLE = null;
                     SnakeElem tail = this.snake[this.snake.Count - 1];
-                    SnakeElem snakeTmp = new SnakeElem
+                    SnakeElem snakeElemTmp = new SnakeElem
                     {
-                        X = tail.X + (int)SIZEELEM,
-                        Y = tail.Y + (int)SIZEELEM,
+                        X = tail.X + ((this.snake[this.snake.Count - 1].Direction == Directions.right) ? -(int)SIZEELEM : ((this.snake[this.snake.Count - 1].Direction == Directions.left) ? (int)SIZEELEM : 0)),
+                        Y = tail.Y + ((this.snake[this.snake.Count - 1].Direction == Directions.down) ? -(int)SIZEELEM : ((this.snake[this.snake.Count - 1].Direction == Directions.up) ? (int)SIZEELEM : 0)),
                         Rect = new Rectangle
                         {
-                            Fill = this.pictures[SnakeGame.Pictures.Tail.ToString()],
                             Width = SIZEELEM,
                             Height = SIZEELEM
                         }
                     };
-                    this.snake.Add(snakeTmp);
+                    snakeElemTmp.Rect.Fill = this.pictures["Tail_" + this.snake[this.snake.Count - 1].Direction.ToString() + "_" + this.color.ToString()];
+                    this.snake.Add(snakeElemTmp);
                     this.snake[this.snake.Count - 2].Rect.Fill = this.pictures[SnakeGame.Pictures.Elem.ToString()];
                     this.score++;
                     this.UpdateScore();
                     UpdateRanking();
                 }
+                this.snake[0] = head;
             }
         }
 
@@ -384,12 +326,10 @@ namespace SnakeGame
             this.scoretext[1].Text = this.score.ToString();
             foreach (TextBlock tb in this.scoretext)
             {
-                tb.Foreground = (this.Dead) ? Brushes.Gray : Brushes.Black;
+                if (MenupageSnake.GamePage.GetScoreSP().Children.Contains(tb))
+                    MenupageSnake.GamePage.GetScoreSP().Children.Remove(tb);
 
-                if (MainWindow.GamePage.GetScoreSP().Children.Contains(tb))
-                    MainWindow.GamePage.GetScoreSP().Children.Remove(tb);
-
-                MainWindow.GamePage.GetScoreSP().Children.Add(tb);
+                MenupageSnake.GamePage.GetScoreSP().Children.Add(tb);
             }
         }
 

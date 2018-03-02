@@ -6,5 +6,5 @@
         xmlns:local="clr-namespace:SnakeGame"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="1000" KeyDown="Window_KeyDown" Name="Win">
-    <Grid Name="GridMenu"/>
+    <Grid/>
 </Window>
