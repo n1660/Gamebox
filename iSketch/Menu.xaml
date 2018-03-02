@@ -8,9 +8,9 @@
       d:DesignHeight="300" d:DesignWidth="300"
       MinHeight="300" MinWidth="300"
       Title="Menu">
-    
+
     <Page.Background>
-        <ImageBrush ImageSource="res/backgrounds/stripes.jpg" Stretch="UniformToFill"/>
+        <ImageBrush ImageSource="res/backgrounds/red.jpg" Stretch="UniformToFill"/>
     </Page.Background>
 
     <Grid>
@@ -29,14 +29,14 @@
         <!--<TextBlock Name="Title"  FontSize="15" Foreground="White" TextAlignment="Center">Menu</TextBlock>-->
 
         <Image Grid.Column="1" Grid.Row="0" Source="res/text.gif" />
-        
+
         <Button Grid.Row="1" Grid.Column="0" Name="iSketch" Click="Button_Click_Menu" Margin="10,10" Background="Transparent" BorderBrush="Black">
             <Button.Template>
                 <ControlTemplate>
                     <Image Source="res/icons/paint.png" />
                 </ControlTemplate>
             </Button.Template>
-           
+
         </Button>
 
         <Button Grid.Row="1" Grid.Column="1" Name="Hangman" Click="Button_Click_Menu" Margin="10,10" Background="Transparent" BorderBrush="Black" BorderThickness="5">
@@ -55,13 +55,32 @@
             </Button.Template>
         </Button>
 
-        <Popup Name="Popup_Username" Grid.Column="1" Grid.Row="2" PopupAnimation="Fade" AllowsTransparency="True" Placement="Center">
+        <!--<Popup Name="Popup_Username" Grid.Column="1" Grid.Row="2" PopupAnimation="Fade" AllowsTransparency="True" Placement="Center">
             <StackPanel>
-                <TextBlock Background="#FF9DEA52">Your Username: </TextBlock>
+                <TextBlock Background="#FF9DEA52">Your Username:</TextBlock>
                 <TextBox Name="username" Background="white" Width="150" Height="30" BorderThickness="5" BorderBrush="#FF9DEA52"/>
                 <Button Name="Submit" Click="Button_Click_Menu" BorderThickness="5" BorderBrush="#FF9DEA52">Submit</Button>
             </StackPanel>
-        </Popup>
+        </Popup>-->
+
+        <Canvas Name="Username_Canvas" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Background="RosyBrown" Margin="50">
+            <Grid Width="{Binding ActualWidth, ElementName=Username_Canvas, Mode=OneWay}" Height="{Binding ActualHeight, ElementName=Username_Canvas, Mode=OneWay}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" TextAlignment="Center" Margin="2">Insert your Username</TextBlock>
+                    <TextBox Name="PlayerUsername" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,2"/>
+                    <Button Name="Submit_Username" Grid.Row="3" Grid.Column="2" Margin="2" Click="Button_Click_Menu">Submit</Button>
+                <!--<Button Name="Canel_Username" Grid.Row="3" Grid.Column="2" Margin="2" Click="Button_Click_Menu">Cancel</Button>-->
+            </Grid>
+        </Canvas>
 
     </Grid>
 </Page>

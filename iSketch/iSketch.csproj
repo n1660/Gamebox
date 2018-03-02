@@ -152,5 +152,12 @@
   <ItemGroup>
     <Resource Include="res\icons\hang.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\backgrounds\Backgrnd.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\backgrounds\red.jpg" />
+    <Resource Include="res\backgrounds\redbrickets.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

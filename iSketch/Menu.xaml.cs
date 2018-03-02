@@ -24,8 +24,8 @@ namespace iSketch
         public Menu()
         {
             InitializeComponent();
-            username.KeyDown += new KeyEventHandler(Key_Events);
-            Popup_Username.IsOpen = true;
+            PlayerUsername.KeyDown += new KeyEventHandler(Key_Events);
+            //Popup_Username.IsOpen = true;
             
         }
 
@@ -39,32 +39,36 @@ namespace iSketch
 
         private void Button_Click_Menu(object sender, RoutedEventArgs e)
         {
-            if (sender == this.iSketch)
-            {
-                MainWindow.win.Content = new Artist();
-            }
-            else if(sender == this.Snake)
-            {
-                Console.Write("Start Snake ~");
-            }
-            else if(sender == this.Hangman)
-            {
-                Console.Write("Start Hangman X");
-            }
-            else if(sender==this.Submit)
+            if (sender == this.Submit_Username)
             {
                 get_player_data();
             }
+            else if (Username_Canvas.Visibility == Visibility.Hidden)
+            {
+                if (sender == this.iSketch)
+                {
+                    MainWindow.win.Content = new Artist();
+                }
+                else if (sender == this.Snake)
+                {
+                    Console.Write("Start Snake ~");
+                }
+                else if (sender == this.Hangman)
+                {
+                    Console.Write("Start Hangman X");
+                }
+            }
+ 
         }
 
         void get_player_data()
         {
-            if(username.Text != null)
+            if(PlayerUsername.Text != null)
             {
                 bool Not_Only_Blanks = false;
-                for ( int i = 0; i < username.Text.Length; i++)
+                for ( int i = 0; i < PlayerUsername.Text.Length; i++)
                 {
-                    if (username.Text[i] != ' ')
+                    if (PlayerUsername.Text[i] != ' ')
                     {
                         Not_Only_Blanks = true;
                         break;
@@ -73,8 +77,9 @@ namespace iSketch
 
                 if (Not_Only_Blanks)
                 {
-                    MemberList.Add(new Member() { ID = null, Username = username.Text, Score = 0, Moves = 0 }); // ID = IP
-                    Popup_Username.IsOpen = false;
+                    MemberList.Add(new Member() { ID = null, Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IP
+                    //Popup_Username.IsOpen = false;
+                    Username_Canvas.Visibility = Visibility.Hidden;
                 }
             }
         }

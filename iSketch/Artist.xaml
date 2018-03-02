@@ -34,14 +34,14 @@
 
         <Canvas Name="MyCanvas" Grid.Row="1" Grid.Column="0" Background="White" Margin="10" MouseDown="MyCanvas_MouseDown" MouseMove="MyCanvas_MouseMove" />
         <TextBlock Name="Scores" Grid.Row="1" Grid.Column="1" Margin="10" />
-        <Canvas Name="ChooseWordCanvas" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="81,79.6,81,66.6">
+        <Canvas Name="ChooseWordCanvas" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="81,79.6,81,66.6" MaxHeight="132,8" MaxWidth="603,2" Height="129">
             <Canvas.Background>
                 <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                     <GradientStop Color="#FF256F69"/>
-                    <GradientStop Color="White" Offset="1"/>
+                    <GradientStop Color="#FFDFDCDC" Offset="1"/>
                 </LinearGradientBrush>
             </Canvas.Background>
-            <Grid Height="133" Width="603">
+            <Grid Height="{Binding ActualHeight, ElementName=ChooseWordCanvas, Mode=OneWay}" Width="{Binding ActualWidth, ElementName=ChooseWordCanvas, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
