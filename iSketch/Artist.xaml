@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:iSketch"
       mc:Ignorable="d"
       Title="Artist" MinHeight="448.62" MinWidth="765"
-      HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+      HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+      >
 
 
     <Page.Background>
