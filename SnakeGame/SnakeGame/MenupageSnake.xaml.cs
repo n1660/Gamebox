@@ -23,34 +23,38 @@ namespace SnakeGame
         //globals
 
         //UIElements
-        public Canvas BtnCanvStartSnake = new Canvas
+        public StackPanel spMode = new StackPanel();
+
+        public Canvas CanvStartSnake = new Canvas
         {
             Height = 180,
-            Width = 150
+            Width = 150,
+            Margin = new Thickness(0, 0, 0, 0)
         };
 
-        public TextBlock BtnTBStartSnakeSP = new TextBlock
+        public Button BtnTBStartSnakeSP = new Button
         {
             Background = Brushes.Transparent,
             Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0x77, 0xAA, 0x77)),
             FontSize = 30,
             FontWeight = FontWeights.Bold,
-            Text = "Single player"
+            Content = "Single player"
         };
 
-        public TextBlock BtnTBStartSnakeMP = new TextBlock
+        public Button BtnTBStartSnakeMP = new Button
         {
             Background = Brushes.Transparent,
             Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0x77, 0xAA, 0x77)),
             FontSize = 30,
             FontWeight = FontWeights.Bold,
-            Text = "Multiplayer"
+            Content = "Multiplayer"
         };
 
         //images
         public static ImageBrush startpic = new ImageBrush
         {
-            ImageSource = new BitmapImage(new Uri("../../Images/snakestart.png", UriKind.RelativeOrAbsolute))
+            ImageSource = new BitmapImage(new Uri("../../Images/snakestart.png", UriKind.RelativeOrAbsolute)),
+            Stretch = Stretch.Fill
         };
 
         //properties
@@ -59,20 +63,19 @@ namespace SnakeGame
         //c'tor
         public MenupageSnake()
         {
-            App.Current.MainWindow.Width = 300;
-            App.Current.MainWindow.Height = 300;
-            App.Current.MainWindow.ResizeMode = ResizeMode.NoResize;
+            App.Current.MainWindow.MinWidth = 325;
+            App.Current.MainWindow.MinHeight = 425;
             InitializeComponent();
-            BtnTBStartSnakeSP.MouseDown += BtnStartSnake_Click;
-            BtnTBStartSnakeMP.MouseDown += BtnStartSnake_Click;
-            BtnTBStartSnakeSP.Typography.Capitals = BtnTBStartSnakeMP.Typography.Capitals = FontCapitals.AllSmallCaps;
-            Canvas.SetBottom(BtnTBStartSnakeMP, -40);
-            Canvas.SetLeft(BtnTBStartSnakeMP, 40);
-            BtnCanvStartSnake.Background = startpic;
+            BtnTBStartSnakeSP.Click += BtnStartSnake_Click;
+            BtnTBStartSnakeMP.Click += BtnStartSnake_Click;
+            Canvas.SetBottom(spMode, -100);
+            Canvas.SetLeft(spMode, -20);
+            CanvStartSnake.Background = startpic;
 
-            BtnCanvStartSnake.Children.Add(BtnTBStartSnakeMP);
-            BtnCanvStartSnake.Children.Add(BtnTBStartSnakeSP);
-            GridMenu.Children.Add(BtnCanvStartSnake);
+            CanvStartSnake.Children.Add(spMode);
+            spMode.Children.Add(BtnTBStartSnakeSP);
+            spMode.Children.Add(BtnTBStartSnakeMP);
+            GridMenu.Children.Add(CanvStartSnake);
         }
 
         //methods

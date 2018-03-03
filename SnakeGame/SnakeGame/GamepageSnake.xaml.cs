@@ -18,6 +18,7 @@ namespace SnakeGame
     {
         //membervariables
         private static List<SnakePlayer> snakeplayers = new List<SnakePlayer>();
+        private static List<SnakePlayer> snakeplayersTmp = new List<SnakePlayer>();
 
         //globals
         public static bool STARTED = false, MULTIPLAYER = false;
@@ -28,10 +29,7 @@ namespace SnakeGame
         //UIElements
         public Canvas GameCanvas = new Canvas();
         public StackPanel spScores = new StackPanel();
-        public DockPanel dpButtons = new DockPanel
-        {
-            Margin = new Thickness(0, 0, 0, 0)
-        };
+        public DockPanel dpButtons = new DockPanel();
 
         public Button BtnNew = new Button
         {
@@ -184,7 +182,7 @@ namespace SnakeGame
             Height = 400,
             Width = 100,
             Background = Brushes.SeaGreen,
-            Visibility = Visibility.Hidden
+            Visibility = Visibility.Hidden,
         };
 
         public Label LblInputheaderA = new Label
@@ -311,6 +309,7 @@ namespace SnakeGame
 
         //properties
         public static List<SnakePlayer> Snakeplayers { get => snakeplayers; set => snakeplayers = value; }
+        public static List<SnakePlayer> SnakeplayersTmp { get => snakeplayersTmp; set => snakeplayersTmp = value; }
 
         //timertickroutine
         public void Time_Tick(object sender, EventArgs e)
@@ -328,23 +327,21 @@ namespace SnakeGame
         {
             MULTIPLAYER = multiplayer;
 
-            App.Current.MainWindow.Width = 1200;
-            App.Current.MainWindow.Height = 560;
-            App.Current.MainWindow.ResizeMode = ResizeMode.NoResize;
+            App.Current.MainWindow.MinWidth = 1200;
+            App.Current.MainWindow.MinHeight = 560;
 
             MenupageSnake.GamePage = this;
             STARTED = false;
 
             bgpic.Opacity = 0.8;
             InitializeComponent();
-            
-            newPlayerPrompt.Visibility = Visibility.Visible;
+
             BtnPause.Visibility = Visibility.Hidden;
             BtnPause.IsEnabled = false;
 
             GameCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             GameCanvas.Arrange(new Rect(0, 0, Application.Current.MainWindow.DesiredSize.Width, Application.Current.MainWindow.DesiredSize.Height));
-            
+
             newPlayerPrompt.Children.Add(LblInputheaderA);
             newPlayerPrompt.Children.Add(LblNameA);
             newPlayerPrompt.Children.Add(InputNameA);
@@ -361,6 +358,9 @@ namespace SnakeGame
             Canvas.SetZIndex(newPlayerPrompt, 2);
             Canvas.SetLeft(newPlayerPrompt, GameCanvas.ActualWidth - newPlayerPrompt.Width / 2);
             Canvas.SetTop(newPlayerPrompt, GameCanvas.ActualHeight - newPlayerPrompt.Height / 2);
+            newPlayerPrompt.Visibility = Visibility.Visible;
+            Canvas.SetLeft(newPlayerPrompt, ((GameCanvas.ActualWidth / 2) - (newPlayerPrompt.Width / 2)));
+            Canvas.SetTop(newPlayerPrompt, ((GameCanvas.ActualHeight / 2) - (newPlayerPrompt.Height / 2)));
             GameCanvas.Children.Add(newPlayerPrompt);
 
             BtnSubmitNewPlayer.Click += BtnSubmitRemovePlayer_Click;
@@ -376,6 +376,8 @@ namespace SnakeGame
             Canvas.SetZIndex(removePlayerPrompt, 2);
             Canvas.SetLeft(removePlayerPrompt, GameCanvas.ActualWidth - removePlayerPrompt.Width / 2);
             Canvas.SetTop(removePlayerPrompt, GameCanvas.ActualHeight - removePlayerPrompt.Height / 2);
+            Canvas.SetLeft(removePlayerPrompt, ((GameCanvas.ActualWidth / 2) - (removePlayerPrompt.Width / 2)));
+            Canvas.SetTop(removePlayerPrompt, ((GameCanvas.ActualHeight / 2) - (removePlayerPrompt.Height / 2)));
             GameCanvas.Children.Add(removePlayerPrompt);
 
             BtnRemovePlayer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -562,6 +564,8 @@ namespace SnakeGame
 
         private void BtnAddPlayer_Click(object sender, RoutedEventArgs e)
         {
+            newPlayerPrompt.Visibility = Visibility.Visible;
+
             InputNameA.Text = "player " + (snakeplayers.Count + 1).ToString();
             newPlayerPrompt.Visibility = Visibility.Visible;
             BtnPause.Visibility = Visibility.Hidden;
@@ -570,6 +574,8 @@ namespace SnakeGame
 
         private void BtnRemovePlayer_Click(object sender, RoutedEventArgs e)
         {
+            removePlayerPrompt.Visibility = Visibility.Visible;
+
             List<string> vals = new List<string>();
             foreach (SnakePlayer p in snakeplayers)
             {
@@ -620,31 +626,16 @@ namespace SnakeGame
             int helpVar = -1, scorePrev, tmpCount = -1;
             TextBlock[] tbPrev;
             SnakePlayer.UpdateRanking();
-            tmpCount = -1;
-            restart:
             if (helpVar > -1 && helpVar < snakeplayers.Count)
                 helpVar = -1;
-            
+
             foreach (SnakePlayer p in snakeplayers)
             {
-                if (!p.Dead)
-                {
-                    scorePrev = p.score;
-                    tbPrev = p.Scoretext;
-                    p.Render();
-                    CollisionDetection();
-                    if (p.Dead)
-                    {
-                        helpVar = p.Id;
-                        break;
-                    }
-                    if (scorePrev != p.score || tbPrev != p.Scoretext)
-                        break;
-                }
+                scorePrev = p.score;
+                tbPrev = p.Scoretext;
+                p.Render();
+                CollisionDetection();
             }
-
-            if(tmpCount == -1)
-                tmpCount = SnakePlayer.TODIE.Count;
 
             foreach (SnakePlayer p in SnakePlayer.TODIE)
             {
@@ -658,11 +649,7 @@ namespace SnakeGame
                     {
                         p.GameCanvas.Children.Remove(snk.Rect);
                     }
-                    goto restart;
                 }
-                
-                if (SnakePlayer.TODIE.Count != tmpCount)
-                    goto restart;
             }
 
             if (SnakePlayer.SURVIVORS == 1 && STARTED && MULTIPLAYER)
@@ -710,13 +697,13 @@ namespace SnakeGame
             }
 
             spScores.Children.Clear();
-            foreach(SnakePlayer p in snakeplayers)
+            foreach (SnakePlayer p in snakeplayers)
             {
                 spScores.Children.Add(p.Scoretext[0]);
                 spScores.Children.Add(p.Scoretext[1]);
             }
 
-            if(STARTED)
+            if (STARTED)
                 SpawnFood();
         }
 
@@ -732,12 +719,12 @@ namespace SnakeGame
 
         public void RemovePlayer(String name)
         {
-            foreach(SnakePlayer p in Snakeplayers)
+            foreach (SnakePlayer p in Snakeplayers)
             {
-                if(p.Name == name)
+                if (p.Name == name)
                 {
                     Snakeplayers.Remove(p);
-                    foreach(SnakeElem snk in p.Snake)
+                    foreach (SnakeElem snk in p.Snake)
                     {
                         GameCanvas.Children.Remove(snk.Rect);
                     }
@@ -755,7 +742,7 @@ namespace SnakeGame
         {
             foreach (SnakePlayer p in snakeplayers)
             {
-                if(p.Name == name)
+                if (p.Name == name)
                 {
                     return null;
                 }
@@ -777,6 +764,8 @@ namespace SnakeGame
                     if (pl.Dead)
                         continue;
 
+                    SnakeplayersTmp = snakeplayers;
+
                     if (p == pl)
                     {
                         //detect collision with own snakebody
@@ -792,7 +781,8 @@ namespace SnakeGame
                                     && (p.Snake[0].Y < snk.Y + snk.Rect.ActualHeight)
                                     && (p.Snake[0].Y + p.Snake[0].Rect.Height > snk.Y))
                                 {
-                                    p.Dead = true;
+                                    if (snakeplayersTmp.Contains(p))
+                                        snakeplayersTmp.Remove(p);
                                 }
                             }
                         }
@@ -807,19 +797,34 @@ namespace SnakeGame
                                 && (p.Snake[0].Y < snk.Y + snk.Rect.ActualHeight)
                                 && (p.Snake[0].Y + p.Snake[0].Rect.Height > snk.Y))
                             {
-                                if (snk == pl.Snake[0] && !pl.Dead)
-                                    pl.Dead = true;
+                                if (snk == pl.Snake[0])
+                                {
+                                    if (snakeplayersTmp.Contains(pl))
+                                        snakeplayersTmp.Remove(pl);
+                                }
 
-                                if (!p.Dead)
-                                    p.Dead = true;
+                                if (snakeplayersTmp.Contains(p))
+                                    snakeplayersTmp.Remove(p);
                             }
                         }
                     }
                 }
-                foreach (TextBlock tb in p.Scoretext)
-                {
-                    tb.Foreground = (p.Dead) ? Brushes.Gray : (SolidColorBrush)(new BrushConverter().ConvertFromString(p.Color.ToString()));
-                }
+            }
+
+            foreach (SnakePlayer dead in snakeplayers)
+            {
+                dead.Dead = true;
+            }
+
+            foreach (SnakePlayer alive in snakeplayersTmp)
+            {
+                alive.Dead = false;
+            }
+
+            foreach (SnakePlayer player in snakeplayers)
+            {
+                player.Scoretext[0].Foreground = (player.Dead) ? Brushes.Gray : (SolidColorBrush)(new BrushConverter().ConvertFromString(player.Color.ToString()));
+                player.Scoretext[1].Foreground = (player.Dead) ? Brushes.Gray : (SolidColorBrush)(new BrushConverter().ConvertFromString(player.Color.ToString()));
             }
         }
     }
