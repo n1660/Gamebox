@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Net;
 
 namespace iSketch
 {
@@ -25,6 +26,7 @@ namespace iSketch
         {
             InitializeComponent();
             PlayerUsername.KeyDown += new KeyEventHandler(Key_Events);
+            Username_Canvas.Visibility = Visibility.Hidden;
             //Popup_Username.IsOpen = true;
             
         }
@@ -47,7 +49,8 @@ namespace iSketch
             {
                 if (sender == this.iSketch)
                 {
-                    MainWindow.win.Content = new Artist();
+                    Username_Canvas.Visibility = Visibility.Visible;
+                    //MainWindow.win.Content = new Artist();
                 }
                 else if (sender == this.Snake)
                 {
@@ -63,6 +66,8 @@ namespace iSketch
 
         void get_player_data()
         {
+            Popup_Username_Exists.IsOpen = false;
+
             if(PlayerUsername.Text != null)
             {
                 bool Not_Only_Blanks = false;
@@ -77,10 +82,31 @@ namespace iSketch
 
                 if (Not_Only_Blanks)
                 {
-                    MemberList.Add(new Member() { ID = null, Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IP
-                    //Popup_Username.IsOpen = false;
-                    Username_Canvas.Visibility = Visibility.Hidden;
+                    if (MemberList.Count < Artist.Max_Players)
+                    {
+                        if (MemberList.Exists(x => x.Username == PlayerUsername.Text) || MemberList.Exists(x => x.ID == IPAddress.Loopback)) // No Dublicates / Not Correct
+                            Popup_Username_Exists.IsOpen = true;
+                        else
+                        {
+
+                            MemberList.Add(new Member() { ID = null, Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IPv4
+
+                            Username_Canvas.Visibility = Visibility.Hidden;
+
+                            for (int i = 0; i < MemberList.Count; i++)
+                            {
+                                if (MemberList[i].Username == PlayerUsername.Text)
+                                {
+                                    MemberList[i].ID = IPAddress.Loopback; // Ist nicht das was wir brauchen. Wir wollen IPv4!
+                                    Console.WriteLine(MemberList[i].ID); // DEBUG 
+                                }
+                            }
+                            MainWindow.win.Content = new Artist();
+                        }
+                    }
+
                 }
+
             }
         }
 

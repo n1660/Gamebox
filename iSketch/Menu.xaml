@@ -55,15 +55,11 @@
             </Button.Template>
         </Button>
 
-        <!--<Popup Name="Popup_Username" Grid.Column="1" Grid.Row="2" PopupAnimation="Fade" AllowsTransparency="True" Placement="Center">
-            <StackPanel>
-                <TextBlock Background="#FF9DEA52">Your Username:</TextBlock>
-                <TextBox Name="username" Background="white" Width="150" Height="30" BorderThickness="5" BorderBrush="#FF9DEA52"/>
-                <Button Name="Submit" Click="Button_Click_Menu" BorderThickness="5" BorderBrush="#FF9DEA52">Submit</Button>
-            </StackPanel>
-        </Popup>-->
+        <Popup Name="Popup_Username_Exists" Grid.Column="1" Grid.Row="2" PopupAnimation="Fade" AllowsTransparency="True" Placement="Mouse">
+                <TextBlock Background="#FFFF4F4F">This username already exists"</TextBlock>
+        </Popup>
 
-        <Canvas Name="Username_Canvas" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Background="RosyBrown" Margin="50">
+        <Canvas Name="Username_Canvas" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Background="RosyBrown" Margin="53,49.8,47,50.4">
             <Grid Width="{Binding ActualWidth, ElementName=Username_Canvas, Mode=OneWay}" Height="{Binding ActualHeight, ElementName=Username_Canvas, Mode=OneWay}" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

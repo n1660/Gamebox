@@ -29,6 +29,7 @@ namespace iSketch
 
         public static bool registered = false;
 
+        // Wordlist
         private int List_Length;
         private string random_word1;
         private string random_word2;
@@ -40,6 +41,9 @@ namespace iSketch
 
         private int Max_Score = 500;
         private static int Max_Time;
+        private static int Max_Rounds = 5;
+        public static int Max_Players = 8;
+
         public string Current_Artist;
         public int Current_Artist_Num;
 
@@ -59,6 +63,7 @@ namespace iSketch
             //Show_MessageBox();
             Set_ChooseWords();
             Show_Scores();
+
 
         }
 
