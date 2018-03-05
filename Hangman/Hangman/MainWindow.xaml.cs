@@ -21,6 +21,7 @@ namespace Hangman
     {
         public MainWindow()
         {
+            InitializeComponent();
             Content = new Hangman_menu();
         }
     }
