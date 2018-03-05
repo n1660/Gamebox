@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -51,7 +47,7 @@ namespace SnakeGame
         public int score;
 
         //globals
-        public static int CURPARTICIPANTS = 0, SIZEELEM = 14, STARTLENGTH = 5, SURVIVORS;
+        public static int CURPARTICIPANTS = 0, SIZEELEM = 14, STARTLENGTH = 5;
         public static List<SnakePlayer> TODIE = new List<SnakePlayer>();
 
         //Properties
@@ -65,6 +61,7 @@ namespace SnakeGame
         public TextBlock[] Scoretext { get => scoretext; set => scoretext = value; }
         public Directions Direction { get => direction; set => direction = value; }
         public Directions DisabledDirection { get => disabledDirection; set => disabledDirection = value; }
+        public IPEndPoint Address { get => address; set => address = value; }
 
         //c'tor
         public SnakePlayer(String name, IPEndPoint adr, Canvas gamecanv)
@@ -88,7 +85,8 @@ namespace SnakeGame
                 FontSize = 22,
                 FontWeight = FontWeights.Bold,
                 TextAlignment = TextAlignment.Center,
-        };
+                Text = name + ":"
+            };
             this.Scoretext[1] = new TextBlock
             {
                 Name = "TxtScorePlayer" + this.Id,
@@ -102,7 +100,6 @@ namespace SnakeGame
             this.disabledDirection = ((int)this.snake[0].Direction < 2) ? (Directions)((int)this.snake[0].Direction + 2) : (Directions)((int)this.snake[0].Direction - 2);
 
             UpdateRanking();
-            this.UpdateScore();
             foreach (SnakeElem snk in this.snake)
             {
                 this.gameCanvas.Children.Add(snk.Rect);
@@ -131,7 +128,6 @@ namespace SnakeGame
                 });
             }
         }
-
         public List<SnakeElem> InitializeSnake()
         {
             this.snakeTmp.Add(new SnakeElem
@@ -227,7 +223,6 @@ namespace SnakeGame
             }
             this.SnakeEat();
         }
-
         public void Render()
         {
             if (App.Current.MainWindow.Content.GetType().Name != (typeof(GamepageSnake).Name))
@@ -283,8 +278,8 @@ namespace SnakeGame
                 gameCanvas.Children.Add(GamepageSnake.APPLE.Shape);
             
             this.MoveSnake();
+            UpdateRanking();
         }
-
         public void SnakeEat()
         {
             if (this.snake != null && GamepageSnake.APPLE != null)
@@ -313,50 +308,21 @@ namespace SnakeGame
                     this.snake.Add(snakeElemTmp);
                     this.snake[this.snake.Count - 2].Rect.Fill = this.pictures[SnakeGame.Pictures.Elem.ToString()];
                     this.score++;
-                    this.UpdateScore();
-                    UpdateRanking();
                 }
                 this.snake[0] = head;
             }
         }
-
-        public void UpdateScore()
-        {
-            this.scoretext[0].Text = this.name + ": ";
-            this.scoretext[1].Text = this.score.ToString();
-            foreach (TextBlock tb in this.scoretext)
-            {
-                if (MenupageSnake.GamePage.GetScoreSP().Children.Contains(tb))
-                    MenupageSnake.GamePage.GetScoreSP().Children.Remove(tb);
-
-                MenupageSnake.GamePage.GetScoreSP().Children.Add(tb);
-            }
-        }
-
         public static void UpdateRanking()
         {
             GamepageSnake.Snakeplayers.Sort(delegate (SnakePlayer x, SnakePlayer y)
             {
                 if (x.score == y.score)
                     return (x.id.CompareTo(y.id));
-                else if (x.score > y.score)
+                else if (x.score < y.score)
                     return -1;
                 else
                     return 1;
             });
-            UpdateSurvivors();
-        }
-
-        public static void UpdateSurvivors()
-        {
-            SURVIVORS = 0;
-            foreach (SnakePlayer p in GamepageSnake.Snakeplayers)
-            {
-                if (!p.dead)
-                {
-                    SURVIVORS++;
-                }
-            }
         }
     }
 }

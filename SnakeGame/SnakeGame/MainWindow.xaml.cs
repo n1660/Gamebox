@@ -1,14 +1,7 @@
-﻿using SnakeGame;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 
 namespace SnakeGame
 {
@@ -22,6 +15,8 @@ namespace SnakeGame
 
         //globals
         public Dictionary<String, Dictionary<Key, Directions>> PLAYERKEYS = new Dictionary<string, Dictionary<Key, Directions>>();
+
+        //FrameworkElements
 
         //UIElements
 
@@ -48,7 +43,6 @@ namespace SnakeGame
 }
             };
             PLAYERKEYS.Add("playerGreen", pg);
-
             Dictionary<Key, Directions> pb = new Dictionary<Key, Directions>
             {
                 {Key.D, Directions.right},
@@ -57,7 +51,6 @@ namespace SnakeGame
                 {Key.W, Directions.up}
             };
             PLAYERKEYS.Add("playerBlue", pb);
-
             Dictionary<Key, Directions> pr = new Dictionary<Key, Directions>
             {
                 {Key.NumPad6, Directions.right},
@@ -67,7 +60,6 @@ namespace SnakeGame
 }
             };
             PLAYERKEYS.Add("playerRed", pr);
-
             Dictionary<Key, Directions> pp = new Dictionary<Key, Directions>
             {
                 {Key.L, Directions.right},

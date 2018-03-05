@@ -1,20 +1,11 @@
-﻿using SnakeGame;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Threading;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 
 namespace SnakeGame
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MenupageSnake : Page
     {
         //membervariables
@@ -22,9 +13,8 @@ namespace SnakeGame
 
         //globals
 
-        //UIElements
+        //FrameworkElements
         public StackPanel spMode = new StackPanel();
-
         public Canvas CanvStartSnake = new Canvas
         {
             Height = 180,
@@ -32,6 +22,7 @@ namespace SnakeGame
             Margin = new Thickness(0, 0, 0, 0)
         };
 
+        //UIElements
         public Button BtnTBStartSnakeSP = new Button
         {
             Background = Brushes.Transparent,
@@ -40,7 +31,6 @@ namespace SnakeGame
             FontWeight = FontWeights.Bold,
             Content = "Single player"
         };
-
         public Button BtnTBStartSnakeMP = new Button
         {
             Background = Brushes.Transparent,

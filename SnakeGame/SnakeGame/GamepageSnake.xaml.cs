@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace SnakeGame
@@ -26,11 +24,12 @@ namespace SnakeGame
         public static Random RANDOM = new Random();
         public static Apple APPLE;
 
-        //UIElements
+        //FrameworkElements
         public Canvas GameCanvas = new Canvas();
         public StackPanel spScores = new StackPanel();
         public DockPanel dpButtons = new DockPanel();
 
+        //UIElements
         public Button BtnNew = new Button
         {
             Background = Brushes.DarkGoldenrod,
@@ -47,7 +46,6 @@ namespace SnakeGame
             HorizontalContentAlignment = HorizontalAlignment.Center,
             VerticalContentAlignment = VerticalAlignment.Center
         };
-
         public Button BtnAddPlayer = new Button
         {
             VerticalAlignment = VerticalAlignment.Top,
@@ -57,7 +55,6 @@ namespace SnakeGame
             Width = 40,
             Content = "+"
         };
-
         public Button BtnRemovePlayer = new Button
         {
             VerticalAlignment = VerticalAlignment.Top,
@@ -68,7 +65,6 @@ namespace SnakeGame
             Width = 40,
             Content = "-"
         };
-
         public Button BtnExit = new Button
         {
             VerticalAlignment = VerticalAlignment.Top,
@@ -78,7 +74,6 @@ namespace SnakeGame
             Width = 40,
             Content = "X"
         };
-
         public Button BtnPause = new Button
         {
             VerticalAlignment = VerticalAlignment.Top,
@@ -88,7 +83,6 @@ namespace SnakeGame
             Width = 40,
             Content = "ll"
         };
-
         public TextBlock txtPlayers = new TextBlock
         {
             Foreground = Brushes.DarkGreen,
@@ -100,7 +94,6 @@ namespace SnakeGame
             HorizontalAlignment = HorizontalAlignment.Left,
             TextAlignment = TextAlignment.Center,
         };
-
         public TextBlock txtWinner = new TextBlock
         {
             Foreground = Brushes.DarkGoldenrod,
@@ -119,7 +112,6 @@ namespace SnakeGame
             Background = Brushes.SeaGreen,
             Visibility = Visibility.Hidden
         };
-
         public Label LblInputheaderR = new Label
         {
             Margin = new Thickness(0, 5, 0, 0),
@@ -133,7 +125,13 @@ namespace SnakeGame
             VerticalAlignment = VerticalAlignment.Center,
             IsEnabled = false
         };
-
+        public ComboBox playerbox = new ComboBox
+        {
+            Margin = new Thickness(0, 5, 0, 0),
+            Background = Brushes.LightSeaGreen,
+            Foreground = Brushes.Black,
+            HorizontalContentAlignment = HorizontalAlignment.Center
+        };
         public Button BtnSubmitRemovePlayer = new Button
         {
             Margin = new Thickness(0, 5, 0, 0),
@@ -144,15 +142,6 @@ namespace SnakeGame
             Width = 50,
             Content = "Remove"
         };
-
-        public ComboBox playerbox = new ComboBox
-        {
-            Margin = new Thickness(0, 5, 0, 0),
-            Background = Brushes.LightSeaGreen,
-            Foreground = Brushes.Black,
-            HorizontalContentAlignment = HorizontalAlignment.Center
-        };
-
         public Button BtnCancelR = new Button
         {
             Margin = new Thickness(0, 25, 0, 0),
@@ -163,7 +152,6 @@ namespace SnakeGame
             Width = 50,
             Content = "Cancel"
         };
-
         public Label LblErrorR = new Label
         {
             Margin = new Thickness(0, 5, 0, 0),
@@ -184,7 +172,6 @@ namespace SnakeGame
             Background = Brushes.SeaGreen,
             Visibility = Visibility.Hidden,
         };
-
         public Label LblInputheaderA = new Label
         {
             Margin = new Thickness(0, 5, 0, 0),
@@ -198,7 +185,6 @@ namespace SnakeGame
             VerticalAlignment = VerticalAlignment.Center,
             IsEnabled = false
         };
-
         public Label LblNameA = new Label
         {
             Margin = new Thickness(0, 5, 0, 0),
@@ -209,16 +195,13 @@ namespace SnakeGame
             HorizontalContentAlignment = HorizontalAlignment.Center,
             IsEnabled = false
         };
-
         public TextBox InputNameA = new TextBox
         {
             Background = Brushes.LightSeaGreen,
             Foreground = Brushes.Black,
-            Text = "player " + (snakeplayers.Count + 1).ToString(),
             TextAlignment = TextAlignment.Center,
             Width = 80
         };
-
         public Label LblIPA = new Label
         {
             Margin = new Thickness(0, 5, 0, 0),
@@ -229,16 +212,13 @@ namespace SnakeGame
             HorizontalContentAlignment = HorizontalAlignment.Center,
             IsEnabled = false
         };
-
         public TextBox InputIPA = new TextBox
         {
             Background = Brushes.LightSeaGreen,
             Foreground = Brushes.Black,
             TextAlignment = TextAlignment.Center,
             Width = 80,
-            Text = IPAddress.Loopback.ToString()
         };
-
         public Label LblPortA = new Label
         {
             Margin = new Thickness(0, 5, 0, 0),
@@ -249,16 +229,14 @@ namespace SnakeGame
             HorizontalContentAlignment = HorizontalAlignment.Center,
             IsEnabled = false
         };
-
         public TextBox InputPortA = new TextBox
         {
             Background = Brushes.LightSeaGreen,
             Foreground = Brushes.Black,
             TextAlignment = TextAlignment.Center,
             Width = 80,
-            Text = "1337"
+            Text = ""
         };
-
         public Label LblErrorA = new Label
         {
             Margin = new Thickness(0, 5, 0, 0),
@@ -270,7 +248,6 @@ namespace SnakeGame
             Visibility = Visibility.Hidden,
             IsEnabled = false
         };
-
         public Button BtnSubmitNewPlayer = new Button
         {
             Margin = new Thickness(0, 5, 0, 0),
@@ -281,7 +258,6 @@ namespace SnakeGame
             Width = 50,
             Content = "Submit"
         };
-
         public Button BtnCancelA = new Button
         {
             Margin = new Thickness(0, 25, 0, 0),
@@ -363,7 +339,7 @@ namespace SnakeGame
             Canvas.SetTop(newPlayerPrompt, ((GameCanvas.ActualHeight / 2) - (newPlayerPrompt.Height / 2)));
             GameCanvas.Children.Add(newPlayerPrompt);
 
-            BtnSubmitNewPlayer.Click += BtnSubmitRemovePlayer_Click;
+            BtnSubmitNewPlayer.Click += BtnSubmitNewPlayer_Click;
             BtnCancelR.Click += BtnCancel_Click;
             removePlayerPrompt.Children.Add(LblInputheaderR);
             removePlayerPrompt.Children.Add(playerbox);
@@ -374,14 +350,15 @@ namespace SnakeGame
             removePlayerPrompt.Children.Add(LblErrorR);
             Canvas.SetZIndex(BtnNew, 2);
             Canvas.SetZIndex(removePlayerPrompt, 2);
-            Canvas.SetLeft(removePlayerPrompt, GameCanvas.ActualWidth - removePlayerPrompt.Width / 2);
-            Canvas.SetTop(removePlayerPrompt, GameCanvas.ActualHeight - removePlayerPrompt.Height / 2);
             Canvas.SetLeft(removePlayerPrompt, ((GameCanvas.ActualWidth / 2) - (removePlayerPrompt.Width / 2)));
             Canvas.SetTop(removePlayerPrompt, ((GameCanvas.ActualHeight / 2) - (removePlayerPrompt.Height / 2)));
             GameCanvas.Children.Add(removePlayerPrompt);
 
             BtnRemovePlayer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             BtnRemovePlayer.Arrange(new Rect(0, 0, Application.Current.MainWindow.DesiredSize.Width, Application.Current.MainWindow.DesiredSize.Height));
+
+            if (snakeplayers.Count < 1)
+                BtnCancelA.IsEnabled = false;
 
             if (MULTIPLAYER)
             {
@@ -439,8 +416,6 @@ namespace SnakeGame
                 Interval = new TimeSpan(0, 0, 0, 0, 155), //speed
             };
 
-            SnakePlayer.SURVIVORS = snakeplayers.Count;
-
             TIMER.Tick += Time_Tick;
             TIMER.Start();
         }
@@ -468,7 +443,6 @@ namespace SnakeGame
                 txtPlayers.Foreground = Brushes.DarkGreen;
             }
         }
-
         private void BtnSubmitRemovePlayer_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -499,18 +473,17 @@ namespace SnakeGame
                 LblErrorR.Visibility = Visibility.Visible;
             }
         }
-
         private void BtnSubmitNewPlayer_Click(object sender, RoutedEventArgs e)
         {
             SnakePlayer playerTmp = null;
             try
             {
-                if (InputNameA.Text == "" || InputIPA.Text == "" || InputPortA.Text == "")
+                if (InputNameA.Text == "" || InputIPA.Text == "" || InputPortA.Text == "" || InputIPA.Text.Split('.').Length != 4)
                     throw new Exception();
 
                 playerTmp = AddPlayerToGame(InputNameA.Text, new IPEndPoint(IPAddress.Parse(InputIPA.Text), Int32.Parse(InputPortA.Text)), GameCanvas);
                 if (playerTmp == null)
-                    return;
+                    throw new Exception();
 
                 snakeplayers.Add(playerTmp);
                 newPlayerPrompt.Visibility = Visibility.Hidden;
@@ -533,13 +506,13 @@ namespace SnakeGame
                     txtPlayers.Foreground = Brushes.DarkGreen;
                 }
                 txtPlayers.Text = "players: " + SnakePlayer.CURPARTICIPANTS.ToString();
+                BtnCancelA.IsEnabled = true;
             }
             catch (Exception)
             {
                 LblErrorA.Visibility = Visibility.Visible;
             }
         }
-
         private void BtnPause_Click(object sender, RoutedEventArgs e)
         {
             UIElementCollection gameElems = new UIElementCollection(GameCanvas, this);
@@ -561,20 +534,25 @@ namespace SnakeGame
                 STARTED = false;
             }
         }
-
         private void BtnAddPlayer_Click(object sender, RoutedEventArgs e)
         {
             newPlayerPrompt.Visibility = Visibility.Visible;
+            LblErrorA.Visibility = Visibility.Hidden;
 
-            InputNameA.Text = "player " + (snakeplayers.Count + 1).ToString();
+            InputNameA.Text = InputIPA.Text = InputPortA.Text = "";
+
             newPlayerPrompt.Visibility = Visibility.Visible;
             BtnPause.Visibility = Visibility.Hidden;
             BtnPause.IsEnabled = false;
-        }
 
+            Canvas.SetZIndex(newPlayerPrompt, 2);
+            Canvas.SetLeft(newPlayerPrompt, GameCanvas.ActualWidth / 2 - newPlayerPrompt.Width / 2);
+            Canvas.SetTop(newPlayerPrompt, GameCanvas.ActualHeight / 2 - newPlayerPrompt.Height / 2);
+        }
         private void BtnRemovePlayer_Click(object sender, RoutedEventArgs e)
         {
             removePlayerPrompt.Visibility = Visibility.Visible;
+            LblErrorR.Visibility = Visibility.Hidden;
 
             List<string> vals = new List<string>();
             foreach (SnakePlayer p in snakeplayers)
@@ -589,10 +567,15 @@ namespace SnakeGame
             playerbox.SelectedIndex = snakeplayers.Count - 1;
             removePlayerPrompt.Visibility = Visibility.Visible;
             BtnAddPlayer.IsEnabled = true;
-        }
 
+            Canvas.SetZIndex(removePlayerPrompt, 2);
+            Canvas.SetLeft(removePlayerPrompt, ((GameCanvas.ActualWidth / 2) - (removePlayerPrompt.Width / 2)));
+            Canvas.SetTop(removePlayerPrompt, ((GameCanvas.ActualHeight / 2) - (removePlayerPrompt.Height / 2)));
+        }
         private void BtnExit_Click(object sender, RoutedEventArgs e)
         {
+            SnakePlayer.CURPARTICIPANTS = 0;
+            snakeplayers.Clear();
             App.Current.MainWindow.Content = new MenupageSnake(); ;
         }
 
@@ -617,7 +600,6 @@ namespace SnakeGame
                 }
             }
         }
-
         public void Render()
         {
             if (App.Current.MainWindow.Content.GetType().Name != (typeof(GamepageSnake).Name))
@@ -652,7 +634,7 @@ namespace SnakeGame
                 }
             }
 
-            if (SnakePlayer.SURVIVORS == 1 && STARTED && MULTIPLAYER)
+            if (snakeplayers.Count == 1 && STARTED && MULTIPLAYER)
             {
                 BtnPause.IsEnabled = false;
                 BtnNew.Visibility = Visibility.Visible;
@@ -687,7 +669,7 @@ namespace SnakeGame
                 };
             }
 
-            if (SnakePlayer.SURVIVORS == 0 && STARTED && MULTIPLAYER)
+            if (snakeplayers.Count == 0 && STARTED && MULTIPLAYER)
             {
                 BtnPause.IsEnabled = false;
                 BtnNew.Visibility = Visibility.Visible;
@@ -696,27 +678,21 @@ namespace SnakeGame
                 GameCanvas.Background = gopic;
             }
 
-            spScores.Children.Clear();
-            foreach (SnakePlayer p in snakeplayers)
-            {
-                spScores.Children.Add(p.Scoretext[0]);
-                spScores.Children.Add(p.Scoretext[1]);
+            foreach (SnakePlayer p in snakeplayers) {
+                p.Scoretext[1].Text = p.score.ToString();
             }
 
             if (STARTED)
                 SpawnFood();
         }
-
         public Canvas GetGameCanvas()
         {
             return GameCanvas;
         }
-
         public StackPanel GetScoreSP()
         {
             return spScores;
         }
-
         public void RemovePlayer(String name)
         {
             foreach (SnakePlayer p in Snakeplayers)
@@ -737,20 +713,23 @@ namespace SnakeGame
                 }
             }
         }
-
         public SnakePlayer AddPlayerToGame(String name, IPEndPoint ip_port, Canvas gamecanv)
         {
             foreach (SnakePlayer p in snakeplayers)
             {
-                if (p.Name == name)
+                if (name == p.Name || ip_port == p.Address)
                 {
                     return null;
                 }
             }
             SnakePlayer player = new SnakePlayer(name, ip_port, gamecanv);
+            foreach (TextBlock tb in player.Scoretext)
+            {
+                spScores.Children.Add(tb);
+            }
+
             return player;
         }
-
         public static void CollisionDetection()
         {
             //detect collision with any snakebody
