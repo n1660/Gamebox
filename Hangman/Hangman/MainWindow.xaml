@@ -5,17 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hangman"
         mc:Ignorable="d"
-        Title="Hangman" Height="577.742" Width="846.468" Background="LightCyan">
+        Title="Hangman" Height="600.142" Width="846.468" Background="LightCyan">
     <Window.Resources>
         <Style TargetType="Button">
-            <Setter Property="Width" Value="62"/>
-            <Setter Property="Height" Value="62"/>
+            <Setter Property="Width" Value="156"/>
+            <Setter Property="Height" Value="88"/>
             <Setter Property="FontSize" Value="28.8"/>
-        </Style>
-        <Style TargetType="Label">
-            <Setter Property="Width" Value="50"/>
-            <Setter Property="Height" Value="73"/>
-            <Setter Property="FontSize" Value="50"/>
         </Style>
         <Style TargetType="Image">
             <Setter Property="Height" Value="300"/>
@@ -24,11 +19,4 @@
             <Setter Property="Canvas.Top" Value="57"/>
         </Style>
     </Window.Resources>
-    <Canvas HorizontalAlignment="Left" Height="548.942" VerticalAlignment="Top" Width="838.4676" Margin="0,10,-77.8,-7" Background="LightCyan" Name="canvas">
-        <TextBlock Height="40.8" TextWrapping="Wrap" Text="Choose a letter:&#xD;&#xA;" Width="208.8" Canvas.Top="363.6" FontSize="28.8" Background="LightCyan"/>
-        <TextBlock TextWrapping="Wrap" Text="Solution:" Width="116.4" Height="40.8" Canvas.Left="4" Canvas.Top="302" FontSize="28.8"/>
-        <TextBox Height="41" TextWrapping="Wrap" Width="254" Canvas.Left="133" Canvas.Top="302" FontSize="28.8" TextChanged="TextBox_TextChanged" Name="textbox"/>
-        <Button Content="Submit" Canvas.Left="406" Canvas.Top="295" Width="75" FontSize="20" Click="Button_Click_Submit"/>
-        <Image Name="bild"/>
-    </Canvas>
 </Window>
