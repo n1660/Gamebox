@@ -1,0 +1,133 @@
+﻿<Page x:Class="iSketch.Artist"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:iSketch"
+      mc:Ignorable="d"
+      Title="Artist" MinHeight="448.62" MinWidth="765"
+      HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+      >
+
+
+    <Page.Background>
+        <ImageBrush ImageSource="res/backgrounds/retro.jpg" Stretch="UniformToFill"/>
+        <!--<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFB1C0C0" Offset="1"/>
+            <GradientStop Color="#FF29A5C3" Offset="0"/>
+        </LinearGradientBrush>-->
+    </Page.Background>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <TextBlock Name="Your_Word" Grid.Row="0" Grid.Column="0" FontSize="16" FontFamily="Consolas" Margin="10,10,0,0"/>
+        <TextBlock Name="Countdown" Grid.Row="0" Grid.Column="1" FontSize="16" FontFamily="Consolas" Margin="150,10,10,0"/>
+
+        <Canvas Name="MyCanvas" Grid.Row="1" Grid.Column="0" Background="White" Margin="10" MouseDown="MyCanvas_MouseDown" MouseMove="MyCanvas_MouseMove" />
+        <TextBlock Name="Scores" Grid.Row="1" Grid.Column="1" Margin="10" />
+        <Canvas Name="ChooseWordCanvas" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="81,79.6,81,66.6" MaxHeight="132,8" MaxWidth="603,2" Height="129">
+            <Canvas.Background>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#FF256F69"/>
+                    <GradientStop Color="#FFDFDCDC" Offset="1"/>
+                </LinearGradientBrush>
+            </Canvas.Background>
+            <Grid Height="{Binding ActualHeight, ElementName=ChooseWordCanvas, Mode=OneWay}" Width="{Binding ActualWidth, ElementName=ChooseWordCanvas, Mode=OneWay}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="8*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"  Margin="10" Text="Choose your word!" FontSize="25" TextAlignment="Center" Foreground="White"/>
+                <Button Name="word1_B" Grid.Column="0" Grid.Row="1" Margin="10" Click="Button_Click">
+                    <TextBlock Name="word1" ></TextBlock>
+                </Button>
+                <Button Name="word2_B" Grid.Column="1" Grid.Row="1" Margin="10" Click="Button_Click">
+                    <TextBlock Name="word2"></TextBlock>
+                </Button>
+                <Button Name="word3_B" Grid.Column="2" Grid.Row="1" Margin="10" Click="Button_Click">
+                    <TextBlock Name="word3"></TextBlock>
+                </Button>
+            </Grid>
+        </Canvas>
+
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.25*"/>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.25*"/>
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Grid.Column="0" Header="Thickness" Margin="10,10,10,10">
+                <StackPanel Orientation="Vertical">
+                    <RadioButton Name="Size_1" GroupName="Sizes" Click="Button_Click" Margin="0,5,0,0" Padding="5,2">
+                        <TextBlock Background="Black" Width="60" Height="10" />
+                    </RadioButton>
+                    <RadioButton Name="Size_2" GroupName="Sizes" Click="Button_Click" Margin="0,5,0,0" IsChecked="True" Padding="5">
+                        <TextBlock Background="Black" Width="60" Height="7"/>
+                    </RadioButton>
+                    <RadioButton Name="Size_3" GroupName="Sizes" Click="Button_Click" Margin="0,5,0,0" Padding="5">
+                        <TextBlock Background="Black" Width="60" Height="4" />
+                    </RadioButton>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Grid.Column="1" Header="Colours" Margin="10,10,10,10">
+                <UniformGrid Rows="3" Margin="10,10,10,10" Width="100">
+                    <Button Name="Colour_1" Click="Button_Click" Background="Black"/>
+                    <Button Name="Colour_2" Click="Button_Click" Background="#FF6F6262" />
+                    <Button Name="Colour_3" Click="Button_Click" Background="White" />
+                    <Button Name="Colour_4" Click="Button_Click" Background="#FF006EE7" />
+                    <Button Name="Colour_5" Click="Button_Click" Background="#FFCA0D0D" />
+                    <Button Name="Colour_6" Click="Button_Click" Background="#FFFCFD0A" />
+                    <Button Name="Colour_7" Click="Button_Click" Background="#FF41B006" />
+                    <Button Name="Colour_8" Click="Button_Click" Background="#FF763105" />
+                    <Button Name="Colour_9" Click="Button_Click" Background="#FF8E21E2" />
+                </UniformGrid>
+            </GroupBox>
+
+            <Button Grid.Column="2" Name="BTN_Clear" Margin="40,10,10,100" Click="Button_Click">Clear</Button>
+
+        </Grid>
+
+
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1.5*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBox Name="Chat_Window" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="10,10,10,10" Background="#FFC8C3C3"/>
+            <Popup VerticalAlignment="Top" Name="Popup_Word" Grid.Column="0" PopupAnimation="Fade" AllowsTransparency="True" Grid.ColumnSpan="2" Margin="0,46,109.2,0"  Placement="Mouse">
+                <TextBlock Name="Popup_Text"  Padding="7" />
+            </Popup>
+
+            <Button Name="BTN_Submit" Grid.Row="1" Grid.Column="1" Margin="10,10,10.2,10" Click="Button_Click">Submit</Button>
+            <Button Name="BTN_HOME" Grid.Row="2" Grid.Column="1" Margin="10,10,10.2,10" Click="Button_Click">EXIT</Button>
+        </Grid>
+
+
+
+    </Grid>
+
+</Page>
