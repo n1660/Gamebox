@@ -35,20 +35,48 @@ namespace Hangman
         public string NewWord()
         {
             string path = "Montagsmaler_Liste";
-            switch(Settings.difficultylvl)
-            { 
-                case 1:
-                    path = @"3-5Buchstaben.txt";
-                    break;
-                case 2:
-                    path = @"6-8Buchstaben.txt";
-                    break;
-                case 3:
-                    path = @"Extrem.txt";
-                    break;
-                default:
-                    break;
-            }
+            
+                switch(Settings.difficultylvl)
+                { 
+                    case 1:
+                        switch (Settings.language)
+                        {
+                            case 1:
+                                path = @"3-5Buchstaben.txt";
+                                break;
+                            case 2:
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case 2:
+                        switch (Settings.language)
+                        {
+                            case 1:
+                                path = @"6-8Buchstaben.txt";
+                                break;
+                            case 2:
+                                break;
+                            default:
+                                break;
+                        }                  
+                        break;
+                    case 3:
+                        switch (Settings.language)
+                        {
+                            case 1:
+                                path = @"Extrem.txt";
+                                break;
+                            case 2:
+                                break;
+                            default:
+                                break;
+                        }                  
+                        break;
+                    default:
+                        break;
+                }
             string readText = File.ReadAllText(path);
             string[] wort = readText.Split('\n');
 
@@ -88,11 +116,11 @@ namespace Hangman
                     bool letterUsed = alreadyUsed.Contains(letter);
                     if(letterUsed)
                     {
-                        MessageBox.Show(String.Format("Buchstabe {0} bereits gewählt!", letter));
+                        MessageBox.Show(String.Format("Letter {0} already chosen!", letter));
                     }
                     else
                     { 
-                        MessageBox.Show(String.Format("Buchstabe {0} nicht enthalten!", letter));
+                        MessageBox.Show(String.Format("Letter {0} not included!", letter));
                         MistakeWasMade();
                     }
                     alreadyUsed += letter;
@@ -113,7 +141,7 @@ namespace Hangman
                 }
 
                 ShowNewWord(randomWord[randInt].ToString());    //Buchstabe auslesen und anzeigen
-                CheckIfWordShown("Durch schummeln erraten!");
+                CheckIfWordShown("You needed help!");
 
                 checkrand += randString;
                 MistakeWasMade();
@@ -123,17 +151,35 @@ namespace Hangman
         {
             int pos = randomWord.IndexOf(letter);
             lbls[pos].Content = letter;
+            checkrand += pos;
             int pos2 = randomWord.IndexOf(letter, pos + 1);
-            if (pos2 != -1)  // weiterer Buchstabe gefunden
+            if (pos2 != -1)  // weiterer Buchstabe gefunden (6 mal überprüfen)
             {
                 lbls[pos2].Content = letter;
+                checkrand += pos2;
                 int pos3 = randomWord.IndexOf(letter, pos2 + 1);
                 if (pos3 != -1)
                 {
                     lbls[pos3].Content = letter;
+                    checkrand += pos3;
                     int pos4 = randomWord.IndexOf(letter, pos3 + 1);
                     if (pos4 != -1)
+                    { 
                         lbls[pos4].Content = letter;
+                        checkrand += pos4;
+                        int pos5 = randomWord.IndexOf(letter, pos4 + 1);
+                        if(pos5 != -1)
+                        {
+                            lbls[pos5].Content = letter;
+                            checkrand += pos5;
+                            int pos6 = randomWord.IndexOf(letter, 5 + 1);
+                            if(pos6 != -1)
+                            {
+                                lbls[pos6].Content = letter;
+                                checkrand += pos6;
+                            }
+                        }
+                    }
                 }
             }
             CheckIfWordShown("Gewonnen!");
@@ -158,7 +204,7 @@ namespace Hangman
             Show_Image();
             if (anzfehler == maxfehler)
             {
-                MessageBox.Show("Leider verloren!");
+                MessageBox.Show("You lost!");
                 QuitGame();
             }
         }
@@ -166,14 +212,14 @@ namespace Hangman
         {
             if (solution == randomWord)
             {
-                MessageBox.Show("Gewonnen!");
+                MessageBox.Show("You won!");
                 for (int i = 0; i < randomWord.Length; i++)
                     lbls[i].Content = randomWord[i];
                 QuitGame();
             }
             else
             {
-                MessageBox.Show("Leider das falsche Wort!");
+                MessageBox.Show("Wrong word!");
                 textbox.Text = "";
                 MistakeWasMade();
             }
