@@ -9,13 +9,11 @@ namespace iSketch
 {
     public class Member //: IEquatable<Member>
     {
-        public IPAddress ID { get; set; }
+        public int ID { get; set; } // Für Sockets als int -> ID wird vom Socket zugewiesen!
         public string Username { get; set; }
         public int Score { get; set; }
         public int Moves { get; set; }
         public bool Guessed_Correctly { get; set; }
     }
-
-
-
+    // Bei Add -> Daten müssen auch an den andern geschickt werden
 }

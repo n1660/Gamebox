@@ -16,8 +16,6 @@ using System.Net;
 
 namespace iSketch
 {
-    /// TODO: Sperre! Wenn kein Username eingegeben-> Spielauswahl verweigern
-    /// ( Wenn man zurück ins Menu geht: Erneute Username Eingabe -> Notwendig? (Falls jemand es ändern will, ja))
     public partial class Menu : Page
     {
         public static List<Member> MemberList = new List<Member>();
@@ -61,7 +59,6 @@ namespace iSketch
                     Console.Write("Start Hangman X");
                 }
             }
- 
         }
 
         void get_player_data()
@@ -84,23 +81,12 @@ namespace iSketch
                 {
                     if (MemberList.Count < Artist.Max_Players)
                     {
-                        if (MemberList.Exists(x => x.Username == PlayerUsername.Text) || MemberList.Exists(x => x.ID == IPAddress.Loopback)) // No Dublicates / Not Correct
+                        if (MemberList.Exists(x => x.Username == PlayerUsername.Text)) // No Dublicates / Not Correct
                             Popup_Username_Exists.IsOpen = true;
                         else
                         {
-
-                            MemberList.Add(new Member() { ID = null, Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IPv4
-
+                            MemberList.Add(new Member() {Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IPv4
                             Username_Canvas.Visibility = Visibility.Hidden;
-
-                            for (int i = 0; i < MemberList.Count; i++)
-                            {
-                                if (MemberList[i].Username == PlayerUsername.Text)
-                                {
-                                    MemberList[i].ID = IPAddress.Loopback; // Ist nicht das was wir brauchen. Wir wollen IPv4!
-                                    Console.WriteLine(MemberList[i].ID); // DEBUG 
-                                }
-                            }
                             MainWindow.win.Content = new Artist();
                         }
                     }

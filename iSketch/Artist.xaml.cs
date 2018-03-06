@@ -17,9 +17,14 @@ using System.Windows.Threading;
 using System.Threading;
 using System.Net;
 
-// PROBLEM: Button word3_B reagiert ab und zu kurz oder gar nicht -> Code genau wie bei den anderen, die Funktionieren
 namespace iSketch
 {
+
+    // TODO: - Groß und kleinschreibung unbeachtet lassen!
+    //       - Anzeige der Momentanen Runde neben Timer
+    //       - Host darf bei erstellen eines Spiels Rundenanzahl bestimmen!
+    //       - Wenn Spiel zu ende, was dann? -> Anzeigen der Gewinner in bestimmter Reihenfolge
+    //                                       -> Fragen ob neues Spiel? -> Host ( Wenn ja, neu mit Rundenbestimmung, sonst Alle ins Menu)
     public partial class Artist : Page
     {
         private static int Timer_Seconds = 20;
@@ -41,11 +46,12 @@ namespace iSketch
 
         private int Max_Score = 500;
         private static int Max_Time;
-        private static int Max_Rounds = 5;
+        public static int Max_Rounds = 5;
+        private static int Current_Round = 1;
         public static int Max_Players = 8;
 
         public string Current_Artist;
-        public int Current_Artist_Num;
+        public int Current_Artist_ID = 0;
 
         
         public Artist()
@@ -58,13 +64,8 @@ namespace iSketch
             Chat_Window.KeyDown += new KeyEventHandler(Key_Events);
             CreateContdown();
 
-            //if(!registered) // Set MessageBox only one time!
-            //    Set_MessageBox();
-            //Show_MessageBox();
             Set_ChooseWords();
             Show_Scores();
-
-
         }
 
         private void Key_Events(object sender, KeyEventArgs k)
@@ -88,6 +89,7 @@ namespace iSketch
             {
                 Stop_All2(); // Close Timer Thread!
                 MainWindow.win.Content = new Menu();
+                // Aus der Liste entfernen mit entsprechenden ID 
             }
 
             // Colours
@@ -149,7 +151,8 @@ namespace iSketch
 
         // For Painting  
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
-        {    
+        {   
+            // Sicherheitsabfrage ID -> Bist du derjenige der malen darf?
             Point p = e.GetPosition(this.MyCanvas); 
 
             this.lastPoint = p;
@@ -164,6 +167,8 @@ namespace iSketch
             ell.SetValue(Canvas.LeftProperty, p.X - Stroke_Thickness);
             ell.SetValue(Canvas.TopProperty, p.Y - Stroke_Thickness);
             this.MyCanvas.Children.Add(ell);
+
+            // Verschicken des Punktes an die anderen
         }
        
         private void CreateContdown()
@@ -185,8 +190,8 @@ namespace iSketch
                     Stop_All2();
                     this.Chat_Window.Clear();
                     this.MyCanvas.Children.Clear();
-                    Set_ChooseWords();
-                    //Show_MessageBox();
+                    GoToNextPlayer("timer"); // Go to next player, when time is elapsed
+                    //Set_ChooseWords();
                 };
             }));        
         }
@@ -206,6 +211,7 @@ namespace iSketch
 
         private void MyCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+            // Sicherheitsabfrage ID -> Bist du derjenige der malen darf?
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 Point p = e.GetPosition(this.MyCanvas);
@@ -222,6 +228,9 @@ namespace iSketch
                 this.MyCanvas.Children.Add(line);
 
                 this.lastPoint = p;
+
+                // Sockets: senden des letzten Strichs an den anderen Rechner. toSend ... X1, X2, Y2, Y1
+                // String muss in einen String umgewandelt werden -> Muss beim Empfänger wieder zu einen Strich umgewandelt werden 
             }
         }
 
@@ -288,10 +297,9 @@ namespace iSketch
             this.ChooseWordCanvas.Visibility = Visibility.Visible;
 
             this.MyCanvas.IsEnabled = false;
+            Show_Scores();
 
         }
-
-        [STAThread]
 
         public void Create_MessageBox()
         {
@@ -354,15 +362,14 @@ namespace iSketch
 
             if (this.Your_Word.Text == this.Chat_Window.Text)
             {
+                // Dies muss für mehrspieler angepasst werden. Receive der nachricht des anderen, zuweisung der richtigen ID
+                Menu.MemberList[0].Guessed_Correctly = true;
                 Menu.MemberList[0].Score += Calculate_Points();
 
-                //Stop_All2();
                 Set_Popup("correct");
                 Popup_Word.IsOpen = true;
-                this.Chat_Window.Clear();
-                this.MyCanvas.Children.Clear();
 
-                //Start_All2();
+                GoToNextPlayer("");
             }
             else
             {
@@ -430,6 +437,47 @@ namespace iSketch
 
             Scores.Text = ScoreTxt;
 
+        }
+
+        void GoToNextPlayer(string position)
+        {
+            bool next_player = true;
+            for (int i = 0; i < Menu.MemberList.Count; i++)
+            {
+                if (Menu.MemberList[i].Guessed_Correctly == false) // Check: Has everybody guessed the word correctly?
+                {
+                    next_player = false;
+                    break;
+                }
+            }
+
+            if (next_player || position == "timer")
+            {
+                Stop_All2();
+
+                this.Chat_Window.Clear();
+                this.MyCanvas.Children.Clear();
+
+                if (Current_Artist_ID + 1 >= Menu.MemberList.Count) // if last player was painting, the next artist is the first player in the list
+                {
+                    Current_Artist_ID = 0;
+                    Current_Round++;
+                    if (Current_Round == Max_Rounds +1)
+                    {
+                        Current_Round = 1;
+
+                        foreach(Member member in Menu.MemberList) // Scores zurücksetzen!
+                        {
+                            member.Score = 0;
+                        }
+                        // Spiel beenden bzw neue Runde anfragen
+                    }
+                }
+                else Current_Artist_ID ++;
+
+                Set_ChooseWords();
+            }
+            // Send Artist_ID if it changed to the others
         }
     }
 }
