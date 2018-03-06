@@ -41,7 +41,6 @@ namespace SnakeGame
         private Dictionary<String, ImageBrush> pictures = new Dictionary<String, ImageBrush>();
         private List<SnakeElem> snake = new List<SnakeElem>(), snakeTmp = new List<SnakeElem>();
         private IPEndPoint address;
-        private bool dead = false;
         private Directions direction, disabledDirection;
         private Canvas gameCanvas;
         public int score;
@@ -56,7 +55,6 @@ namespace SnakeGame
         public Colors Color { get => color; set => color = value; }
         public Dictionary<string, ImageBrush> Pictures { get => pictures; set => pictures = value; }
         public List<SnakeElem> Snake { get => snake; set => snake = value; }
-        public bool Dead { get => dead; set => dead = value; }
         public Canvas GameCanvas { get => gameCanvas; set => gameCanvas = value; }
         public TextBlock[] Scoretext { get => scoretext; set => scoretext = value; }
         public Directions Direction { get => direction; set => direction = value; }
@@ -76,7 +74,6 @@ namespace SnakeGame
             this.id = CURPARTICIPANTS - 1;
             this.name = name;
             this.gameCanvas = gamecanv;
-            this.dead = false;
             this.score = 0;
             this.color = (Colors)(CURPARTICIPANTS - 1);
             this.scoretext[0] = new TextBlock
@@ -189,12 +186,12 @@ namespace SnakeGame
         //methods
         public void MoveSnake()
         {
-            if (this.snake == null || this.snake.Count == 0 || this.dead)
+            if (this.snake == null || this.snake.Count == 0)
                 return;
 
             SnakeElem head = this.snake[0];
 
-            if (GamepageSnake.STARTED && !this.dead)
+            if (GamepageSnake.STARTED)
             {
                 //move head
                 head.X += ((head.Direction == Directions.left) ? -SIZEELEM:
@@ -225,49 +222,12 @@ namespace SnakeGame
         }
         public void Render()
         {
-            if (App.Current.MainWindow.Content.GetType().Name != (typeof(GamepageSnake).Name))
+            if (App.Current.MainWindow.Content.GetType().Name != (typeof(GamepageSnake).Name) || !GamepageSnake.STARTED)
                 return;
 
-            if (!this.dead && GamepageSnake.STARTED)
-            {
-                if (this.snake == null || this.snake.Count == 0 || this.gameCanvas == null || this.pictures == null || this.pictures.Count == 0)
-                    return;
-
-                SnakeElem head = this.snake[0];
-                SnakeElem tail = this.snake[this.snake.Count - 1];
-
-                //reload headpic for the new direction
-                this.snake[0].Rect.Fill = this.pictures["Head_" + this.direction.ToString() + "_" + this.color.ToString()];
-                /*----------------------------------------------*/
-
-                //wrap-around
-                if (head.X < 0)
-                    head.X = (int)(gameCanvas.ActualWidth - head.Rect.ActualWidth);
-                if (head.X > gameCanvas.ActualWidth - head.Rect.ActualWidth)
-                    head.X = 0;
-
-                if (head.Y < 0)
-                    head.Y = (int)(gameCanvas.ActualHeight - head.Rect.ActualHeight);
-                if (head.Y > (gameCanvas.ActualHeight))
-                    head.Y = 0;
-
-                //set Position of snakeElements
-                foreach (SnakeElem snk in this.snake)
-                {
-                    Canvas.SetZIndex(snk.Rect, 0);
-                    Canvas.SetLeft(snk.Rect, (int)snk.X);
-                    Canvas.SetTop(snk.Rect, (int)snk.Y);
-                    if (this.gameCanvas.Children.Contains(snk.Rect))
-                        this.gameCanvas.Children.Remove(snk.Rect);
-                    if (snk == tail)
-                    {
-                        //reload tailpic for the current direction
-                        snk.Rect.Fill = this.pictures["Tail_" + snk.Direction.ToString() + "_" + this.color.ToString()];
-                        /*----------------------------------------------*/
-                    }
-                    this.gameCanvas.Children.Add(snk.Rect);
-                }
-            }
+            //reload headpic for the new direction
+            this.snake[0].Rect.Fill = this.pictures["Head_" + this.direction.ToString() + "_" + this.color.ToString()];
+            
             if (GamepageSnake.APPLE == null || this.gameCanvas == null)
                 return;
 

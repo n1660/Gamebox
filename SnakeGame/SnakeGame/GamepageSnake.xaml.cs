@@ -23,6 +23,7 @@ namespace SnakeGame
         public static DispatcherTimer TIMER;
         public static Random RANDOM = new Random();
         public static Apple APPLE;
+        private bool tmp = false;
 
         //FrameworkElements
         public Canvas GameCanvas = new Canvas();
@@ -65,15 +66,6 @@ namespace SnakeGame
             Width = 40,
             Content = "-"
         };
-        public Button BtnExit = new Button
-        {
-            VerticalAlignment = VerticalAlignment.Top,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            Background = Brushes.Red,
-            Foreground = Brushes.White,
-            Width = 40,
-            Content = "X"
-        };
         public Button BtnPause = new Button
         {
             VerticalAlignment = VerticalAlignment.Top,
@@ -102,6 +94,15 @@ namespace SnakeGame
             Height = 400,
             VerticalAlignment = VerticalAlignment.Top,
             TextAlignment = TextAlignment.Center,
+        };
+        public Button BtnExit = new Button
+        {
+            VerticalAlignment = VerticalAlignment.Top,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            Background = Brushes.Red,
+            Foreground = Brushes.White,
+            Width = 40,
+            Content = "X"
         };
 
         //InputpromptRemove
@@ -218,6 +219,7 @@ namespace SnakeGame
             Foreground = Brushes.Black,
             TextAlignment = TextAlignment.Center,
             Width = 80,
+            Text = IPAddress.Loopback.ToString()
         };
         public Label LblPortA = new Label
         {
@@ -290,11 +292,8 @@ namespace SnakeGame
         //timertickroutine
         public void Time_Tick(object sender, EventArgs e)
         {
-            foreach (SnakePlayer p in snakeplayers)
-            {
-                if (p.Dead)
-                    SnakePlayer.TODIE.Add(p);
-            }
+            Console.WriteLine((tmp) ? "asdfghjk" : "a");
+            tmp = !tmp;
             Render();
         }
 
@@ -362,6 +361,10 @@ namespace SnakeGame
 
             if (MULTIPLAYER)
             {
+                InputIPA.Visibility = Visibility.Visible;
+                InputPortA.Visibility = Visibility.Visible;
+                LblIPA.Visibility = Visibility.Visible;
+                LblPortA.Visibility = Visibility.Visible;
                 BtnRemovePlayer.Click += BtnRemovePlayer_Click;
                 dpButtons.Children.Add(BtnRemovePlayer);
 
@@ -372,6 +375,13 @@ namespace SnakeGame
 
                 BtnAddPlayer.Click += BtnAddPlayer_Click;
                 dpButtons.Children.Add(BtnAddPlayer);
+            }
+            else
+            {
+                InputIPA.Visibility = Visibility.Hidden;
+                InputPortA.Visibility = Visibility.Hidden;
+                LblIPA.Visibility = Visibility.Hidden;
+                LblPortA.Visibility = Visibility.Hidden;
             }
 
             GameCanvas.Children.Add(BtnNew);
@@ -539,7 +549,8 @@ namespace SnakeGame
             newPlayerPrompt.Visibility = Visibility.Visible;
             LblErrorA.Visibility = Visibility.Hidden;
 
-            InputNameA.Text = InputIPA.Text = InputPortA.Text = "";
+            InputNameA.Text = InputPortA.Text = "";
+            InputIPA.Text = IPAddress.Loopback.ToString();
 
             newPlayerPrompt.Visibility = Visibility.Visible;
             BtnPause.Visibility = Visibility.Hidden;
@@ -602,38 +613,19 @@ namespace SnakeGame
         }
         public void Render()
         {
+
+
+            foreach (SnakePlayer player in snakeplayers)
+            {
+                player.Scoretext[0].Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString(player.Color.ToString()));
+                player.Scoretext[1].Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString(player.Color.ToString()));
+            }
+
             if (App.Current.MainWindow.Content.GetType().Name != (typeof(GamepageSnake).Name))
                 return;
-
-            int helpVar = -1, scorePrev, tmpCount = -1;
-            TextBlock[] tbPrev;
-            SnakePlayer.UpdateRanking();
-            if (helpVar > -1 && helpVar < snakeplayers.Count)
-                helpVar = -1;
-
-            foreach (SnakePlayer p in snakeplayers)
-            {
-                scorePrev = p.score;
-                tbPrev = p.Scoretext;
-                p.Render();
-                CollisionDetection();
-            }
-
-            foreach (SnakePlayer p in SnakePlayer.TODIE)
-            {
-                p.Dead = true;
-
-                if (SnakePlayer.TODIE.Contains(p))
-                {
-                    SnakePlayer.TODIE.Remove(p);
-
-                    foreach (SnakeElem snk in p.Snake)
-                    {
-                        p.GameCanvas.Children.Remove(snk.Rect);
-                    }
-                }
-            }
-
+                        
+            CollisionDetection();
+            
             if (snakeplayers.Count == 1 && STARTED && MULTIPLAYER)
             {
                 BtnPause.IsEnabled = false;
@@ -641,11 +633,8 @@ namespace SnakeGame
                 SnakePlayer winner = snakeplayers[0];
                 foreach (SnakePlayer p in snakeplayers)
                 {
-                    if (!p.Dead)
-                    {
-                        winner = p;
-                        break;
-                    }
+                    winner = p;
+                    break;
                 }
                 TIMER.Stop();
                 STARTED = false;
@@ -683,7 +672,9 @@ namespace SnakeGame
             }
 
             if (STARTED)
+            {
                 SpawnFood();
+            }
         }
         public Canvas GetGameCanvas()
         {
@@ -732,37 +723,34 @@ namespace SnakeGame
         }
         public static void CollisionDetection()
         {
+            if(snakeplayers.Count < 2 || !STARTED)
+                return;
+
+            snakeplayersTmp.Clear();
+            foreach(SnakePlayer origin in snakeplayers)
+            {
+                snakeplayersTmp.Add(origin);
+            }
             //detect collision with any snakebody
             foreach (SnakePlayer p in GamepageSnake.Snakeplayers)
             {
-                if (p.Dead)
-                    continue;
-
                 foreach (SnakePlayer pl in GamepageSnake.Snakeplayers)
                 {
-                    if (pl.Dead)
-                        continue;
-
-                    SnakeplayersTmp = snakeplayers;
-
                     if (p == pl)
                     {
                         //detect collision with own snakebody
-                        if (!p.Dead)
+                        foreach (SnakeElem snk in p.Snake)
                         {
-                            foreach (SnakeElem snk in p.Snake)
-                            {
-                                if (snk == p.Snake[0])
-                                    continue;
+                            if (snk == p.Snake[0])
+                                continue;
 
-                                if ((p.Snake[0].X < snk.X + snk.Rect.ActualWidth)
-                                    && (p.Snake[0].X + p.Snake[0].Rect.Width > snk.X)
-                                    && (p.Snake[0].Y < snk.Y + snk.Rect.ActualHeight)
-                                    && (p.Snake[0].Y + p.Snake[0].Rect.Height > snk.Y))
-                                {
-                                    if (snakeplayersTmp.Contains(p))
-                                        snakeplayersTmp.Remove(p);
-                                }
+                            if ((p.Snake[0].X < snk.X + snk.Rect.ActualWidth)
+                                && (p.Snake[0].X + p.Snake[0].Rect.Width > snk.X)
+                                && (p.Snake[0].Y < snk.Y + snk.Rect.ActualHeight)
+                                && (p.Snake[0].Y + p.Snake[0].Rect.Height > snk.Y))
+                            {
+                                if (snakeplayersTmp.Contains(p))
+                                    snakeplayersTmp.Remove(p);
                             }
                         }
                     }
@@ -790,20 +778,11 @@ namespace SnakeGame
                 }
             }
 
-            foreach (SnakePlayer dead in snakeplayers)
-            {
-                dead.Dead = true;
-            }
+            snakeplayers.Clear();
 
-            foreach (SnakePlayer alive in snakeplayersTmp)
+            foreach (SnakePlayer copy in snakeplayersTmp)
             {
-                alive.Dead = false;
-            }
-
-            foreach (SnakePlayer player in snakeplayers)
-            {
-                player.Scoretext[0].Foreground = (player.Dead) ? Brushes.Gray : (SolidColorBrush)(new BrushConverter().ConvertFromString(player.Color.ToString()));
-                player.Scoretext[1].Foreground = (player.Dead) ? Brushes.Gray : (SolidColorBrush)(new BrushConverter().ConvertFromString(player.Color.ToString()));
+                snakeplayers.Add(copy);
             }
         }
     }
