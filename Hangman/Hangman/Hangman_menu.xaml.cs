@@ -26,13 +26,14 @@ namespace Hangman
         {
             Button btn = (Button)sender;
             string content = btn.Content.ToString();
+            MainWindow mw = (MainWindow)Application.Current.MainWindow;
             switch (content)
             {
                 case "New Game":
-                    Content = new GamepageHangman();
+                    mw.Content = new GamepageHangman();
                     break;
                 case "Settings":
-                    Content = new Settings();
+                    mw.Content = new Settings();
                     break;
                 case "Quit":
                     System.Windows.Application.Current.Shutdown();

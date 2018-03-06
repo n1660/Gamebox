@@ -23,10 +23,10 @@
     <DockPanel>
         <Canvas HorizontalAlignment="Left" Height="600" Width="846" VerticalAlignment="Top" Background="LightCyan" Name="canvas">
             <Label Content="Settings" Height="80" Width="205" FontSize="48" Canvas.Left="293" Canvas.Top="45" FontWeight="Bold"/>
-            <Button Canvas.Left="317" Canvas.Top="154" Content="Easy" Click="Button_Click"/>
-            <Button Canvas.Left="317" Canvas.Top="247" Content="Medium" Click="Button_Click"/>
-            <Button Canvas.Left="317" Canvas.Top="340" Content="Hard" Click="Button_Click"/>
-            <Button Canvas.Left="317" Canvas.Top="433" Content="Back" Click="Button_Click"/>
+            <Button Canvas.Left="293" Canvas.Top="154" Content="3-5 Buchstaben" Click="Button_Click" Width="213"/>
+            <Button Canvas.Left="293" Canvas.Top="247" Content="6-8 Buchstaben" Click="Button_Click" Width="213"/>
+            <Button Canvas.Left="293" Canvas.Top="340" Content="Extrem" Click="Button_Click" Width="213" Visibility="Hidden"/>
+            <Button Canvas.Left="293" Canvas.Top="433" Content="Back" Click="Button_Click" Width="213"/>
         </Canvas>
     </DockPanel>
 </Page>

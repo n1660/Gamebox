@@ -15,11 +15,9 @@ using System.Windows.Shapes;
 
 namespace Hangman
 {
-    /// <summary>
-    /// Interaktionslogik für Settings.xaml
-    /// </summary>
     public partial class Settings : Page
     {
+        public static int  difficultylvl = 2;
         public Settings()
         {
             InitializeComponent();
@@ -29,16 +27,23 @@ namespace Hangman
         {
             Button btn = (Button)sender;
             string content = btn.Content.ToString();
+            MainWindow mw = (MainWindow)Application.Current.MainWindow;
             switch (content)
             {
-                case "Easy":
+                case "3-5 Buchstaben":
+                    difficultylvl = 1;
+                    mw.Content = new Hangman_menu();
                     break;
-                case "Medium":
+                case "6-8 Buchstaben":
+                    difficultylvl = 2;
+                    mw.Content = new Hangman_menu();
                     break;
-                case "Hard":
+                case "Extrem":
+                    difficultylvl = 3;
+                    mw.Content = new Hangman_menu();
                     break;
                 case "Back":
-                    Content = new Hangman_menu();
+                    mw.Content = new Hangman_menu();
                     break;
                 default:
                     break;

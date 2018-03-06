@@ -20,7 +20,9 @@ namespace Hangman
     public partial class GamepageHangman : Page
     {
         string randomWord = Spiel.NewWord();
+        string checkrand = "";
         string solution;
+        string alreadyUsed = "";
         int maxfehler = 9;
         int anzfehler = 0;
         Label[] lbls = new Label[15];
@@ -30,16 +32,28 @@ namespace Hangman
             InitializeComponent();
             Start();
         }
-
         public string NewWord()
         {
-            string path = @"Montagsmaler_Liste.txt";
-
+            string path = "Montagsmaler_Liste";
+            switch(Settings.difficultylvl)
+            { 
+                case 1:
+                    path = @"3-5Buchstaben.txt";
+                    break;
+                case 2:
+                    path = @"6-8Buchstaben.txt";
+                    break;
+                case 3:
+                    path = @"Extrem.txt";
+                    break;
+                default:
+                    break;
+            }
             string readText = File.ReadAllText(path);
             string[] wort = readText.Split('\n');
 
             Random rand = new Random();
-            int zufallszahl = rand.Next(0, 97);
+            int zufallszahl = rand.Next(0, 184);
             string randomWord = wort[zufallszahl];
 
             randomWord = randomWord.Remove(randomWord.Length - 1);
@@ -62,22 +76,47 @@ namespace Hangman
         {
             Button btn = (Button)sender;
             string letter = btn.Content.ToString();
-            bool containsLetter = randomWord.Contains(letter);
-            if (containsLetter)
-            {
-                ShowNewWord(letter);
-
-            }
-            else
-            {
-                MessageBox.Show(String.Format("Buchstabe {0} nicht enthalten!", letter));
-                anzfehler++;
-                Show_Image();
-                if (anzfehler == maxfehler)
+            if(letter != "Hint")
+            { 
+                bool containsLetter = randomWord.Contains(letter);
+                if (containsLetter)
                 {
-                    MessageBox.Show("Leider verloren!");
-                    QuitGame();
+                    ShowNewWord(letter);
                 }
+                else
+                {
+                    bool letterUsed = alreadyUsed.Contains(letter);
+                    if(letterUsed)
+                    {
+                        MessageBox.Show(String.Format("Buchstabe {0} bereits gewählt!", letter));
+                    }
+                    else
+                    { 
+                        MessageBox.Show(String.Format("Buchstabe {0} nicht enthalten!", letter));
+                        MistakeWasMade();
+                    }
+                    alreadyUsed += letter;
+                }
+            }
+            else  //Hint wurde gedrückt
+            {               
+                Random rand = new Random();
+                int randInt = rand.Next(0, randomWord.Length);
+                string randString = randInt.ToString();
+                bool posUsed = checkrand.Contains(randString);
+                while(posUsed)      //solange die Position schon ausgewählt wurde
+                {
+                    rand = new Random();
+                    randInt = rand.Next(0, randomWord.Length);
+                    randString = randInt.ToString();
+                    posUsed = checkrand.Contains(randString);
+                }
+
+                ShowNewWord(randomWord[randInt].ToString());    //Buchstabe auslesen und anzeigen
+                CheckIfWordShown("Durch schummeln erraten!");
+
+                checkrand += randString;
+                MistakeWasMade();
             }
         }
         public void ShowNewWord(string letter)
@@ -97,6 +136,10 @@ namespace Hangman
                         lbls[pos4].Content = letter;
                 }
             }
+            CheckIfWordShown("Gewonnen!");
+        }
+        public void CheckIfWordShown(string Message)
+        {
             string lbl = "";
             for (int i = 0; i < randomWord.Length; i++)
             {
@@ -105,7 +148,17 @@ namespace Hangman
             int won = lbl.IndexOf("_");
             if (won == -1)
             {
-                MessageBox.Show("Gewonnen!");
+                MessageBox.Show(Message);
+                QuitGame();
+            }
+        }
+        public void MistakeWasMade()
+        {
+            anzfehler++;
+            Show_Image();
+            if (anzfehler == maxfehler)
+            {
+                MessageBox.Show("Leider verloren!");
                 QuitGame();
             }
         }
@@ -116,21 +169,15 @@ namespace Hangman
                 MessageBox.Show("Gewonnen!");
                 for (int i = 0; i < randomWord.Length; i++)
                     lbls[i].Content = randomWord[i];
-                //QuitGame();
+                QuitGame();
             }
             else
             {
                 MessageBox.Show("Leider das falsche Wort!");
                 textbox.Text = "";
-                anzfehler++;
-                Show_Image();
-                if (anzfehler == maxfehler)
-                {
-                    MessageBox.Show("Leider verloren!");
-                    QuitGame();
-                }
+                MistakeWasMade();
             }
-        }
+        }   
         public void Show_Lines()
         {
             int CvLeft = 11;
@@ -212,12 +259,17 @@ namespace Hangman
             {
                 canvas.Children.Remove(lbls[i]);
             }
-            Start();
+            MainWindow mw = (MainWindow)Application.Current.MainWindow;
+            mw.Content = new Hangman_menu();
         }
         public void MenuItem_Click_Neu(object sender, RoutedEventArgs e)
         {
             //aktuelles Spiel beendet & neues Spiel starten
-            QuitGame();
+            for (int i = 0; i < randomWord.Length; i++)   //alle lbls beenden
+            {
+                canvas.Children.Remove(lbls[i]);
+            }
+            Start();
         }
         public void MenuItem_Click_Quit(object sender, RoutedEventArgs e)
         {
@@ -227,7 +279,7 @@ namespace Hangman
         public void MenuItem_Click_Menu(object sender, RoutedEventArgs e)
         {
             //MenuPage aufrufen
-            Content = new Hangman_menu();
+            QuitGame();
         }
     }
 }

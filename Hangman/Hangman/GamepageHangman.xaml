@@ -39,6 +39,7 @@
             <TextBox Height="41" TextWrapping="Wrap" Width="254" Canvas.Left="133" Canvas.Top="302" FontSize="28.8" TextChanged="TextBox_TextChanged" Name="textbox"/>
             <Button Content="Submit" Canvas.Left="406" Canvas.Top="295" Width="75" FontSize="20" Click="Button_Click_Submit"/>
             <Image Name="bild"/>
+            <Button Content="Hint" Height="56" VerticalAlignment="Top" Width="75" FontSize="20" Canvas.Top="241" Canvas.Left="10" Click="Button_Click"/>
         </Canvas>
     </DockPanel>
 </Page>
