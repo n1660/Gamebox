@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TCP_IP_Connection.Properties
+namespace ClientWPF.Properties
 {
 
 

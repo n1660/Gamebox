@@ -1,7 +1,7 @@
-﻿<Application x:Class="TCP_IP_Connection.App"
+﻿<Application x:Class="ClientWPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:TCP_IP_Connection"
+             xmlns:local="clr-namespace:ClientWPF"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          
