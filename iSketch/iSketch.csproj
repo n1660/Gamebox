@@ -13,6 +13,21 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -57,11 +72,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Artist.xaml">
-      <SubType>Designer</SubType>
+    <Compile Include="Connection\ClientWPF.cs" />
+    <Compile Include="Connection\ClientWindow.xaml.cs" />
+    <Compile Include="Connection\Server.cs" />
+    <Page Include="Connection\ClientWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Contester.xaml">
+    <Page Include="iSketch\Artist.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -73,12 +91,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Artist.xaml.cs">
+    <Compile Include="iSketch\Artist.xaml.cs">
       <DependentUpon>Artist.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Contester.xaml.cs">
-      <DependentUpon>Contester.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Connection\Connection.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -123,34 +139,62 @@
     <Resource Include="Wordlist\Montagsmaler_Liste.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\icons\isketchlogo.jpg" />
+    <Resource Include="iSketch\res\icons\isketchlogo.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\text.gif" />
+    <Resource Include="iSketch\res\text.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\backgrounds\dark-vintage.jpg" />
+    <Resource Include="iSketch\res\backgrounds\dark-vintage.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\backgrounds\retro.jpg" />
+    <Resource Include="iSketch\res\backgrounds\retro.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\backgrounds\stripes.jpg" />
+    <Resource Include="iSketch\res\backgrounds\stripes.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\icons\Snake_icon.png" />
+    <Resource Include="iSketch\res\icons\Snake_icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\icons\paint.png" />
+    <Resource Include="iSketch\res\icons\paint.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\icons\43980.png" />
+    <Resource Include="iSketch\res\icons\43980.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\icons\Snake.png" />
+    <Resource Include="iSketch\res\icons\Snake.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\icons\hang.png" />
+    <Resource Include="iSketch\res\icons\hang.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="iSketch\res\backgrounds\Backgrnd.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="iSketch\res\backgrounds\red.jpg" />
+    <Resource Include="iSketch\res\backgrounds\redbrickets.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="iSketch\res\icons\clock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="iSketch\res\icons\clock2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 und x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Connection\ClientWPF.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

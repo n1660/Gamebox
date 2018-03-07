@@ -12,20 +12,24 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Net;
 
 namespace iSketch
 {
-    /// TODO: Sperre! Wenn kein Username eingegeben-> Spielauswahl verweigern
-    /// ( Wenn man zurück ins Menu geht: Erneute Username Eingabe -> Notwendig? (Falls jemand es ändern will, ja))
     public partial class Menu : Page
     {
-        public static List<Member> MemberList = new List<Member>();
+
+        public static Dictionary<String, List<Member>> MemberList = new Dictionary<String, List<Member>>();
+
+        public static string Host;
+        private static Server.Server server = null;
 
         public Menu()
         {
             InitializeComponent();
-            username.KeyDown += new KeyEventHandler(Key_Events);
-            Popup_Username.IsOpen = true;
+            PlayerUsername.KeyDown += new KeyEventHandler(Key_Events);
+            Username_Canvas.Visibility = Visibility.Hidden;
+            //Popup_Username.IsOpen = true;
             
         }
 
@@ -33,38 +37,68 @@ namespace iSketch
         {
             if (k.Key == Key.Enter)
             {
-                get_player_data();
+                New_Host();
             }
         }
 
         private void Button_Click_Menu(object sender, RoutedEventArgs e)
         {
-            if (sender == this.iSketch)
+            if (sender == this.New_Game_B)
             {
-                MainWindow.win.Content = new Artist();
+                New_Host();
             }
-            else if(sender == this.Snake)
+            else if(sender == this.Join_Game_B)
             {
-                Console.Write("Start Snake ~");
+
             }
-            else if(sender == this.Hangman)
+            else if (Username_Canvas.Visibility == Visibility.Hidden)
             {
-                Console.Write("Start Hangman X");
-            }
-            else if(sender==this.Submit)
-            {
-                get_player_data();
+                if (sender == this.iSketch)
+                {
+                    Username_Canvas.Visibility = Visibility.Visible;
+                    //MainWindow.win.Content = new Artist();
+                }
+                else if (sender == this.Snake)
+                {
+                    Console.Write("Start Snake ~");
+                }
+                else if (sender == this.Hangman)
+                {
+                    Console.Write("Start Hangman X");
+                }
             }
         }
 
+        void Join_Game(Server.Server server)
+        {
+            // show games, which are running -> select with Buttons (The Hosts Username)
+            
+        }
+
+        void New_Host()
+        {
+            Host = PlayerUsername.Text;
+
+            if(server == null)  // Ein Spieler kann nur ein Spiel hosten!
+                server = new Server.Server();
+
+            if (!(MemberList.ContainsKey(PlayerUsername.Text)))
+            {
+                MemberList.Add(PlayerUsername.Text, new List<Member>());
+                get_player_data();
+            }
+        }
         void get_player_data()
         {
-            if(username.Text != null)
+
+          Popup_Username_Exists.IsOpen = false;
+
+            if(PlayerUsername.Text != null)
             {
                 bool Not_Only_Blanks = false;
-                for ( int i = 0; i < username.Text.Length; i++)
+                for ( int i = 0; i < PlayerUsername.Text.Length; i++)
                 {
-                    if (username.Text[i] != ' ')
+                    if (PlayerUsername.Text[i] != ' ')
                     {
                         Not_Only_Blanks = true;
                         break;
@@ -73,9 +107,30 @@ namespace iSketch
 
                 if (Not_Only_Blanks)
                 {
-                    MemberList.Add(new Member() { ID = null, Username = username.Text, Score = 0, Moves = 0 }); // ID = IP
-                    Popup_Username.IsOpen = false;
+                    if (MemberList.Count < Artist.Max_Players)
+                    {
+                        if (MemberList[Host] != null && MemberList[Host].Count > 0)
+                        {
+                            if (MemberList[Host].Exists(x => x.Username == PlayerUsername.Text)) // No Dublicates / Not Correct
+                                Popup_Username_Exists.IsOpen = true;
+                            else
+                            {
+                                MemberList[PlayerUsername.Text].Add(new Member() { Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IPv4
+                                Username_Canvas.Visibility = Visibility.Hidden;
+                                MainWindow.win.Content = new Artist();
+                            }
+                        }
+                        else
+                        {
+                            MemberList[PlayerUsername.Text].Add(new Member() { Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IPv4
+                            Username_Canvas.Visibility = Visibility.Hidden;
+                            MainWindow.win.Content = new Artist();
+                        }
+                        
+                    }
+
                 }
+
             }
         }
 
