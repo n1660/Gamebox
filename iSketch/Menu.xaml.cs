@@ -43,9 +43,13 @@ namespace iSketch
 
         private void Button_Click_Menu(object sender, RoutedEventArgs e)
         {
-            if (sender == this.Submit_Username)
+            if (sender == this.New_Game_B)
             {
                 New_Host();
+            }
+            else if(sender == this.Join_Game_B)
+            {
+
             }
             else if (Username_Canvas.Visibility == Visibility.Hidden)
             {
@@ -65,9 +69,10 @@ namespace iSketch
             }
         }
 
-        void Join_Game()
+        void Join_Game(Server.Server server)
         {
-
+            // show games, which are running -> select with Buttons (The Hosts Username)
+            
         }
 
         void New_Host()

@@ -74,7 +74,7 @@
                 <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" TextAlignment="Center" Margin="2" Text="Insert your Username"/>
                 <TextBox Name="PlayerUsername" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,2" TextAlignment="Center"/>
                 <Button Name="Join_Game_B" Grid.Row="2" Grid.Column="0" Margin="2" Click="Button_Click_Menu">Join Game</Button>
-                <Button Name="Submit_Username_B" Grid.Row="3" Grid.Column="2" Margin="2" Click="Button_Click_Menu">New Game</Button>
+                <Button Name="New_Game_B" Grid.Row="3" Grid.Column="2" Margin="2" Click="Button_Click_Menu">New Game</Button>
                 <!--<Button Name="Canel_Username" Grid.Row="3" Grid.Column="2" Margin="2" Click="Button_Click_Menu">Cancel</Button>-->
             </Grid>
         </Canvas>
