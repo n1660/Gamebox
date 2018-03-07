@@ -22,6 +22,7 @@ namespace iSketch
         public static Dictionary<String, List<Member>> MemberList = new Dictionary<String, List<Member>>();
 
         public static string Host;
+        private static Server.Server server = null;
 
         public Menu()
         {
@@ -63,10 +64,18 @@ namespace iSketch
                 }
             }
         }
+
+        void Join_Game()
+        {
+
+        }
+
         void New_Host()
         {
             Host = PlayerUsername.Text;
-            Server.Server server = new Server.Server();
+
+            if(server == null)  // Ein Spieler kann nur ein Spiel hosten!
+                server = new Server.Server();
 
             if (!(MemberList.ContainsKey(PlayerUsername.Text)))
             {
