@@ -10,7 +10,7 @@
       Title="Menu">
 
     <Page.Background>
-        <ImageBrush ImageSource="res/backgrounds/red.jpg" Stretch="UniformToFill"/>
+        <ImageBrush ImageSource="iSketch/res/backgrounds/red.jpg" Stretch="UniformToFill"/>
     </Page.Background>
 
     <Grid>
@@ -28,12 +28,12 @@
 
         <!--<TextBlock Name="Title"  FontSize="15" Foreground="White" TextAlignment="Center">Menu</TextBlock>-->
 
-        <Image Grid.Column="1" Grid.Row="0" Source="res/text.gif" />
+        <Image Grid.Column="1" Grid.Row="0" Source="iSketch/res/text.gif" />
 
         <Button Grid.Row="1" Grid.Column="0" Name="iSketch" Click="Button_Click_Menu" Margin="10,10" Background="Transparent" BorderBrush="Black">
             <Button.Template>
                 <ControlTemplate>
-                    <Image Source="res/icons/paint.png" />
+                    <Image Source="iSketch/res/icons/paint.png" />
                 </ControlTemplate>
             </Button.Template>
 
@@ -42,7 +42,7 @@
         <Button Grid.Row="1" Grid.Column="1" Name="Hangman" Click="Button_Click_Menu" Margin="10,10" Background="Transparent" BorderBrush="Black" BorderThickness="5">
             <Button.Template>
                 <ControlTemplate>
-                    <Image Source="res/icons/hang.png" />
+                    <Image Source="iSketch/res/icons/hang.png" />
                 </ControlTemplate>
             </Button.Template>
         </Button>
@@ -50,7 +50,7 @@
         <Button Grid.Row="1" Grid.Column="2" Name="Snake" Click="Button_Click_Menu" Margin="10,10" Background="Transparent" BorderBrush="Black" BorderThickness="5">
             <Button.Template>
                 <ControlTemplate>
-                    <Image Source="res/icons/Snake.png" />
+                    <Image Source="iSketch/res/icons/Snake.png" />
                 </ControlTemplate>
             </Button.Template>
         </Button>

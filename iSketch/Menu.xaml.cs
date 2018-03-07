@@ -18,7 +18,10 @@ namespace iSketch
 {
     public partial class Menu : Page
     {
-        public static List<Member> MemberList = new List<Member>();
+
+        public static Dictionary<String, List<Member>> MemberList = new Dictionary<String, List<Member>>();
+
+        public static string Host;
 
         public Menu()
         {
@@ -41,7 +44,14 @@ namespace iSketch
         {
             if (sender == this.Submit_Username)
             {
-                get_player_data();
+                Host = PlayerUsername.Text;
+                Server.Server server = new Server.Server();
+
+                if(!(MemberList.ContainsKey(PlayerUsername.Text)))
+                { 
+                    MemberList.Add(PlayerUsername.Text, new List<Member>());
+                    get_player_data();
+                }
             }
             else if (Username_Canvas.Visibility == Visibility.Hidden)
             {
@@ -63,7 +73,8 @@ namespace iSketch
 
         void get_player_data()
         {
-            Popup_Username_Exists.IsOpen = false;
+
+          Popup_Username_Exists.IsOpen = false;
 
             if(PlayerUsername.Text != null)
             {
@@ -81,14 +92,24 @@ namespace iSketch
                 {
                     if (MemberList.Count < Artist.Max_Players)
                     {
-                        if (MemberList.Exists(x => x.Username == PlayerUsername.Text)) // No Dublicates / Not Correct
-                            Popup_Username_Exists.IsOpen = true;
+                        if (MemberList[Host] != null && MemberList[Host].Count > 0)
+                        {
+                            if (MemberList[Host].Exists(x => x.Username == PlayerUsername.Text)) // No Dublicates / Not Correct
+                                Popup_Username_Exists.IsOpen = true;
+                            else
+                            {
+                                MemberList[PlayerUsername.Text].Add(new Member() { Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IPv4
+                                Username_Canvas.Visibility = Visibility.Hidden;
+                                MainWindow.win.Content = new Artist();
+                            }
+                        }
                         else
                         {
-                            MemberList.Add(new Member() {Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IPv4
+                            MemberList[PlayerUsername.Text].Add(new Member() { Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IPv4
                             Username_Canvas.Visibility = Visibility.Hidden;
                             MainWindow.win.Content = new Artist();
                         }
+                        
                     }
 
                 }

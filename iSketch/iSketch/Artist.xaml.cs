@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using System.Threading;
 using System.Net;
 
+
 namespace iSketch
 {
 
@@ -66,6 +67,7 @@ namespace iSketch
             CreateContdown();
             Set_ChooseWords();
             Show_Scores();
+            
         }
 
         private void Key_Events(object sender, KeyEventArgs k)
@@ -90,6 +92,8 @@ namespace iSketch
                 Stop_All2(); // Close Timer Thread!
                 MainWindow.win.Content = new Menu();
                 // Aus der Liste entfernen mit entsprechenden ID 
+                // when host leaves
+                Current_Round = 1;
             }
 
             // Colours
@@ -362,9 +366,9 @@ namespace iSketch
 
             if (this.Your_Word.Text == this.Chat_Window.Text)
             {
-                // Dies muss für mehrspieler angepasst werden. Receive der nachricht des anderen, zuweisung der richtigen ID
-                Menu.MemberList[0].Guessed_Correctly = true;
-                Menu.MemberList[0].Score += Calculate_Points();
+                // [0] Dies muss für mehrspieler angepasst werden. Receive der nachricht des anderen, zuweisung der richtigen ID
+                Menu.MemberList[Menu.Host][0].Guessed_Correctly = true;
+                Menu.MemberList[Menu.Host][0].Score += Calculate_Points();
 
                 Set_Popup("correct");
                 Popup_Word.IsOpen = true;
@@ -430,7 +434,7 @@ namespace iSketch
         void Show_Scores()
         {
             string ScoreTxt ="Score:\n";
-            foreach(Member member in Menu.MemberList)
+            foreach(Member member in Menu.MemberList[Menu.Host])
             {
                 ScoreTxt += member.Username + ":  " + member.Score + "\n" ;
             }
@@ -442,9 +446,9 @@ namespace iSketch
         void GoToNextPlayer(string position)
         {
             bool next_player = true;
-            for (int i = 0; i < Menu.MemberList.Count; i++)
+            for (int i = 0; i < Menu.MemberList[Menu.Host].Count; i++)
             {
-                if (Menu.MemberList[i].Guessed_Correctly == false) // Check: Has everybody guessed the word correctly?
+                if (Menu.MemberList[Menu.Host][i].Guessed_Correctly == false) // Check: Has everybody guessed the word correctly?
                 {
                     next_player = false;
                     break;
@@ -458,7 +462,7 @@ namespace iSketch
                 this.Chat_Window.Clear();
                 this.MyCanvas.Children.Clear();
 
-                if (Current_Artist_ID + 1 >= Menu.MemberList.Count) // if last player was painting, the next artist is the first player in the list
+                if (Current_Artist_ID + 1 >= Menu.MemberList[Menu.Host].Count) // if last player was painting, the next artist is the first player in the list
                 {
                     Current_Artist_ID = 0;
                     Current_Round++;
@@ -467,7 +471,7 @@ namespace iSketch
                     {
                         Current_Round = 1;
 
-                        foreach(Member member in Menu.MemberList) // Scores zurücksetzen!
+                        foreach(Member member in Menu.MemberList[Menu.Host]) // Scores zurücksetzen!
                         {
                             member.Score = 0;
                         }
