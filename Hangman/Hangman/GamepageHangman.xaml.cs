@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Net.Cache;
 
 namespace Hangman
 {
@@ -46,10 +47,10 @@ namespace Hangman
                         switch (Settings.language)
                         {
                             case 1:
-                                path = @"3-5Buchstaben.txt";
+                                path = "lists/3-5Buchstaben.txt";
                                 break;
                             case 2:
-                                path = @"3-5Letters.txt";
+                                path = "lists/3-5Letters.txt";
                                 break;
                             default:
                                 break;
@@ -59,10 +60,10 @@ namespace Hangman
                         switch (Settings.language)
                         {
                             case 1:
-                                path = @"6-8Buchstaben.txt";
+                                path = "lists/6-8Buchstaben.txt";
                                 break;
                             case 2:
-                                path = @"6-8Letters.txt";
+                                path = "lists/6-8Letters.txt";
                                 break;
                             default:
                                 break;
@@ -72,7 +73,7 @@ namespace Hangman
                         switch (Settings.language)
                         {
                             case 1:
-                                path = @"Extrem.txt";
+                                path =  "lists/Extrem.txt";
                                 break;
                             case 2:
                                 break;
@@ -332,12 +333,14 @@ namespace Hangman
         public void Show_Image()
         {
             //Bild abhängig von Fehler auswählen
-            bild.Source = GetImage(@"D:\ProjektMultiplayer\Hangman\Hangman\Images\" + anzfehler + ".png");
+            bild.Source = GetImage("pics/" + anzfehler.ToString() + ".png");
         }
         static public BitmapImage GetImage(string imageUri)
         {
             var bitmapImage = new BitmapImage();
+
             bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapImage.UriSource = new Uri(imageUri, UriKind.RelativeOrAbsolute);
             bitmapImage.EndInit();
             return bitmapImage;
