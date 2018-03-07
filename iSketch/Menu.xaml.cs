@@ -36,7 +36,7 @@ namespace iSketch
         {
             if (k.Key == Key.Enter)
             {
-                get_player_data();
+                New_Host();
             }
         }
 
@@ -44,14 +44,7 @@ namespace iSketch
         {
             if (sender == this.Submit_Username)
             {
-                Host = PlayerUsername.Text;
-                Server.Server server = new Server.Server();
-
-                if(!(MemberList.ContainsKey(PlayerUsername.Text)))
-                { 
-                    MemberList.Add(PlayerUsername.Text, new List<Member>());
-                    get_player_data();
-                }
+                New_Host();
             }
             else if (Username_Canvas.Visibility == Visibility.Hidden)
             {
@@ -70,7 +63,17 @@ namespace iSketch
                 }
             }
         }
+        void New_Host()
+        {
+            Host = PlayerUsername.Text;
+            Server.Server server = new Server.Server();
 
+            if (!(MemberList.ContainsKey(PlayerUsername.Text)))
+            {
+                MemberList.Add(PlayerUsername.Text, new List<Member>());
+                get_player_data();
+            }
+        }
         void get_player_data()
         {
 
