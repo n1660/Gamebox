@@ -427,7 +427,6 @@ namespace SnakeGame
             };
 
             TIMER.Tick += Time_Tick;
-            TIMER.Start();
         }
 
         //Eventlistening
@@ -488,10 +487,10 @@ namespace SnakeGame
             SnakePlayer playerTmp = null;
             try
             {
-                if (InputNameA.Text == "" || InputIPA.Text == "" || InputPortA.Text == "" || InputIPA.Text.Split('.').Length != 4)
+                if ((MULTIPLAYER && (InputIPA.Text == "" || InputPortA.Text == "" || InputIPA.Text.Split('.').Length != 4)) || InputNameA.Text == "")
                     throw new Exception();
 
-                playerTmp = AddPlayerToGame(InputNameA.Text, new IPEndPoint(IPAddress.Parse(InputIPA.Text), Int32.Parse(InputPortA.Text)), GameCanvas);
+                playerTmp = AddPlayerToGame(InputNameA.Text, (MULTIPLAYER) ? new IPEndPoint(IPAddress.Parse(InputIPA.Text), Int32.Parse(InputPortA.Text)) : new IPEndPoint(IPAddress.Loopback, 6666), GameCanvas);
                 if (playerTmp == null)
                     throw new Exception();
 
@@ -578,13 +577,11 @@ namespace SnakeGame
             playerbox.SelectedIndex = snakeplayers.Count - 1;
             removePlayerPrompt.Visibility = Visibility.Visible;
             BtnAddPlayer.IsEnabled = true;
-
-            Canvas.SetZIndex(removePlayerPrompt, 2);
-            Canvas.SetLeft(removePlayerPrompt, ((GameCanvas.ActualWidth / 2) - (removePlayerPrompt.Width / 2)));
-            Canvas.SetTop(removePlayerPrompt, ((GameCanvas.ActualHeight / 2) - (removePlayerPrompt.Height / 2)));
         }
         private void BtnExit_Click(object sender, RoutedEventArgs e)
         {
+            GamepageSnake.STARTED = false;
+            GamepageSnake.TIMER.Stop();
             SnakePlayer.CURPARTICIPANTS = 0;
             snakeplayers.Clear();
             App.Current.MainWindow.Content = new MenupageSnake(); ;
@@ -613,7 +610,17 @@ namespace SnakeGame
         }
         public void Render()
         {
+            List<SnakePlayer> movementlist = new List<SnakePlayer>(snakeplayers.Count);
+            foreach(SnakePlayer toMove in snakeplayers)
+            {
+                movementlist.Add(toMove);
+                toMove.MoveSnake();
+            }
 
+            foreach (SnakePlayer moved in movementlist)
+            {
+                snakeplayers.Add(moved);
+            }
 
             foreach (SnakePlayer player in snakeplayers)
             {

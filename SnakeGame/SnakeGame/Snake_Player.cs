@@ -202,19 +202,8 @@ namespace SnakeGame
                 //make body follow the head
                 for (int i = this.snake.Count - 1; i > 0; i--)
                 {
-                    if (i > 1)
-                    {
-                        this.snake[i].X = this.snake[i - 1].X;
-                        this.snake[i].Y = this.snake[i - 1].Y;
-                    }
-
-                    if (i == 1)
-                    {
-                        this.snake[i].X = head.X + ((head.Direction == Directions.right) ? -SIZEELEM :
-                            (head.Direction == Directions.left) ? SIZEELEM : 0);
-                        this.snake[i].Y = head.Y + ((head.Direction == Directions.down) ? -SIZEELEM :
-                            (head.Direction == Directions.up) ? SIZEELEM : 0);
-                    }
+                    this.snake[i].X = this.snake[i - 1].X;
+                    this.snake[i].Y = this.snake[i - 1].Y;
                     this.snake[i].Direction = this.snake[i - 1].Direction;
                 }
             }
@@ -242,7 +231,7 @@ namespace SnakeGame
         }
         public void SnakeEat()
         {
-            if (this.snake != null && GamepageSnake.APPLE != null)
+            if (GamepageSnake.APPLE != null)
             {
                 SnakeElem head = this.snake[0];
 
@@ -269,7 +258,6 @@ namespace SnakeGame
                     this.snake[this.snake.Count - 2].Rect.Fill = this.pictures[SnakeGame.Pictures.Elem.ToString()];
                     this.score++;
                 }
-                this.snake[0] = head;
             }
         }
         public static void UpdateRanking()

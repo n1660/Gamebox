@@ -81,6 +81,7 @@ namespace SnakeGame
                 if (e.Key == Key.P && !GamepageSnake.STARTED)
                 {
                     GamepageSnake.STARTED = true;
+                    GamepageSnake.TIMER.Start();
                 }
                 else
                 {
