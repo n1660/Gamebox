@@ -22,7 +22,7 @@
     </Page.Resources>
     <DockPanel>
         <Canvas HorizontalAlignment="Left" Height="600" Width="846" VerticalAlignment="Top" Background="LightCyan" Name="canvas">
-            <Label Content="Menu" Height="80" Width="156" FontSize="48" Canvas.Left="317" Canvas.Top="86" FontWeight="Bold"/>
+            <Label Content="Hangman" Height="80" Width="234" FontSize="48" Canvas.Left="274" Canvas.Top="90" FontWeight="Bold"/>
             <Button Canvas.Left="317" Canvas.Top="202" Content="New Game" Click="Button_Click"/>
             <Button Canvas.Left="317" Canvas.Top="317" Content="Settings" Click="Button_Click"/>
             <Button Canvas.Left="317" Canvas.Top="437" Content="Quit" Click="Button_Click"/>

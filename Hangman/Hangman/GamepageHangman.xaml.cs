@@ -20,12 +20,16 @@ namespace Hangman
     public partial class GamepageHangman : Page
     {
         string randomWord = Spiel.NewWord();
+        int points;
         string checkrand = "";
         string solution;
         string alreadyUsed = "";
-        int maxfehler = 9;
+        static int maxfehler = 9;
         int anzfehler = 0;
+        bool BonusUsed = false;
         Label[] lbls = new Label[15];
+        Label[] lblPoints = new Label[1];
+        Button[] btnPoints = new Button[1];
 
         public GamepageHangman()
         {
@@ -45,6 +49,7 @@ namespace Hangman
                                 path = @"3-5Buchstaben.txt";
                                 break;
                             case 2:
+                                path = @"3-5Letters.txt";
                                 break;
                             default:
                                 break;
@@ -57,6 +62,7 @@ namespace Hangman
                                 path = @"6-8Buchstaben.txt";
                                 break;
                             case 2:
+                                path = @"6-8Letters.txt";
                                 break;
                             default:
                                 break;
@@ -92,9 +98,11 @@ namespace Hangman
         {
             randomWord = NewWord();
             anzfehler = 0;
+            points = 100;
             Show_Lines();
             Show_Buttons();
             Show_Image();
+            Show_Points();
         }
         public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -104,16 +112,18 @@ namespace Hangman
         {
             Button btn = (Button)sender;
             string letter = btn.Content.ToString();
-            if(letter != "Hint")
-            { 
+            if(letter != "Hint" && letter != "Bonus")
+            {
+                btn.Background = Brushes.Red;
                 bool containsLetter = randomWord.Contains(letter);
-                if (containsLetter)
+                bool letterUsed = alreadyUsed.Contains(letter);
+                if (containsLetter && !letterUsed)
                 {
                     ShowNewWord(letter);
+                    alreadyUsed += letter;
                 }
                 else
                 {
-                    bool letterUsed = alreadyUsed.Contains(letter);
                     if(letterUsed)
                     {
                         MessageBox.Show(String.Format("Letter {0} already chosen!", letter));
@@ -126,7 +136,7 @@ namespace Hangman
                     alreadyUsed += letter;
                 }
             }
-            else  //Hint wurde gedrückt
+            else if(letter == "Hint") //Hint wurde gedrückt
             {               
                 Random rand = new Random();
                 int randInt = rand.Next(0, randomWord.Length);
@@ -146,43 +156,57 @@ namespace Hangman
                 checkrand += randString;
                 MistakeWasMade();
             }
+            else if(letter == "Bonus")
+            {
+                anzfehler = 0;
+                Show_Image();
+                BonusUsed = true;
+                canvas.Children.Remove(btnPoints[0]);
+            }
         }
         public void ShowNewWord(string letter)
         {
             int pos = randomWord.IndexOf(letter);
             lbls[pos].Content = letter;
+            points += 10;
             checkrand += pos;
             int pos2 = randomWord.IndexOf(letter, pos + 1);
             if (pos2 != -1)  // weiterer Buchstabe gefunden (6 mal überprüfen)
             {
                 lbls[pos2].Content = letter;
+                points += 10;
                 checkrand += pos2;
                 int pos3 = randomWord.IndexOf(letter, pos2 + 1);
                 if (pos3 != -1)
                 {
                     lbls[pos3].Content = letter;
+                    points += 10;
                     checkrand += pos3;
                     int pos4 = randomWord.IndexOf(letter, pos3 + 1);
                     if (pos4 != -1)
                     { 
                         lbls[pos4].Content = letter;
+                        points += 10;
                         checkrand += pos4;
                         int pos5 = randomWord.IndexOf(letter, pos4 + 1);
                         if(pos5 != -1)
                         {
                             lbls[pos5].Content = letter;
+                            points += 10;
                             checkrand += pos5;
                             int pos6 = randomWord.IndexOf(letter, 5 + 1);
                             if(pos6 != -1)
                             {
                                 lbls[pos6].Content = letter;
+                                points += 10;
                                 checkrand += pos6;
                             }
                         }
                     }
                 }
             }
-            CheckIfWordShown("Gewonnen!");
+            Show_Points();
+            CheckIfWordShown("You Won!");
         }
         public void CheckIfWordShown(string Message)
         {
@@ -202,8 +226,14 @@ namespace Hangman
         {
             anzfehler++;
             Show_Image();
+            points = points - 10;
+            Show_Points();
             if (anzfehler == maxfehler)
             {
+                for(int i = 0; i < randomWord.Length; i++)
+                {
+                    lbls[i].Content = randomWord[i];
+                }
                 MessageBox.Show("You lost!");
                 QuitGame();
             }
@@ -219,6 +249,8 @@ namespace Hangman
             }
             else
             {
+                points -= 10;
+                Show_Points();
                 MessageBox.Show("Wrong word!");
                 textbox.Text = "";
                 MistakeWasMade();
@@ -246,6 +278,16 @@ namespace Hangman
                 canvas.Children.Add(lbls[i]);
                 CvLeft += 42;
             }
+            lblPoints[0] = new Label
+            {
+                Content = points,
+                Name = "Points",
+                Width = 200,
+                Height = 200
+            };
+            Canvas.SetTop(lblPoints[0], 210);
+            Canvas.SetLeft(lblPoints[0], 230);
+            canvas.Children.Add(lblPoints[0]);
         }
         public void Show_Buttons()
         {
@@ -265,8 +307,9 @@ namespace Hangman
                 {
                     //Eigenschaften setzen uä.
                     Content = Alphabet[i],
-                    Name = "Button" + i
-                };
+                    Name = "Button" + i,
+                    Background = Brushes.LightGreen
+            };
 
                 Canvas.SetTop(btn[i], CvTop);
                 Canvas.SetLeft(btn[i], CvLeft);
@@ -299,12 +342,45 @@ namespace Hangman
             bitmapImage.EndInit();
             return bitmapImage;
         }
+        public void Show_Points()
+        {
+            lblPoints[0].Content = points;
+            Check_Bonus();
+        }
+        public void Check_Bonus()
+        {
+            if(points >= 150 && !BonusUsed)
+            {
+                btnPoints[0] = new Button
+                {
+                    Name = "btn_Points",
+                    Content = "Bonus",
+                    Background = Brushes.Yellow,
+                    Height = 65,
+                    Width = 100
+                };
+                btnPoints[0].Click += Button_Click;
+                Canvas.SetTop(btnPoints[0], 225);
+                Canvas.SetLeft(btnPoints[0], 350);
+                canvas.Children.Add(btnPoints[0]);
+            }
+            else if (points < 150)
+            {
+                BonusUsed = false;
+                canvas.Children.Remove(btnPoints[0]);
+            }
+            else if(points >= 150 && BonusUsed)
+            { 
+                canvas.Children.Remove(btnPoints[0]);
+            }
+        }
         public void QuitGame()
         {
             for (int i = 0; i < randomWord.Length; i++)   //alle lbls beenden
             {
                 canvas.Children.Remove(lbls[i]);
             }
+            canvas.Children.Remove(lblPoints[0]);
             MainWindow mw = (MainWindow)Application.Current.MainWindow;
             mw.Content = new Hangman_menu();
         }
@@ -326,6 +402,16 @@ namespace Hangman
         {
             //MenuPage aufrufen
             QuitGame();
+        }
+        public void MenuItem_Click_Settings(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < randomWord.Length; i++)   //alle lbls beenden
+            {
+                canvas.Children.Remove(lbls[i]);
+            }
+            canvas.Children.Remove(lblPoints[0]);
+            MainWindow mw = (MainWindow)Application.Current.MainWindow;
+            mw.Content = new Settings();
         }
     }
 }

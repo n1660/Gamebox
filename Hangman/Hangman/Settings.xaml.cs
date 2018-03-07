@@ -18,7 +18,7 @@ namespace Hangman
     public partial class Settings : Page
     {
         public static int difficultylvl = 2;
-        public static int language = 1;
+        public static int language = 2;
         public Settings()
         {
             InitializeComponent();
@@ -80,27 +80,6 @@ namespace Hangman
                 default:
                     break;
             }
-
-            //switch (content)
-            //{
-            //    case "3-5 Buchstaben":
-            //        difficultylvl = 1;
-            //        mw.Content = new Hangman_menu();
-            //        break;
-            //    case "6-8 Buchstaben":
-            //        difficultylvl = 2;
-            //        mw.Content = new Hangman_menu();
-            //        break;
-            //    case "Extrem":
-            //        difficultylvl = 3;
-            //        mw.Content = new Hangman_menu();
-            //        break;
-            //    case "Back":
-            //        mw.Content = new Hangman_menu();
-            //        break;
-            //    default:
-            //        break;
-            //}
         }
     }
 }

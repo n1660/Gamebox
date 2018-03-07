@@ -30,6 +30,7 @@
             <MenuItem Header="_Options">
                 <MenuItem Header="_New Game" Click="MenuItem_Click_Neu"/>
                 <MenuItem Header="_Menu" Click="MenuItem_Click_Menu"/>
+                <MenuItem Header="_Settings" Click="MenuItem_Click_Settings"/>
                 <MenuItem Header="_Quit" Click="MenuItem_Click_Quit"/>
             </MenuItem>
         </Menu>
@@ -39,7 +40,8 @@
             <TextBox Height="41" TextWrapping="Wrap" Width="254" Canvas.Left="133" Canvas.Top="302" FontSize="28.8" TextChanged="TextBox_TextChanged" Name="textbox"/>
             <Button Content="Submit" Canvas.Left="406" Canvas.Top="295" Width="75" FontSize="20" Click="Button_Click_Submit"/>
             <Image Name="bild"/>
-            <Button Content="Hint" Height="56" VerticalAlignment="Top" Width="75" FontSize="20" Canvas.Top="241" Canvas.Left="10" Click="Button_Click"/>
+            <Button Content="Hint" Height="56" VerticalAlignment="Top" Width="75" FontSize="20" Canvas.Top="225" Canvas.Left="4" Click="Button_Click"/>
+            <Button Content="New Game" Height="56" VerticalAlignment="Top" Width="106" FontSize="20" Canvas.Top="225" Canvas.Left="103" Click="MenuItem_Click_Neu"/>
         </Canvas>
     </DockPanel>
 </Page>
