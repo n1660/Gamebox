@@ -31,7 +31,9 @@
 
 
         <TextBlock Name="Your_Word" Grid.Row="0" Grid.Column="0" FontSize="16" FontFamily="Consolas" Margin="10,10,0,0"/>
-        <TextBlock Name="Countdown" Grid.Row="0" Grid.Column="1" FontSize="16" FontFamily="Consolas" Margin="150,10,10,0"/>
+        <TextBlock Name="Countdown" Grid.Row="0" Grid.Column="1" FontSize="16" FontFamily="Consolas" Margin="190.4,10,9.8,0.4" TextAlignment="Center"/>
+        <TextBlock Name="Rounds" Grid.Row="0" Grid.Column="1" FontSize="16" FontFamily="Consolas" Margin="10, 10, 130, 0" TextAlignment="Left"/>
+        <Image Grid.Column="1" Grid.Row="0" Source="res/icons/clock2.png" Margin="93.4,0,-13.2,0.4"/>
 
         <Canvas Name="MyCanvas" Grid.Row="1" Grid.Column="0" Background="White" Margin="10" MouseDown="MyCanvas_MouseDown" MouseMove="MyCanvas_MouseMove" />
         <TextBlock Name="Scores" Grid.Row="1" Grid.Column="1" Margin="10" />

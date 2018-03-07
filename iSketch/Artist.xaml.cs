@@ -46,7 +46,7 @@ namespace iSketch
 
         private int Max_Score = 500;
         private static int Max_Time;
-        public static int Max_Rounds = 5;
+        public static int Max_Rounds = 3;
         private static int Current_Round = 1;
         public static int Max_Players = 8;
 
@@ -62,8 +62,8 @@ namespace iSketch
 
             this.List_Length = Get_List_Length();
             Chat_Window.KeyDown += new KeyEventHandler(Key_Events);
+            this.Rounds.Text = "Round: " + Current_Round + "/" + Max_Rounds;
             CreateContdown();
-
             Set_ChooseWords();
             Show_Scores();
         }
@@ -462,6 +462,7 @@ namespace iSketch
                 {
                     Current_Artist_ID = 0;
                     Current_Round++;
+
                     if (Current_Round == Max_Rounds +1)
                     {
                         Current_Round = 1;
@@ -472,12 +473,18 @@ namespace iSketch
                         }
                         // Spiel beenden bzw neue Runde anfragen
                     }
+                    this.Rounds.Text = "Round: " + Current_Round + "/" + Max_Rounds;
                 }
                 else Current_Artist_ID ++;
 
                 Set_ChooseWords();
             }
             // Send Artist_ID if it changed to the others
+        }
+
+        void ShowRounds()
+        {
+            this.Rounds.Text = "Round: " + Current_Round + "/" + Max_Rounds;
         }
     }
 }

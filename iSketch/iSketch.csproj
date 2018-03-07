@@ -159,5 +159,11 @@
     <Resource Include="res\backgrounds\red.jpg" />
     <Resource Include="res\backgrounds\redbrickets.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\icons\clock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\icons\clock2.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

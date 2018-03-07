@@ -71,8 +71,8 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" TextAlignment="Center" Margin="2">Insert your Username</TextBlock>
-                    <TextBox Name="PlayerUsername" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,2"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" TextAlignment="Center" Margin="2" Text="Insert your Username"/>
+                <TextBox Name="PlayerUsername" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,2" TextAlignment="Center"/>
                     <Button Name="Submit_Username" Grid.Row="3" Grid.Column="2" Margin="2" Click="Button_Click_Menu">Submit</Button>
                 <!--<Button Name="Canel_Username" Grid.Row="3" Grid.Column="2" Margin="2" Click="Button_Click_Menu">Cancel</Button>-->
             </Grid>
