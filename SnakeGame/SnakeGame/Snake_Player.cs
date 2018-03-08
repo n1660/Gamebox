@@ -82,21 +82,23 @@ namespace SnakeGame
                 FontSize = 22,
                 FontWeight = FontWeights.Bold,
                 TextAlignment = TextAlignment.Center,
-                Text = name + ":"
-            };
+                Text = name + ":",
+                Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString(this.color.ToString()))
+        };
             this.Scoretext[1] = new TextBlock
             {
                 Name = "TxtScorePlayer" + this.Id,
                 FontSize = 22,
                 FontWeight = FontWeights.Bold,
                 TextAlignment = TextAlignment.Center,
+                Text = this.score.ToString(),
+                Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString(this.color.ToString()))
             };
             this.address = adr;
 
             this.snake = InitializeSnake();
             this.disabledDirection = ((int)this.snake[0].Direction < 2) ? (Directions)((int)this.snake[0].Direction + 2) : (Directions)((int)this.snake[0].Direction - 2);
 
-            UpdateRanking();
             foreach (SnakeElem snk in this.snake)
             {
                 this.gameCanvas.Children.Add(snk.Rect);
@@ -129,14 +131,14 @@ namespace SnakeGame
         {
             this.snakeTmp.Add(new SnakeElem
             {
-                X = ((this.id < 2) ? 50 : ((int)this.GameCanvas.ActualWidth - 50)) + this.id * -SIZEELEM,
-                Y = ((this.id % 2 == 0) ? 50 : ((int)this.GameCanvas.ActualHeight - 50)),
-                Direction = ((this.id % 2 == 0) ? Directions.down : Directions.up),
+                X = ((this.id % 2 == 0) ? (50) : ((int)this.GameCanvas.ActualWidth - 50)) +  SIZEELEM,
+                Y = ((this.id < 2) ? 50 + SIZEELEM : ((int)this.GameCanvas.ActualHeight - 50)),
+                Direction = ((this.id < 2) ? Directions.down : Directions.up),
                 Rect = new Rectangle
                 {
                     Width = SIZEELEM,
                     Height = SIZEELEM,
-        }
+                }
             });
 
             for (int i = 1; i < STARTLENGTH - 1; i++)
@@ -144,8 +146,8 @@ namespace SnakeGame
                 this.snakeTmp.Add(new SnakeElem
                 {
                     X = snakeTmp[0].X,
-                    Y = snakeTmp[0].Y + ((this.id % 2 == 0) ? -(i * SIZEELEM) : (i * SIZEELEM)),
-                    Direction = ((this.id % 2 == 0) ? Directions.down : Directions.up),
+                    Y = snakeTmp[0].Y + ((this.id < 2) ? -(i * SIZEELEM) : (i * SIZEELEM)),
+                    Direction = ((this.id < 2) ? Directions.down : Directions.up),
                     Rect = new Rectangle
                     {
                         Width = SIZEELEM,
@@ -157,8 +159,8 @@ namespace SnakeGame
             this.snakeTmp.Add(new SnakeElem
             {
                 X = this.snakeTmp[0].X,
-                Y = this.snakeTmp[0].Y + ((this.id % 2 == 0) ? -(2 * SIZEELEM) : 2 * SIZEELEM),
-                Direction = ((this.id % 2 == 0) ? Directions.down : Directions.up),
+                Y = this.snakeTmp[0].Y + ((this.id < 2) ? -((STARTLENGTH - 1) * SIZEELEM) : (STARTLENGTH - 1) * SIZEELEM),
+                Direction = ((this.id < 2) ? Directions.down : Directions.up),
                 Rect = new Rectangle
                 {
                     Width = SIZEELEM,
@@ -186,10 +188,22 @@ namespace SnakeGame
         //methods
         public void MoveSnake()
         {
+            SnakeElem head = this.snake[0];
+            
+            if (head.X < 0)
+                head.X += (int)this.gameCanvas.ActualWidth;
+
+            else if (head.X > (this.gameCanvas.ActualWidth - head.Rect.ActualWidth))
+                head.X -= (int)this.gameCanvas.ActualWidth;
+
+            else if (head.Y < 0)
+                head.Y += (int)this.gameCanvas.ActualHeight;
+
+            else if (head.Y > (this.gameCanvas.ActualHeight- head.Rect.ActualHeight))
+                head.Y -= (int)this.gameCanvas.ActualHeight;
+
             if (this.snake == null || this.snake.Count == 0)
                 return;
-
-            SnakeElem head = this.snake[0];
 
             if (GamepageSnake.STARTED)
             {
@@ -208,15 +222,39 @@ namespace SnakeGame
                 }
             }
             this.SnakeEat();
+
+            foreach (SnakeElem snk in this.snake) {
+                Canvas.SetLeft(snk.Rect, snk.X);
+                Canvas.SetTop(snk.Rect, snk.Y);
+            }
+            
+            foreach (SnakeElem snk in this.snake)
+            {
+                if (!this.gameCanvas.Children.Contains(snk.Rect))
+                    this.gameCanvas.Children.Add(snk.Rect);
+            }
         }
         public void Render()
         {
             if (App.Current.MainWindow.Content.GetType().Name != (typeof(GamepageSnake).Name) || !GamepageSnake.STARTED)
                 return;
 
-            //reload headpic for the new direction
-            this.snake[0].Rect.Fill = this.pictures["Head_" + this.direction.ToString() + "_" + this.color.ToString()];
-            
+            this.MoveSnake();
+
+            //reload head- and tailpic for the new direction
+            this.snake[0].Rect.Fill = this.pictures["Head_" + this.snake[0].Direction.ToString() + "_" + this.color.ToString()];
+            this.snake[this.snake.Count - 1].Rect.Fill = this.pictures["Tail_" + this.snake[this.snake.Count - 1].Direction.ToString() + "_" + this.color.ToString()];
+
+
+            foreach (SnakeElem snk in this.snake)
+            {
+                if (this.gameCanvas.Children.Contains(snk.Rect))
+                    this.GameCanvas.Children.Remove(snk.Rect);
+
+                this.gameCanvas.Children.Add(snk.Rect);
+            }
+
+
             if (GamepageSnake.APPLE == null || this.gameCanvas == null)
                 return;
 
@@ -225,9 +263,6 @@ namespace SnakeGame
 
             if (GamepageSnake.APPLE != null && !gameCanvas.Children.Contains(GamepageSnake.APPLE.Shape) && GamepageSnake.STARTED)
                 gameCanvas.Children.Add(GamepageSnake.APPLE.Shape);
-            
-            this.MoveSnake();
-            UpdateRanking();
         }
         public void SnakeEat()
         {
@@ -259,18 +294,6 @@ namespace SnakeGame
                     this.score++;
                 }
             }
-        }
-        public static void UpdateRanking()
-        {
-            GamepageSnake.Snakeplayers.Sort(delegate (SnakePlayer x, SnakePlayer y)
-            {
-                if (x.score == y.score)
-                    return (x.id.CompareTo(y.id));
-                else if (x.score < y.score)
-                    return -1;
-                else
-                    return 1;
-            });
         }
     }
 }

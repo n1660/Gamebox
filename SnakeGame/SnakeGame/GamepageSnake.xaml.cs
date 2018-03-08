@@ -292,7 +292,10 @@ namespace SnakeGame
         //timertickroutine
         public void Time_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine((tmp) ? "asdfghjk" : "a");
+            Console.WriteLine(snakeplayers.Count + " players");
+            foreach(SnakePlayer p in snakeplayers) {
+                Console.WriteLine((tmp) ? "a" : "asdfghj");
+            }
             tmp = !tmp;
             Render();
         }
@@ -308,7 +311,7 @@ namespace SnakeGame
             MenupageSnake.GamePage = this;
             STARTED = false;
 
-            bgpic.Opacity = 0.8;
+            bgpic.Opacity = 0.6;
             InitializeComponent();
 
             BtnPause.Visibility = Visibility.Hidden;
@@ -324,8 +327,6 @@ namespace SnakeGame
             newPlayerPrompt.Children.Add(InputIPA);
             newPlayerPrompt.Children.Add(LblPortA);
             newPlayerPrompt.Children.Add(InputPortA);
-            BtnSubmitNewPlayer.Click += BtnSubmitNewPlayer_Click;
-            BtnCancelA.Click += BtnCancel_Click;
             newPlayerPrompt.Children.Add(BtnCancelA);
             newPlayerPrompt.Children.Add(BtnSubmitNewPlayer);
             newPlayerPrompt.Children.Add(LblErrorA);
@@ -339,11 +340,11 @@ namespace SnakeGame
             GameCanvas.Children.Add(newPlayerPrompt);
 
             BtnSubmitNewPlayer.Click += BtnSubmitNewPlayer_Click;
+            BtnCancelA.Click += BtnCancel_Click;
             BtnCancelR.Click += BtnCancel_Click;
             removePlayerPrompt.Children.Add(LblInputheaderR);
             removePlayerPrompt.Children.Add(playerbox);
             BtnSubmitRemovePlayer.Click += BtnSubmitRemovePlayer_Click;
-            BtnCancelR.Click += BtnCancel_Click;
             removePlayerPrompt.Children.Add(BtnCancelR);
             removePlayerPrompt.Children.Add(BtnSubmitRemovePlayer);
             removePlayerPrompt.Children.Add(LblErrorR);
@@ -490,7 +491,7 @@ namespace SnakeGame
                 if ((MULTIPLAYER && (InputIPA.Text == "" || InputPortA.Text == "" || InputIPA.Text.Split('.').Length != 4)) || InputNameA.Text == "")
                     throw new Exception();
 
-                playerTmp = AddPlayerToGame(InputNameA.Text, (MULTIPLAYER) ? new IPEndPoint(IPAddress.Parse(InputIPA.Text), Int32.Parse(InputPortA.Text)) : new IPEndPoint(IPAddress.Loopback, 6666), GameCanvas);
+                playerTmp = AddPlayerToGame(InputNameA.Text, (MULTIPLAYER) ? new IPEndPoint(IPAddress.Parse(InputIPA.Text), Int32.Parse(InputPortA.Text)) : new IPEndPoint(IPAddress.Loopback, 666), GameCanvas);
                 if (playerTmp == null)
                     throw new Exception();
 
@@ -517,8 +518,9 @@ namespace SnakeGame
                 txtPlayers.Text = "players: " + SnakePlayer.CURPARTICIPANTS.ToString();
                 BtnCancelA.IsEnabled = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 LblErrorA.Visibility = Visibility.Visible;
             }
         }
@@ -614,8 +616,10 @@ namespace SnakeGame
             foreach(SnakePlayer toMove in snakeplayers)
             {
                 movementlist.Add(toMove);
-                toMove.MoveSnake();
+                toMove.Render();
             }
+
+            snakeplayers.Clear();
 
             foreach (SnakePlayer moved in movementlist)
             {
@@ -631,7 +635,8 @@ namespace SnakeGame
             if (App.Current.MainWindow.Content.GetType().Name != (typeof(GamepageSnake).Name))
                 return;
                         
-            CollisionDetection();
+            if(GamepageSnake.STARTED)
+                CollisionDetection();
             
             if (snakeplayers.Count == 1 && STARTED && MULTIPLAYER)
             {
@@ -658,13 +663,19 @@ namespace SnakeGame
                 BtnNew.Click += (object sender, RoutedEventArgs e) =>
                 {
                     BtnNew.Visibility = Visibility.Hidden;
-                    snakeplayers.Clear();
                     SnakePlayer.CURPARTICIPANTS = 0;
                     BtnPause.IsEnabled = true;
                     App.Current.MainWindow.Content = new GamepageSnake(MULTIPLAYER);
                 };
             }
 
+            snakeplayers.Clear();
+
+            foreach (SnakePlayer p in movementlist)
+            {
+                p.Scoretext[1].Text = p.score.ToString();
+                snakeplayers.Add(p);
+            }
             if (snakeplayers.Count == 0 && STARTED && MULTIPLAYER)
             {
                 BtnPause.IsEnabled = false;
@@ -674,9 +685,7 @@ namespace SnakeGame
                 GameCanvas.Background = gopic;
             }
 
-            foreach (SnakePlayer p in snakeplayers) {
-                p.Scoretext[1].Text = p.score.ToString();
-            }
+            movementlist.Clear();
 
             if (STARTED)
             {
@@ -702,10 +711,6 @@ namespace SnakeGame
                     {
                         GameCanvas.Children.Remove(snk.Rect);
                     }
-                    foreach (TextBlock tb in p.Scoretext)
-                    {
-                        spScores.Children.Remove(tb);
-                    }
                     SnakePlayer.CURPARTICIPANTS--;
                     return;
                 }
@@ -725,15 +730,10 @@ namespace SnakeGame
             {
                 spScores.Children.Add(tb);
             }
-
             return player;
         }
         public static void CollisionDetection()
         {
-            if(snakeplayers.Count < 2 || !STARTED)
-                return;
-
-            snakeplayersTmp.Clear();
             foreach(SnakePlayer origin in snakeplayers)
             {
                 snakeplayersTmp.Add(origin);
@@ -761,7 +761,10 @@ namespace SnakeGame
                             }
                         }
                     }
-                    else if (MULTIPLAYER)
+                    if (snakeplayers.Count < 2 || !STARTED)
+                        return;
+
+                    if (MULTIPLAYER)
                     {
                         foreach (SnakeElem snk in pl.Snake)
                         {
@@ -791,6 +794,8 @@ namespace SnakeGame
             {
                 snakeplayers.Add(copy);
             }
+
+            snakeplayersTmp.Clear();
         }
     }
 }
