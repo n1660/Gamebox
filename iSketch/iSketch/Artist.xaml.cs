@@ -16,7 +16,7 @@ using System.Timers;
 using System.Windows.Threading;
 using System.Threading;
 using System.Net;
-
+using System.Net.Sockets;
 
 namespace iSketch
 {
@@ -54,7 +54,8 @@ namespace iSketch
         public string Current_Artist;
         public int Current_Artist_ID = 0;
 
-        
+        public static List<IPEndPoint> HostIPs = new List<IPEndPoint>();
+
         public Artist()
         {
             InitializeComponent();

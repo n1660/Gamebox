@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace Server
 {
-    class Server
+    public class Server
     {
         public static int online = 0;
         public static bool request ;

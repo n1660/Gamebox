@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
+using System.Net.Sockets;
 
 namespace iSketch
 {
@@ -70,12 +71,6 @@ namespace iSketch
             }
         }
 
-        void Join_Game(Server.Server server)
-        {
-            // show games, which are running -> select with Buttons (The Hosts Username)
-            
-        }
-
         void New_Host()
         {
             Host = PlayerUsername.Text;
@@ -115,16 +110,19 @@ namespace iSketch
                         {
                             if (MemberList[Host].Exists(x => x.Username == PlayerUsername.Text)) // No Dublicates / Not Correct
                                 Popup_Username_Exists.IsOpen = true;
-                            else
+                            else // Insert a player to a game, which already exists
                             {
-                                MemberList[PlayerUsername.Text].Add(new Member() { Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IPv4
+                                MemberList[PlayerUsername.Text].Add(new Member(PlayerUsername.Text)); // ID = ??
                                 Username_Canvas.Visibility = Visibility.Hidden;
                                 MainWindow.win.Content = new Artist();
                             }
                         }
-                        else
+                        else // Create game & Insert Host as Client in List
                         {
-                            MemberList[PlayerUsername.Text].Add(new Member(0, PlayerUsername.Text)); 
+                            Artist.HostIPs.Add(MemberList[Host][0].End);
+                            MemberList[PlayerUsername.Text].Add(new Member(PlayerUsername.Text));
+                            MemberList[Host][0].Join_Game(Artist.HostIPs[0]);
+
                             Username_Canvas.Visibility = Visibility.Hidden;
                             MainWindow.win.Content = new Artist();
                         }
