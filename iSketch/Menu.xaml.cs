@@ -27,6 +27,7 @@ namespace iSketch
         public Menu()
         {
             InitializeComponent();
+
             PlayerUsername.KeyDown += new KeyEventHandler(Key_Events);
             Username_Canvas.Visibility = Visibility.Hidden;
             //Popup_Username.IsOpen = true;
@@ -88,6 +89,7 @@ namespace iSketch
                 get_player_data();
             }
         }
+
         void get_player_data()
         {
 
@@ -122,7 +124,7 @@ namespace iSketch
                         }
                         else
                         {
-                            MemberList[PlayerUsername.Text].Add(new Member() { Username = PlayerUsername.Text, Score = 0, Moves = 0 }); // ID = IPv4
+                            MemberList[PlayerUsername.Text].Add(new Member(0, PlayerUsername.Text)); 
                             Username_Canvas.Visibility = Visibility.Hidden;
                             MainWindow.win.Content = new Artist();
                         }

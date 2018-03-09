@@ -24,9 +24,14 @@ namespace iSketch
         private IPEndPoint end;
 
 
-        public Member (int ID, string Username, int Score, int Moves, bool Guessed_Correctly, IPAddress Adress)
+        public Member (int ID, string Username)
         {
-            this.adr = Adress;
+            this.ID = ID;
+            this.Username = Username;
+            this.Score = 0;
+            this.Moves = 0; // neccessary??? 
+            this.Guessed_Correctly = false;
+
             this.end = new IPEndPoint(adr, 10000);
 
             this.client = new TcpClient();
