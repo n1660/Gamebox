@@ -293,9 +293,6 @@ namespace SnakeGame
         public void Time_Tick(object sender, EventArgs e)
         {
             Console.WriteLine(snakeplayers.Count + " players");
-            foreach(SnakePlayer p in snakeplayers) {
-                Console.WriteLine((tmp) ? "a" : "asdfghj");
-            }
             tmp = !tmp;
             Render();
         }
@@ -749,7 +746,12 @@ namespace SnakeGame
                         foreach (SnakeElem snk in p.Snake)
                         {
                             if (snk == p.Snake[0])
+                            {
+                                if (!p.GameCanvas.Children.Contains(snk.Rect))
+                                    p.GameCanvas.Children.Add(snk.Rect);
+
                                 continue;
+                            }
 
                             if ((p.Snake[0].X < snk.X + snk.Rect.ActualWidth)
                                 && (p.Snake[0].X + p.Snake[0].Rect.Width > snk.X)
