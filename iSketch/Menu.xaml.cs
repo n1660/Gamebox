@@ -24,7 +24,7 @@ namespace iSketch
 
         public static string Host;
         private static Server.Server server = null;
-
+        
         public Menu()
         {
             InitializeComponent();

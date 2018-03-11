@@ -17,15 +17,15 @@ namespace iSketch
         public int Moves { get; set; }
         public bool Guessed_Correctly { get; set; }
 
-        public Stream Stream { get; set; }
-        public StreamReader Reader { get; set; }
-        public StreamWriter Writer { get; set; }
+        public Stream stream { get; set; }
+        public StreamReader reader { get; set; }
+        public StreamWriter writer { get; set; }
         public IPEndPoint End { get => end; set => end = value; }
 
         private TcpClient client;
         private IPAddress adr;
         private IPEndPoint end;
-        
+
         public Member (string Username)
         {           
             this.Username = Username;
@@ -38,9 +38,9 @@ namespace iSketch
             this.client = new TcpClient();
             this.client.Connect(end);
 
-            this.Stream = client.GetStream();
-            this.Reader = new StreamReader(Stream, Encoding.ASCII);
-            this.Writer = new StreamWriter(Stream, Encoding.ASCII)
+            this.stream = client.GetStream();
+            this.reader = new StreamReader(stream, Encoding.ASCII);
+            this.writer = new StreamWriter(stream, Encoding.ASCII)
             {
                 AutoFlush = true
             };
@@ -50,7 +50,7 @@ namespace iSketch
         {
             // show games, which are running -> select with Buttons (The Hosts Username)
             this.client.Connect(ip.Address, ip.Port);
-            this.ID = Int32.Parse(Reader.ReadLine());
+            this.ID = Int32.Parse(reader.ReadLine());
         }
     }
     // Bei Add -> Daten müssen auch an den andern geschickt werden

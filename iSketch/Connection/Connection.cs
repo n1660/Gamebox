@@ -29,18 +29,18 @@ namespace Server
 
             String line = "void";
 
-            writer.WriteLine(Server.nextUnusedID);
-            Server.nextUnusedID++;
-
             while (true)
             {
                 line = reader.ReadLine();
 
-                if (line == null || (line.Trim().ToLower().Equals("bye")))
+                if (line == null)
                 {
                     Server.online--;
                     Console.WriteLine((Server.online != 0) ? ("A Client just logged off.\nStill online: " + Server.online.ToString()) : "... this loneliness ... is killing me ... :'-(");
                     Server.request = true;
+                    break;
+                } else if (line.Trim().ToLower().Equals("bye"))
+                {
                     break;
                 }
 
