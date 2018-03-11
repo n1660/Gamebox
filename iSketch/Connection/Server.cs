@@ -13,6 +13,8 @@ namespace Server
     {
         public static int online = 0;
         public static bool request ;
+        private int gitspinnt;
+        private int gitspinnt2;
         public static void M_Server()
         {
             IPAddress adr = IPAddress.Loopback;
