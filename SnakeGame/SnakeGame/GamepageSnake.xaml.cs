@@ -292,8 +292,6 @@ namespace SnakeGame
         //timertickroutine
         public void Time_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine(snakeplayers.Count + " players");
-            tmp = !tmp;
             Render();
         }
 
@@ -610,7 +608,7 @@ namespace SnakeGame
         public void Render()
         {
             List<SnakePlayer> movementlist = new List<SnakePlayer>(snakeplayers.Count);
-            foreach(SnakePlayer toMove in snakeplayers)
+            foreach (SnakePlayer toMove in snakeplayers)
             {
                 movementlist.Add(toMove);
                 toMove.Render();
@@ -631,10 +629,10 @@ namespace SnakeGame
 
             if (App.Current.MainWindow.Content.GetType().Name != (typeof(GamepageSnake).Name))
                 return;
-                        
-            if(GamepageSnake.STARTED)
+
+            if (GamepageSnake.STARTED)
                 CollisionDetection();
-            
+
             if (snakeplayers.Count == 1 && STARTED && MULTIPLAYER)
             {
                 BtnPause.IsEnabled = false;
@@ -731,14 +729,14 @@ namespace SnakeGame
         }
         public static void CollisionDetection()
         {
-            foreach(SnakePlayer origin in snakeplayers)
+            foreach (SnakePlayer origin in snakeplayers)
             {
                 snakeplayersTmp.Add(origin);
             }
             //detect collision with any snakebody
-            foreach (SnakePlayer p in GamepageSnake.Snakeplayers)
+            foreach (SnakePlayer p in GamepageSnake.snakeplayersTmp)
             {
-                foreach (SnakePlayer pl in GamepageSnake.Snakeplayers)
+                foreach (SnakePlayer pl in GamepageSnake.SnakeplayersTmp)
                 {
                     if (p == pl)
                     {
@@ -758,46 +756,35 @@ namespace SnakeGame
                                 && (p.Snake[0].Y < snk.Y + snk.Rect.ActualHeight)
                                 && (p.Snake[0].Y + p.Snake[0].Rect.Height > snk.Y))
                             {
-                                if (snakeplayersTmp.Contains(p))
-                                    snakeplayersTmp.Remove(p);
+                                if (snakeplayers.Contains(p))
+                                    snakeplayers.Remove(p);
                             }
                         }
                     }
                     if (snakeplayers.Count < 2 || !STARTED)
                         return;
 
-                    if (MULTIPLAYER)
+                    foreach (SnakeElem snk in pl.Snake)
                     {
-                        foreach (SnakeElem snk in pl.Snake)
+                        //detect collision with another snakebody
+                        if ((p.Snake[0].X < snk.X + snk.Rect.ActualWidth)
+                            && (p.Snake[0].X + p.Snake[0].Rect.Width > snk.X)
+                            && (p.Snake[0].Y < snk.Y + snk.Rect.ActualHeight)
+                            && (p.Snake[0].Y + p.Snake[0].Rect.Height > snk.Y))
                         {
-                            //detect collision with another snakebody
-                            if ((p.Snake[0].X < snk.X + snk.Rect.ActualWidth)
-                                && (p.Snake[0].X + p.Snake[0].Rect.Width > snk.X)
-                                && (p.Snake[0].Y < snk.Y + snk.Rect.ActualHeight)
-                                && (p.Snake[0].Y + p.Snake[0].Rect.Height > snk.Y))
+                            if (snk == pl.Snake[0])
                             {
-                                if (snk == pl.Snake[0])
-                                {
-                                    if (snakeplayersTmp.Contains(pl))
-                                        snakeplayersTmp.Remove(pl);
-                                }
-
-                                if (snakeplayersTmp.Contains(p))
-                                    snakeplayersTmp.Remove(p);
+                                if (snakeplayersTmp.Contains(pl))
+                                    snakeplayersTmp.Remove(pl);
                             }
+
+                            if (snakeplayersTmp.Contains(p))
+                                snakeplayersTmp.Remove(p);
                         }
                     }
                 }
+                snakeplayersTmp.Clear();
             }
-
-            snakeplayers.Clear();
-
-            foreach (SnakePlayer copy in snakeplayersTmp)
-            {
-                snakeplayers.Add(copy);
-            }
-
-            snakeplayersTmp.Clear();
         }
     }
 }
