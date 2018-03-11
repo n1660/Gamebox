@@ -1,0 +1,15 @@
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\bin\Debug\TCP_IP_Connection.exe.config
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\bin\Debug\TCP_IP_Connection.exe
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\bin\Debug\TCP_IP_Connection.pdb
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\TCP_IP_Connection.csprojResolveAssemblyReference.cache
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\MainWindow.g.cs
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\App.g.cs
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\TCP_IP_Connection_MarkupCompile.cache
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\TCP_IP_Connection_MarkupCompile.lref
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\MainWindow.baml
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\TCP_IP_Connection.g.resources
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\TCP_IP_Connection.Properties.Resources.resources
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\TCP_IP_Connection.csproj.GenerateResource.Cache
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\TCP_IP_Connection.csproj.CoreCompileInputs.cache
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\TCP_IP_Connection.exe
+C:\Users\Lillith\source\repos\TCP_IP_Connection\TCP_IP_Connection\obj\Debug\TCP_IP_Connection.pdb
