@@ -45,11 +45,11 @@ namespace iSketch
         private Point lastPoint;
         private SolidColorBrush colour = Brushes.Black;
 
-        private int Max_Score = 500;
+        private int Max_Score = 300;
         private static int Max_Time;
-        public static int Max_Rounds = 3;
+        public static int Max_Rounds = 5;
         private static int Current_Round = 1;
-        public static int Max_Players = 8;
+        public static int Max_Players = 5;
 
         public string Current_Artist;
         public int Current_Artist_ID = 0;
@@ -235,7 +235,7 @@ namespace iSketch
                 this.lastPoint = p;
 
                 // Sockets: senden des letzten Strichs an den anderen Rechner. toSend ... X1, X2, Y2, Y1
-                // Strich muss in einen String umgewandelt werden -> Muss beim Empfänger wieder zu einen Strich umgewandelt werden 
+                // String muss in einen String umgewandelt werden -> Muss beim Empfänger wieder zu einen Strich umgewandelt werden 
             }
         }
 
