@@ -6,20 +6,27 @@ using System.Threading.Tasks;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace SnakeGame
 {
     public class Apple
     {
-        private double x,y;
+        private double x = -1.0, y = -1.0;
         private Ellipse shape;
+        public static ImageBrush applepic = new ImageBrush
+        {
+            ImageSource = new BitmapImage(new Uri("../../Images/apple.png", UriKind.RelativeOrAbsolute))
+        };
+
         public Apple(double left,double top)
         {
             shape = new Ellipse
             {
-                Fill = Brushes.Red,
-                Width = 15,
-                Height = 15
+                Fill = applepic,
+                Width = SnakePlayer.SIZEELEM * 2,
+                Height = SnakePlayer.SIZEELEM * 2,
+                Stretch = Stretch.Fill
             };
             x = left;
             y = top;
