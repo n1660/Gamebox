@@ -36,7 +36,7 @@ namespace ClientWPF
         public ClientWindow()
         {
             this.adr = IPAddress.Loopback;
-            this.end = new IPEndPoint(adr, 10000);
+            this.end = new IPEndPoint(adr, 4444);
 
             this.client = new TcpClient();
             this.client.Connect(end);

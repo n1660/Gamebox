@@ -37,7 +37,6 @@ namespace Server
                 {
                     Server.online--;
                     Console.WriteLine((Server.online != 0) ? ("A Client just logged off.\nStill online: " + Server.online.ToString()) : "... this loneliness ... is killing me ... :'-(");
-                    Server.request = true;
                     break;
                 } else if (line.Trim().ToLower().Equals("bye"))
                 {

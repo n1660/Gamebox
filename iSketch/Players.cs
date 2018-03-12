@@ -22,20 +22,20 @@ namespace iSketch
         public StreamWriter writer { get; set; }
         public IPEndPoint End { get => end; set => end = value; }
 
-        private TcpClient client;
+        private TcpClient client = new TcpClient();
         private IPAddress adr = IPAddress.Loopback;
         private IPEndPoint end;
 
-        public Member (string Username, bool host )
+        public Member (string Username, bool host)
         {           
             this.Username = Username;
             this.Score = 0;
             this.Moves = 0; // neccessary??? 
             this.Guessed_Correctly = false;
 
-            this.end = new IPEndPoint(adr, 5678);
+            this.end = new IPEndPoint(adr, 4444);
 
-            if (!host)
+            if (!host && Username != "")
             {
                 this.client.Connect(end); // Will sich nicht connecten/ Host darf nicht connecten 
                 this.stream = client.GetStream();
@@ -44,11 +44,12 @@ namespace iSketch
                 {
                     AutoFlush = true
                 };
+                Console.WriteLine("got through");
             }
 
 
             this.client = new TcpClient();
-            new Socket(SocketType.Stream, ProtocolType.Tcp).Bind(end);
+            //new Socket(SocketType.Stream, ProtocolType.Tcp).Bind(new IPEndPoint(IPAddress.Loopback, 4444));
         }
 
         public void Join_Game(IPEndPoint ip)

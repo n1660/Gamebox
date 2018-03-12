@@ -12,11 +12,10 @@ namespace Server
     public class Server
     {
         public static int online = 0;
-        public static bool request ;
         public static void M_Server()
         {
             IPAddress adr = IPAddress.Loopback;
-            IPEndPoint end = new IPEndPoint(adr, 10000);
+            IPEndPoint end = new IPEndPoint(adr, 4444);
 
             TcpClient client;
             Connection conn;
@@ -30,11 +29,7 @@ namespace Server
 
                 while (true)
                 {
-                    if (request)
-                    {
-                        Console.WriteLine("ready to accept clients ...");
-                        request = false;
-                    }
+                    Console.WriteLine("ready to accept clients ...");
                     try
                     {
                         client = server.AcceptTcpClient();
@@ -44,7 +39,6 @@ namespace Server
                         continue;
                     }
                     Console.WriteLine(++online + " clients logged in");
-                    request = true;
                     conn = new Connection(client, server);
                     ts = new ThreadStart(conn.ServeSingleClient);
                     t = new Thread(ts);
