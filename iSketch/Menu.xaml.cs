@@ -52,11 +52,12 @@ namespace iSketch
             }
             else if(sender == this.Join_Game_B)
             {
-<<<<<<< HEAD
                 new Member(PlayerUsername.Text, false).Join_Game(new IPEndPoint(IPAddress.Loopback, 4444));
-=======
-                new Member(PlayerUsername.Text, false).Join_Game(new IPEndPoint(IPAddress.Parse("146.254.1.192"), 5678)); // IP muss angepasst werden
->>>>>>> aed750452efcaa55fa2e1c8507ffaafb0256c9f5
+                if (!(MemberList.ContainsKey(PlayerUsername.Text)))
+                {
+                    MemberList.Add(PlayerUsername.Text, new List<Member>());
+                    get_player_data();
+                }
             }
             else if (Username_Canvas.Visibility == Visibility.Hidden)
             {
@@ -90,12 +91,11 @@ namespace iSketch
             }
         }
 
-        void get_player_data()
+        public void get_player_data()
         {
-
           Popup_Username_Exists.IsOpen = false;
 
-            if(PlayerUsername.Text != null)
+            if(PlayerUsername.Text != null && !(MemberList.ContainsKey(PlayerUsername.Text)))
             {
                 bool Not_Only_Blanks = false;
                 for ( int i = 0; i < PlayerUsername.Text.Length; i++)

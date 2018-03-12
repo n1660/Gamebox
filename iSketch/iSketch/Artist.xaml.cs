@@ -90,6 +90,7 @@ namespace iSketch
             {
                 Stop_All2(); // Close Timer Thread!
                 MainWindow.win.Content = new Menu();
+                Member.instance = (Menu)MainWindow.win.Content;
                 // Aus der Liste entfernen mit entsprechenden ID 
                 // when host leaves
                 Current_Round = 1;

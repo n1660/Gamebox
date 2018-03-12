@@ -11,6 +11,8 @@ namespace iSketch
 {
     public class Member //: IEquatable<Member>
     {
+        public static Menu instance;
+
         public int ID { get; set; } // Für Sockets als int -> ID wird vom Socket zugewiesen!
         public string Username { get; set; }
         public int Score { get; set; }
@@ -44,7 +46,12 @@ namespace iSketch
                 {
                     AutoFlush = true
                 };
-                Console.WriteLine("got through");
+
+                if (!(Menu.MemberList.ContainsKey(Username)))
+                {
+                    Menu.MemberList.Add(Username, new List<Member>());
+                    instance.get_player_data();
+                }
             }
 
 
