@@ -13,6 +13,12 @@
             <Setter Property="Height" Value="62"/>
             <Setter Property="FontSize" Value="28.8"/>
         </Style>
+        <Style TargetType="Popup">
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Canvas.Left" Value="322"/>
+            <Setter Property="Canvas.Top" Value="160"/>
+        </Style>
         <Style TargetType="Label">
             <Setter Property="Width" Value="50"/>
             <Setter Property="Height" Value="73"/>
@@ -38,10 +44,13 @@
             <TextBlock Height="40.8" TextWrapping="Wrap" Text="Choose a letter:" Width="208.8" Canvas.Top="363.6" FontSize="28.8" Background="LightCyan"/>
             <TextBlock TextWrapping="Wrap" Text="Solution:" Width="116.4" Height="40.8" Canvas.Left="4" Canvas.Top="302" FontSize="28.8"/>
             <TextBox Height="41" TextWrapping="Wrap" Width="254" Canvas.Left="133" Canvas.Top="302" FontSize="28.8" TextChanged="TextBox_TextChanged" Name="textbox"/>
-            <Button Content="Submit" Canvas.Left="406" Canvas.Top="295" Width="75" FontSize="20" Click="Button_Click_Submit"/>
+            <Button Content="Submit" Name="Submit" Canvas.Left="406" Canvas.Top="295" Width="75" FontSize="20" Click="Button_Click_Submit"/>
             <Image Name="bild"/>
             <Button Content="Hint" Height="56" VerticalAlignment="Top" Width="75" FontSize="20" Canvas.Top="225" Canvas.Left="4" Click="Button_Click"/>
             <Button Content="New Game" Height="56" VerticalAlignment="Top" Width="106" FontSize="20" Canvas.Top="225" Canvas.Left="103" Click="MenuItem_Click_Neu"/>
+            <Popup Name="popup" Placement="Mouse" Margin="0,46,109.2,0" >
+                <TextBlock Name="popupcontent" Width="300" Height="50" Background="White" FontSize="25" TextAlignment="Center" Padding="7"/>
+            </Popup>
         </Canvas>
     </DockPanel>
 </Page>

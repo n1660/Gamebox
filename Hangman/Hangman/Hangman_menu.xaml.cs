@@ -22,6 +22,12 @@ namespace Hangman
             InitializeComponent();
         }
 
+        public void SetNew()
+        {
+            GamepageHangman.countRounds = 5;
+            GamepageHangman.points = 100;
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;

@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,13 +15,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Timers;
 
 namespace Hangman
 {
     public partial class GamepageHangman : Page
     {
-        string randomWord = Spiel.NewWord();
-        int points;
+        string randomWord = "";
+        public static int points = 100;
         string checkrand = "";
         string solution;
         string alreadyUsed = "";
@@ -29,7 +31,10 @@ namespace Hangman
         bool BonusUsed = false;
         Label[] lbls = new Label[15];
         Label[] lblPoints = new Label[1];
+        Label[] lblRounds = new Label[1];
         Button[] btnPoints = new Button[1];
+        public static int countRounds = 5;
+        System.Timers.Timer aTimer = new System.Timers.Timer();
 
         public GamepageHangman()
         {
@@ -96,9 +101,13 @@ namespace Hangman
         }
         public void Start()
         {
+            popup.IsOpen = false;
             randomWord = NewWord();
             anzfehler = 0;
-            points = 100;
+            alreadyUsed = "";
+            checkrand = "";
+            solution = "";
+            BonusUsed = false;
             Show_Lines();
             Show_Buttons();
             Show_Image();
@@ -125,12 +134,12 @@ namespace Hangman
                 else
                 {
                     if(letterUsed)
-                    {
-                        MessageBox.Show(String.Format("Letter {0} already chosen!", letter));
+                    {                      
+                        ShowPopUp("Letter already chosen!", "Red");
                     }
                     else
-                    { 
-                        MessageBox.Show(String.Format("Letter {0} not included!", letter));
+                    {
+                        ShowPopUp("Letter not included!", "Red");
                         MistakeWasMade();
                     }
                     alreadyUsed += letter;
@@ -154,6 +163,7 @@ namespace Hangman
                 CheckIfWordShown("You needed help!");
 
                 checkrand += randString;
+                points -= 10;
                 MistakeWasMade();
             }
             else if(letter == "Bonus")
@@ -206,9 +216,9 @@ namespace Hangman
                 }
             }
             Show_Points();
-            CheckIfWordShown("You Won!");
+            CheckIfWordShown("You won!");
         }
-        public void CheckIfWordShown(string Message)
+        public void CheckIfWordShown(string message)
         {
             string lbl = "";
             for (int i = 0; i < randomWord.Length; i++)
@@ -218,7 +228,9 @@ namespace Hangman
             int won = lbl.IndexOf("_");
             if (won == -1)
             {
-                MessageBox.Show(Message);
+                if (message == "You won!")
+                    points += 50;
+                MessageBox.Show(message);
                 QuitGame();
             }
         }
@@ -259,7 +271,10 @@ namespace Hangman
         public void Show_Lines()
         {
             int CvLeft = 11;
-            int CvTop = 50;
+            int CvTop = 60;
+            string textRounds = "Rounds left: ";
+            string countRoundStr = countRounds.ToString();
+            textRounds += countRounds;
 
             for (int i = 0; i < randomWord.Length; i++)
             {
@@ -278,6 +293,19 @@ namespace Hangman
                 canvas.Children.Add(lbls[i]);
                 CvLeft += 42;
             }
+            lblRounds[0] = new Label
+            {
+                Content = textRounds,
+                Name = "Rounds",
+                FontSize = 40,
+
+                Width = 250,
+                Height = 60
+            };
+            Canvas.SetTop(lblRounds[0], 0);
+            Canvas.SetLeft(lblRounds[0], 0);
+            canvas.Children.Add(lblRounds[0]);
+
             lblPoints[0] = new Label
             {
                 Content = points,
@@ -363,6 +391,7 @@ namespace Hangman
                 Canvas.SetTop(btnPoints[0], 225);
                 Canvas.SetLeft(btnPoints[0], 350);
                 canvas.Children.Add(btnPoints[0]);
+                ShowPopUp("Congratulations! The Bonus sets your mistakes back to 0!");
             }
             else if (points < 150)
             {
@@ -376,13 +405,20 @@ namespace Hangman
         }
         public void QuitGame()
         {
+            countRounds--;
             for (int i = 0; i < randomWord.Length; i++)   //alle lbls beenden
             {
                 canvas.Children.Remove(lbls[i]);
             }
             canvas.Children.Remove(lblPoints[0]);
-            MainWindow mw = (MainWindow)Application.Current.MainWindow;
-            mw.Content = new Hangman_menu();
+            canvas.Children.Remove(lblRounds[0]);
+            if (countRounds == 0)
+            {
+                MainWindow mw = (MainWindow)Application.Current.MainWindow;
+                mw.Content = new Hangman_menu();
+            }
+            else
+                Start();
         }
         public void MenuItem_Click_Neu(object sender, RoutedEventArgs e)
         {
@@ -412,6 +448,26 @@ namespace Hangman
             canvas.Children.Remove(lblPoints[0]);
             MainWindow mw = (MainWindow)Application.Current.MainWindow;
             mw.Content = new Settings();
+        }
+        public void ShowPopUp(string content, string color = "white")
+        {
+            BrushConverter bc = new BrushConverter();
+            Brush brush = (Brush)bc.ConvertFrom(color);
+            brush.Freeze();
+            popupcontent.Background = brush;
+            popupcontent.Text = content;
+            popup.IsOpen = true;
+
+            aTimer.Enabled = false;
+            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            aTimer.Interval = 2000;
+            aTimer.Enabled = true;           
+        }
+        public void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(new Action(() => {
+                popup.IsOpen = false;
+            }));
         }
     }
 }

@@ -118,5 +118,25 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="pics\0.png" />
+    <Resource Include="pics\1.png" />
+    <Resource Include="pics\2.png" />
+    <Resource Include="pics\3.png" />
+    <Resource Include="pics\4.png" />
+    <Resource Include="pics\5.png" />
+    <Resource Include="pics\6.png" />
+    <Resource Include="pics\7.png" />
+    <Resource Include="pics\8.png" />
+    <Resource Include="pics\9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="lists\3-5Buchstaben.txt" />
+    <Resource Include="lists\3-5Letters.txt" />
+    <Resource Include="lists\6-8Buchstaben.txt" />
+    <Resource Include="lists\6-8Letters.txt" />
+    <Resource Include="lists\Extrem.txt" />
+    <Resource Include="lists\Montagsmaler_Liste.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
