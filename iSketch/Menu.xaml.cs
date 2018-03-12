@@ -19,8 +19,8 @@ namespace iSketch
 {
     public partial class Menu : Page
     {
-
         public static Dictionary<String, List<Member>> MemberList = new Dictionary<String, List<Member>>();
+        public static List<IPEndPoint> HostIPs = new List<IPEndPoint>();
 
         public static string Host;
         private static Server.Server server = null;
@@ -47,6 +47,7 @@ namespace iSketch
         {
             if (sender == this.New_Game_B)
             {
+                Server.Server.M_Server();
                 New_Host();
             }
             else if(sender == this.Join_Game_B)
@@ -112,16 +113,16 @@ namespace iSketch
                                 Popup_Username_Exists.IsOpen = true;
                             else // Insert a player to a game, which already exists
                             {
-                                MemberList[PlayerUsername.Text].Add(new Member(PlayerUsername.Text)); // ID = ??
+                                MemberList[PlayerUsername.Text].Add(new Member(PlayerUsername.Text, false)); // ID = ??
                                 Username_Canvas.Visibility = Visibility.Hidden;
                                 MainWindow.win.Content = new Artist();
                             }
                         }
                         else // Create game & Insert Host as Client in List
                         {
-                            Artist.HostIPs.Add(MemberList[Host][0].End);
-                            MemberList[PlayerUsername.Text].Add(new Member(PlayerUsername.Text));
-                            MemberList[Host][0].Join_Game(Artist.HostIPs[0]);
+                            MemberList[PlayerUsername.Text].Add(new Member(PlayerUsername.Text, true));
+                            HostIPs.Add(MemberList[Host][0].End);
+                            //MemberList[Host][0].Join_Game(HostIPs[0]);
 
                             Username_Canvas.Visibility = Visibility.Hidden;
                             MainWindow.win.Content = new Artist();

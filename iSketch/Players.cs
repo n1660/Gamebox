@@ -23,33 +23,40 @@ namespace iSketch
         public IPEndPoint End { get => end; set => end = value; }
 
         private TcpClient client;
-        private IPAddress adr;
+        private IPAddress adr = IPAddress.Loopback;
         private IPEndPoint end;
 
-        public Member (string Username)
+        public Member (string Username, bool host )
         {           
             this.Username = Username;
             this.Score = 0;
             this.Moves = 0; // neccessary??? 
             this.Guessed_Correctly = false;
 
-            this.end = new IPEndPoint(adr, 10000);
+            this.end = new IPEndPoint(adr, 5678);
+
+            if (!host)
+            {
+                this.client.Connect(end); // Will sich nicht connecten/ Host darf nicht connecten 
+                this.stream = client.GetStream();
+                this.reader = new StreamReader(stream, Encoding.ASCII);
+                this.writer = new StreamWriter(stream, Encoding.ASCII)
+                {
+                    AutoFlush = true
+                };
+            }
+
 
             this.client = new TcpClient();
-            this.client.Connect(end);
-
-            this.stream = client.GetStream();
-            this.reader = new StreamReader(stream, Encoding.ASCII);
-            this.writer = new StreamWriter(stream, Encoding.ASCII)
-            {
-                AutoFlush = true
-            };
+            new Socket(SocketType.Stream, ProtocolType.Tcp).Bind(end);
         }
 
         public void Join_Game(IPEndPoint ip)
         {
             // show games, which are running -> select with Buttons (The Hosts Username)
-            this.client.Connect(ip.Address, ip.Port);
+           //  this.client.Connect(ip.Address, ip.Port);
+
+
             this.ID = Int32.Parse(reader.ReadLine());
         }
     }

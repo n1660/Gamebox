@@ -32,6 +32,7 @@ namespace iSketch
         private static int Timer_Minutes = 0;
         public  int counter = Timer_Seconds + (Timer_Minutes*60);
         private System.Timers.Timer countdown2;
+        private int Popup_Counter = 3; // 3 sec
 
         public static bool registered = false;
 
@@ -54,8 +55,6 @@ namespace iSketch
         public string Current_Artist;
         public int Current_Artist_ID = 0;
 
-        public static List<IPEndPoint> HostIPs = new List<IPEndPoint>();
-
         public Artist()
         {
             InitializeComponent();
@@ -67,8 +66,7 @@ namespace iSketch
             this.Rounds.Text = "Round: " + Current_Round + "/" + Max_Rounds;
             CreateContdown();
             Set_ChooseWords();
-            Show_Scores();
-            
+            Show_Scores();         
         }
 
         private void Key_Events(object sender, KeyEventArgs k)
@@ -198,6 +196,16 @@ namespace iSketch
                     GoToNextPlayer("timer"); // Go to next player, when time is elapsed
                     //Set_ChooseWords();
                 };
+
+                if (Popup_Word.IsOpen == true)
+                {
+                    Popup_Counter--;
+                    if (Popup_Counter == 0)
+                    {
+                        Popup_Word.IsOpen = false;
+                        Popup_Counter = 3;
+                    }
+                }
             }));        
         }
 
@@ -325,40 +333,6 @@ namespace iSketch
             {
                 random_word3 = Get_Random_Word();
             }
-        }
-
-        public void Set_MessageBox()
-        {
-            System.Windows.Forms.MessageBoxManager.Yes = "Word 1" ;
-            System.Windows.Forms.MessageBoxManager.No = "Word 2";
-            System.Windows.Forms.MessageBoxManager.Cancel = "Word 3";
-            System.Windows.Forms.MessageBoxManager.Register();
-            registered = true;
-        }
-
-        void Show_MessageBox()
-        {
-            Create_MessageBox();
-            string MessageBoxText = "Chose your word!\n\nWord 1:  " + random_word1 + "\nWord 2:  " + random_word2 + "\nWord 3:  " + random_word3;
-
-            MessageBoxResult result = MessageBox.Show(MessageBoxText, "Your Word", MessageBoxButton.YesNoCancel);
-            switch (result)
-            {
-                case MessageBoxResult.Yes: // if word 1 is chosen
-                    this.Your_Word.Text = random_word1;
-                    Start_All2();
-                    break;
-                case MessageBoxResult.No: // if word 2 is chosen
-                    this.Your_Word.Text = random_word2;
-                    Start_All2();
-                    break;
-                case MessageBoxResult.Cancel: // if word 3 is chosen
-                    this.Your_Word.Text = random_word3;
-                    Start_All2();
-                    break;
-            }
-
-            Show_Scores();
         }
 
         void Check_Input_Word()

@@ -22,32 +22,37 @@ namespace Server
             Connection conn;
             ThreadStart ts;
             Thread t;
-
-            TcpListener server = new TcpListener(end);
-            server.Start();
-
-            while (true)
+            Thread serverThread = new Thread(() =>
             {
-                if (request)
+
+                TcpListener server = new TcpListener(end);
+                server.Start();
+
+                while (true)
                 {
-                    Console.WriteLine("ready to accept clients ...");
-                    request = false;
+                    if (request)
+                    {
+                        Console.WriteLine("ready to accept clients ...");
+                        request = false;
+                    }
+                    try
+                    {
+                        client = server.AcceptTcpClient();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                    Console.WriteLine(++online + " clients logged in");
+                    request = true;
+                    conn = new Connection(client, server);
+                    ts = new ThreadStart(conn.ServeSingleClient);
+                    t = new Thread(ts);
+                    t.Start();
                 }
-                try
-                {
-                    client = server.AcceptTcpClient();
-                }
-                catch
-                {
-                    continue;
-                }
-                Console.WriteLine(++online + " clients logged in");
-                request = true;
-                conn = new Connection(client, server);
-                ts = new ThreadStart(conn.ServeSingleClient);
-                t = new Thread(ts);
-                t.Start();
-            }
+            });
+
+            serverThread.Start();
         }
     }
 }
