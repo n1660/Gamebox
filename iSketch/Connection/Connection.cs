@@ -4,7 +4,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 
-namespace Server
+namespace Quadcade
 {
     public class Connection
     {

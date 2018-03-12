@@ -16,7 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ClientWPF
+namespace Quadcade
 {
     /// <summary>
     /// Interaktionslogik für ClientWindow.xaml

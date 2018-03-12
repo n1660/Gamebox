@@ -18,7 +18,7 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 
-namespace iSketch
+namespace Quadcade
 {
 
     // TODO: - Groß und kleinschreibung unbeachtet lassen!
@@ -91,7 +91,7 @@ namespace iSketch
             else if (sender == this.BTN_HOME)
             {
                 Stop_All2(); // Close Timer Thread!
-                MainWindow.win.Content = new Menu();
+                App.Current.MainWindow.Content = new Menu();
                 // Aus der Liste entfernen mit entsprechenden ID 
                 // when host leaves
                 Current_Round = 1;

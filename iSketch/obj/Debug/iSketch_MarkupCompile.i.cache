@@ -1,20 +1,20 @@
 ﻿iSketch
 
 
-exe
+winexe
 C#
 .cs
-C:\Users\Lillith\Desktop\ProjectC#Git\Gamebox\iSketch\obj\Debug\
-iSketch
+D:\Ausbildung\C#\Project\ProjectC#Git\iSketch\obj\Debug\
+Quadcade
 none
 false
 DEBUG;TRACE
-C:\Users\Lillith\Desktop\ProjectC#Git\Gamebox\iSketch\App.xaml
-4908466317
-1-359739987
-171577219837
-131569487696
-Connection\ClientWindow.xaml;iSketch\Artist.xaml;MainWindow.xaml;Menu.xaml;
 
-True
+7955804991
+1-359739987
+23-1643852938
+131569487696
+App.xaml;Connection\ClientWindow.xaml;iSketch\Artist.xaml;iSketch\Menu.xaml;MainWindow.xaml;snake\coding\GamepageSnake.xaml;snake\coding\MenupageSnake.xaml;
+
+False
 
