@@ -49,13 +49,12 @@ namespace iSketch
 
 
             this.client = new TcpClient();
-            //new Socket(SocketType.Stream, ProtocolType.Tcp).Bind(new IPEndPoint(IPAddress.Loopback, 4444));
         }
 
         public void Join_Game(IPEndPoint ip)
         {
-            // show games, which are running -> select with Buttons (The Hosts Username)
-           //  this.client.Connect(ip.Address, ip.Port);
+           // show games, which are running -> select with Buttons (The Hosts Username)
+           this.client.Connect(ip.Address, ip.Port);
 
 
             this.ID = Int32.Parse(reader.ReadLine());
