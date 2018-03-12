@@ -52,7 +52,7 @@ namespace iSketch
             }
             else if(sender == this.Join_Game_B)
             {
-
+                new Member(PlayerUsername.Text, false).Join_Game(new IPEndPoint(IPAddress.Parse("146.254.1.192"), 5678)); // IP muss angepasst werden
             }
             else if (Username_Canvas.Visibility == Visibility.Hidden)
             {
