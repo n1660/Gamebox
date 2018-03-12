@@ -23,7 +23,6 @@ namespace Quadcade
         public static DispatcherTimer TIMER;
         public static Random RANDOM = new Random();
         public static Apple APPLE;
-        private bool tmp = false;
 
         //FrameworkElements
         public Canvas GameCanvas = new Canvas();

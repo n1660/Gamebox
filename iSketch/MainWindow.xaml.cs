@@ -28,7 +28,7 @@ namespace Quadcade
         public MainWindow()
         {
             InitializeComponent();
-            this.Content = new MenupageSnake();
+            this.Content = new Menu();
         }
 
         //methods

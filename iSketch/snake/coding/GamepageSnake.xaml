@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Quadcade"
       mc:Ignorable="d" 
-      Title="SnakeGame.GamepageSnake">
+      Title="Quadcade.GamepageSnake">
     <Grid Name="GridGamepage" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
