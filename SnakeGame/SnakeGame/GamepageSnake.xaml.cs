@@ -774,12 +774,12 @@ namespace SnakeGame
                         {
                             if (snk == pl.Snake[0])
                             {
-                                if (snakeplayersTmp.Contains(pl))
-                                    snakeplayersTmp.Remove(pl);
+                                if (snakeplayers.Contains(pl))
+                                    snakeplayers.Remove(pl);
                             }
 
-                            if (snakeplayersTmp.Contains(p))
-                                snakeplayersTmp.Remove(p);
+                            if (snakeplayers.Contains(p))
+                                snakeplayers.Remove(p);
                         }
                     }
                 }
