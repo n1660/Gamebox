@@ -29,6 +29,8 @@ namespace Server
 
             String line = "void";
 
+            writer.WriteLine(iSketch.Artist.CURPLAYERS + 1);
+
             while (true)
             {
                 line = reader.ReadLine();

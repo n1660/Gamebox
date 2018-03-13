@@ -49,6 +49,7 @@ namespace iSketch
         private int Max_Score = 300;
         private static int Max_Time;
         public static int Max_Rounds = 5;
+        public static int CURPLAYERS = 0;
         private static int Current_Round = 1;
         public static int Max_Players = 5;
 

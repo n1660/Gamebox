@@ -53,6 +53,11 @@ namespace iSketch
             else if(sender == this.Join_Game_B)
             {
                 new Member(PlayerUsername.Text, false).Join_Game(new IPEndPoint(IPAddress.Loopback, 4444));
+                if (!(MemberList.ContainsKey(PlayerUsername.Text)))
+                {
+                    MemberList.Add(PlayerUsername.Text, new List<Member>());
+                    get_player_data();
+                }
             }
             else if (Username_Canvas.Visibility == Visibility.Hidden)
             {
@@ -86,12 +91,11 @@ namespace iSketch
             }
         }
 
-        void get_player_data()
+        public void get_player_data()
         {
-
           Popup_Username_Exists.IsOpen = false;
 
-            if(PlayerUsername.Text != null)
+            if(PlayerUsername.Text != null && (!MemberList.ContainsKey(PlayerUsername.Text) || MemberList[PlayerUsername.Text].Count == 0))
             {
                 bool Not_Only_Blanks = false;
                 for ( int i = 0; i < PlayerUsername.Text.Length; i++)
@@ -120,6 +124,7 @@ namespace iSketch
                         }
                         else // Create game & Insert Host as Client in List
                         {
+                            new Member(PlayerUsername.Text, true);
                             MemberList[PlayerUsername.Text].Add(new Member(PlayerUsername.Text, true));
                             HostIPs.Add(MemberList[Host][0].End);
                             //MemberList[Host][0].Join_Game(HostIPs[0]);

@@ -37,26 +37,33 @@ namespace iSketch
 
             if (!host && Username != "")
             {
-                this.client.Connect(end); // Will sich nicht connecten/ Host darf nicht connecten 
+                this.client.Connect(end);
                 this.stream = client.GetStream();
                 this.reader = new StreamReader(stream, Encoding.ASCII);
                 this.writer = new StreamWriter(stream, Encoding.ASCII)
                 {
                     AutoFlush = true
                 };
-                Console.WriteLine("got through");
+
+                if (!(Menu.MemberList.ContainsKey(Username)))
+                {
+                    Menu.MemberList.Add(Username, new List<Member>());
+                }
             }
 
-
             this.client = new TcpClient();
-            //new Socket(SocketType.Stream, ProtocolType.Tcp).Bind(new IPEndPoint(IPAddress.Loopback, 4444));
         }
 
         public void Join_Game(IPEndPoint ip)
         {
-            // show games, which are running -> select with Buttons (The Hosts Username)
-           //  this.client.Connect(ip.Address, ip.Port);
-
+           // show games, which are running -> select with Buttons (The Hosts Username)
+            this.client.Connect(ip.Address, ip.Port);
+            if (!(Menu.MemberList.ContainsKey(this.Username)))
+            {
+                Menu.MemberList.Add(this.Username, new List<Member>());
+            }
+            else
+                return;
 
             this.ID = Int32.Parse(reader.ReadLine());
         }

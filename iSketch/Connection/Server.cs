@@ -27,6 +27,8 @@ namespace Server
                 TcpListener server = new TcpListener(end);
                 server.Start();
 
+                iSketch.Artist.CURPLAYERS++;
+
                 while (true)
                 {
                     Console.WriteLine("ready to accept clients ...");
