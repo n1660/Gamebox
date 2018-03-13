@@ -63,6 +63,7 @@ namespace ClientWPF
         {
             if (TxtSend.Text == "" || TxtSend.Text == null)
                 return;
+
             String line = TxtSend.Text;
             TxtBlReceive.Text += "\nClient: " + line.ToLower() + "?";
             String response = TxtBlReceive.Text += " --> Server: " + line.ToUpper() + "!";

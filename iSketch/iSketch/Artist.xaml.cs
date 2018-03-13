@@ -49,6 +49,7 @@ namespace iSketch
         private int Max_Score = 300;
         private static int Max_Time;
         public static int Max_Rounds = 5;
+        public static int CURPLAYERS = 0;
         private static int Current_Round = 1;
         public static int Max_Players = 5;
 
@@ -90,6 +91,7 @@ namespace iSketch
             {
                 Stop_All2(); // Close Timer Thread!
                 MainWindow.win.Content = new Menu();
+                Member.instance = (Menu)MainWindow.win.Content;
                 // Aus der Liste entfernen mit entsprechenden ID 
                 // when host leaves
                 Current_Round = 1;

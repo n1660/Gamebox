@@ -30,6 +30,8 @@ namespace Server
             writer.WriteLine(iSketch.Menu.MemberList.Count);
             String[] line = { "void" };
 
+            writer.WriteLine(iSketch.Artist.CURPLAYERS + 1);
+
             while (true)
             {
                 line = reader.ReadLine().Split(';');
