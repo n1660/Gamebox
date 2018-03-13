@@ -7,7 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace Quadcade
+namespace test
 {
     /// <summary>
     /// Interaktionslogik für GamepageSnake.xaml
@@ -23,6 +23,7 @@ namespace Quadcade
         public static DispatcherTimer TIMER;
         public static Random RANDOM = new Random();
         public static Apple APPLE;
+        private bool tmp = false;
 
         //FrameworkElements
         public Canvas GameCanvas = new Canvas();
@@ -583,8 +584,12 @@ namespace Quadcade
             App.Current.MainWindow.Content = new MenupageSnake(); ;
         }
 
-        //methods
-        public void SpawnFood()
+    //methods
+    private void BtnStartSnake_Click(object sender, RoutedEventArgs e)
+    {
+        App.Current.MainWindow.Content = new GamepageSnake(((GamepageSnake.MULTIPLAYER) ? true : false));
+    }
+    public void SpawnFood()
         {
             if (APPLE == null)
             {

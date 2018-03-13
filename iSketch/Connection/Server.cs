@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 
-namespace Quadcade
+namespace test
 {
     public class Server
     {

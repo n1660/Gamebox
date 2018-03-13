@@ -7,7 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Quadcade
+namespace test
 {
     public enum Directions
     {
@@ -110,18 +110,18 @@ namespace Quadcade
         //initializations
         public void InitializePictures()
         {
-            this.pictures.Add(Quadcade.Pictures.Elem.ToString(), new ImageBrush
+            this.pictures.Add(test.Pictures.Elem.ToString(), new ImageBrush
             {
                 ImageSource = new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snakeElem_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute))
             });
             foreach (Directions dir in Enum.GetValues(typeof(Directions)))
             {
-                this.pictures.Add(Quadcade.Pictures.Head.ToString() + "_" + dir.ToString() + "_" + this.color.ToString(), new ImageBrush
+                this.pictures.Add(test.Pictures.Head.ToString() + "_" + dir.ToString() + "_" + this.color.ToString(), new ImageBrush
                 {
                     ImageSource = new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snakehead_" + dir.ToString() + "_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute))
                 });
 
-                this.pictures.Add(Quadcade.Pictures.Tail.ToString() + "_" + dir.ToString() + "_" + this.color.ToString(), new ImageBrush
+                this.pictures.Add(test.Pictures.Tail.ToString() + "_" + dir.ToString() + "_" + this.color.ToString(), new ImageBrush
                 {
                     ImageSource = new BitmapImage(new Uri("../../Images/" + this.color.ToString() + "/snaketail_" + dir.ToString() + "_" + this.color.ToString() + ".png", UriKind.RelativeOrAbsolute))
                 });
@@ -290,7 +290,7 @@ namespace Quadcade
                     };
                     snakeElemTmp.Rect.Fill = this.pictures["Tail_" + this.snake[this.snake.Count - 1].Direction.ToString() + "_" + this.color.ToString()];
                     this.snake.Add(snakeElemTmp);
-                    this.snake[this.snake.Count - 2].Rect.Fill = this.pictures[Quadcade.Pictures.Elem.ToString()];
+                    this.snake[this.snake.Count - 2].Rect.Fill = this.pictures[test.Pictures.Elem.ToString()];
                     this.score++;
                 }
             }

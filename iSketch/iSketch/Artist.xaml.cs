@@ -18,7 +18,7 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Quadcade
+namespace test
 {
 
     // TODO: - Groß und kleinschreibung unbeachtet lassen!

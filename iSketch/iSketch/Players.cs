@@ -7,7 +7,7 @@ using System.Net;
 using System.IO;
 using System.Net.Sockets;
 
-namespace Quadcade
+namespace test
 {
     public class Member //: IEquatable<Member>
     {

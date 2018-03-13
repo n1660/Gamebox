@@ -74,12 +74,23 @@
     <Compile Include="Connection\ClientWPF.cs" />
     <Compile Include="Connection\ClientWindow.xaml.cs" />
     <Compile Include="Connection\Server.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="iSketch\Artist.xaml.cs">
+      <DependentUpon>Artist.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="iSketch\Menu.xaml.cs">
+      <DependentUpon>Menu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="iSketch\MessageBoxManager.cs" />
+    <Compile Include="iSketch\Players.cs" />
+    <Compile Include="MainWindow .xaml.cs">
+      <DependentUpon>MainWindow .xaml</DependentUpon>
     </Compile>
     <Compile Include="snake\coding\Apple.cs" />
     <Compile Include="snake\coding\GamepageSnake.xaml.cs">
       <DependentUpon>GamepageSnake.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="snake\coding\SnakeMain.xaml.cs">
+      <DependentUpon>SnakeMain.xaml</DependentUpon>
     </Compile>
     <Compile Include="snake\coding\MenupageSnake.xaml.cs">
       <DependentUpon>MenupageSnake.xaml</DependentUpon>
@@ -95,23 +106,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="iSketch\Artist.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Compile Include="iSketch\Artist.xaml.cs">
-      <DependentUpon>Artist.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Connection\Connection.cs" />
-    <Page Include="iSketch\Menu.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="iSketch\Artist.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="iSketch\Menu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow .xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="snake\coding\GamepageSnake.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="snake\coding\SnakeMain.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -121,11 +133,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="iSketch\Menu.xaml.cs">
-      <DependentUpon>Menu.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="iSketch\MessageBoxManager.cs" />
-    <Compile Include="iSketch\Players.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

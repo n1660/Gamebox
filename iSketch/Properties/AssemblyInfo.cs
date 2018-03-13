@@ -7,11 +7,11 @@ using System.Windows;
 // Allgemeine Informationen über eine Assembly werden über die folgenden
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die einer Assembly zugeordnet sind.
-[assembly: AssemblyTitle("Quadcade")]
+[assembly: AssemblyTitle("test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Licence Owner")]
-[assembly: AssemblyProduct("Quadcade")]
+[assembly: AssemblyProduct("test")]
 [assembly: AssemblyCopyright("Copyright © Licence Owner 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

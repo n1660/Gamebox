@@ -15,14 +15,14 @@ using System.Windows.Shapes;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Quadcade
+namespace test
 {
     public partial class Menu : Page
     {
         public static Dictionary<String, List<Member>> MemberList = new Dictionary<String, List<Member>>();
 
         public static string Host;
-        private static Quadcade.Server server = null;
+        private static test.Server server = null;
 
         public Menu()
         {
@@ -74,7 +74,7 @@ namespace Quadcade
             Host = PlayerUsername.Text;
 
             if(server == null)  // Ein Spieler kann nur ein Spiel hosten!
-                server = new Quadcade.Server();
+                server = new test.Server();
 
             if (!(MemberList.ContainsKey(PlayerUsername.Text)))
             {

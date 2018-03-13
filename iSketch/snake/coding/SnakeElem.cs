@@ -1,6 +1,6 @@
 ﻿using System.Windows.Shapes;
 
-namespace Quadcade
+namespace test
 {
     public class SnakeElem
     {

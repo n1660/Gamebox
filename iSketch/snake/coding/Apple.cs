@@ -8,7 +8,7 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
-namespace Quadcade
+namespace test
 {
     public class Apple
     {
