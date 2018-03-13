@@ -26,6 +26,8 @@ namespace iSketch
         public IPAddress Adr { get => adr; set => adr = value; }
 
         public String Hostname { get; set; }
+        public TcpClient Client { get => client; set => client = value; }
+
         private TcpClient client = new TcpClient();
         private IPAddress adr = IPAddress.Loopback;
         private IPEndPoint end;
@@ -37,63 +39,36 @@ namespace iSketch
             this.Moves = 0; // neccessary??? 
             this.Guessed_Correctly = false;
 
-            this.end = new IPEndPoint(adr, 4444);
-
             if (!host && Username != "")
             {
-<<<<<<< HEAD
-                this.Hostname = this.Get_Host_Username((new IPEndPoint(IPAddress.Loopback, 4444).ToString()));
-                this.client.Connect(end); // Will sich nicht connecten/ Host darf nicht connecten 
-=======
-                this.client.Connect(end);
->>>>>>> 5ad7361bdeb468e081f1f9ae4255027309630a8d
+                Console.Write("Connecting...");
+                this.end = new IPEndPoint(adr, 4444);
+                this.client.Connect(end); // Will sich nicht connecten/ Host darf nicht connecten
+                Console.WriteLine("Connected.");
                 this.stream = client.GetStream();
-                Console.WriteLine("got through");
                 this.reader = new StreamReader(stream, Encoding.ASCII);
                 this.writer = new StreamWriter(stream, Encoding.ASCII)
                 {
                     AutoFlush = true
                 };
-<<<<<<< HEAD
+                Console.WriteLine("Reading");
+                this.ID = Int32.Parse(reader.ReadLine());
+                Console.WriteLine("Got id " + ID);
+                this.Hostname = this.SendLoginPacket();
+                Console.WriteLine("got through, HOST: " + this.Hostname);
             }
-            else if(host)
-            {
-                ((Menu)App.Current.MainWindow.Content).New_Host();
-                this.reader = new StreamReader(new TcpClient(this.Username, 4444).GetStream() , Encoding.ASCII);
-                this.writer = new StreamWriter(new TcpClient(this.Username, 4444).GetStream(), Encoding.ASCII)
-                {
-                    AutoFlush = true
-                };
-            }
-            else
-                return;
+            Console.WriteLine("done " + host + ", " + Username);
             //new Socket(SocketType.Stream, ProtocolType.Tcp).Bind(new IPEndPoint(IPAddress.Loopback, 4444));
-=======
-<<<<<<< HEAD
-=======
 
-                if (!(Menu.MemberList.ContainsKey(Username)))
-                {
-                    Menu.MemberList.Add(Username, new List<Member>());
-                    instance.get_player_data();
-                }
-            }
->>>>>>> a0cb6389c73084a88d0649301f30db3dce43fd32
-
-                if (!(Menu.MemberList.ContainsKey(Username)))
-                {
-                    Menu.MemberList.Add(Username, new List<Member>());
-                }
-            }
-
-            this.client = new TcpClient();
->>>>>>> 5ad7361bdeb468e081f1f9ae4255027309630a8d
+            /*if (!(Menu.MemberList.ContainsKey(Username)))
+            {
+                Menu.MemberList.Add(Username, new List<Member>());
+            }*/
         }
 
         public void Join_Game(IPEndPoint ip)
         {
            // show games, which are running -> select with Buttons (The Hosts Username)
-<<<<<<< HEAD
             this.client.Connect(ip.Address, ip.Port);
             if (!(Menu.MemberList.ContainsKey(this.Username)))
             {
@@ -101,18 +76,14 @@ namespace iSketch
             }
             else
                 return;
-=======
-           this.client.Connect(ip.Address, ip.Port);
-
->>>>>>> a0cb6389c73084a88d0649301f30db3dce43fd32
-
-            this.ID = Int32.Parse(reader.ReadLine());
         }
 
-        public String Get_Host_Username(String str_ip)
+        public String SendLoginPacket()
         {
-            writer.WriteLine(this.ID.ToString() + ";GetHostName;" + str_ip);
-            return reader.ReadLine().Split(';')[1];
+            writer.WriteLine(this.ID.ToString() + ";LoginPacket;" + this.Username);
+            String received = reader.ReadLine();
+            Console.WriteLine("[CLIENT] LOGGED IN SUCCESSFULLY: '" + received + "'");
+            return received.Split(';')[1];
         }
     }
     // Bei Add -> Daten müssen auch an den andern geschickt werden

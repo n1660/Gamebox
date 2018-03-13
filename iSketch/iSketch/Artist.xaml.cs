@@ -58,6 +58,7 @@ namespace iSketch
 
         public Artist()
         {
+            Console.WriteLine("Artist Constructor");
             InitializeComponent();
 
             Max_Time = counter;
@@ -67,7 +68,8 @@ namespace iSketch
             this.Rounds.Text = "Round: " + Current_Round + "/" + Max_Rounds;
             CreateContdown();
             Set_ChooseWords();
-            Show_Scores();         
+            Show_Scores();
+            Console.WriteLine("Artist Constructor END");
         }
 
         private void Key_Events(object sender, KeyEventArgs k)
@@ -410,7 +412,7 @@ namespace iSketch
 
         void Show_Scores()
         {
-            while (Menu.Host == null) ;
+            //while (Menu.Host == null) ;
 
             string ScoreTxt ="Score:\n";
             foreach(Member member in Menu.MemberList[Menu.Host])

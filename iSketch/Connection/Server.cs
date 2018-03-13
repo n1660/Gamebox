@@ -12,6 +12,23 @@ namespace Server
     public class Server
     {
         public static int online = 0;
+
+        public static void BroadcastScore()
+        {
+            StringBuilder playerBuilder = new StringBuilder();
+            playerBuilder.Append("SCORE;");
+            foreach (iSketch.Member member in iSketch.Menu.MemberList[iSketch.Menu.Host])
+            {
+                playerBuilder.Append(member.Username).Append("=").Append(member.Score).Append(";");
+            }
+            Console.WriteLine("SCORES: " + playerBuilder.ToString());
+            foreach (iSketch.Member member in iSketch.Menu.MemberList[iSketch.Menu.Host])
+            {
+                if (member.writer == null) continue;
+                member.writer.WriteLine(playerBuilder.ToString());
+            }
+        }
+
         public static void M_Server()
         {
             IPAddress adr = IPAddress.Loopback;
@@ -42,9 +59,11 @@ namespace Server
                     }
                     Console.WriteLine(++online + " clients logged in");
                     conn = new Connection(client, server);
+                    
                     ts = new ThreadStart(conn.ServeSingleClient);
                     t = new Thread(ts);
                     t.Start();
+                                      
                 }
             });
 
