@@ -12,7 +12,7 @@ namespace Hangman
     {
         static public string NewWord()
         {
-            string path = @"Montagsmaler_Liste.txt";
+            string path = "lists/Montagsmaler_Liste.txt";
 
             string readText = File.ReadAllText(path);
             string[] wort = readText.Split('\n');

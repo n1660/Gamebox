@@ -24,8 +24,8 @@ namespace Hangman
 
         public void SetNew()
         {
-            GamepageHangman.countRounds = 5;
-            GamepageHangman.points = 100;
+            Settings.countRounds = 5;
+            Settings.points = 100;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

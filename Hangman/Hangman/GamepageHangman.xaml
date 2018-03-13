@@ -40,7 +40,7 @@
                 <MenuItem Header="_Quit" Click="MenuItem_Click_Quit"/>
             </MenuItem>
         </Menu>
-        <Canvas HorizontalAlignment="Left" Height="551" VerticalAlignment="Top" Width="838" Margin="0,0.2,-77.8,0" Background="LightCyan" Name="canvas">
+        <Canvas HorizontalAlignment="Left" Name="canvas" Height="551" VerticalAlignment="Top" Width="838" Margin="0,0.2,-77.8,0" Background="LightCyan">
             <TextBlock Height="40.8" TextWrapping="Wrap" Text="Choose a letter:" Width="208.8" Canvas.Top="363.6" FontSize="28.8" Background="LightCyan"/>
             <TextBlock TextWrapping="Wrap" Text="Solution:" Width="116.4" Height="40.8" Canvas.Left="4" Canvas.Top="302" FontSize="28.8"/>
             <TextBox Height="41" TextWrapping="Wrap" Width="254" Canvas.Left="133" Canvas.Top="302" FontSize="28.8" TextChanged="TextBox_TextChanged" Name="textbox"/>

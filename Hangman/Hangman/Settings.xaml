@@ -25,11 +25,14 @@
             <Label Content="Settings" Height="80" Width="205" FontSize="48" Canvas.Left="293" Canvas.Top="45" FontWeight="Bold"/>
             <Button Canvas.Left="293" Canvas.Top="154" Content="Difficulty" Click="Button_Click" Width="213" Name="Difficulty"/>
             <Button Canvas.Left="293" Canvas.Top="247" Content="Language" Click="Button_Click" Width="213" Name="Language"/>
+            <Button Canvas.Left="293" Canvas.Top="340" Content="Rounds" Click="Button_Click" Width="213" Name="Rounds"/>
             <Button Canvas.Left="293" Canvas.Top="154" Content="3-5 letters" Click="Button_Click" Width="213" Name ="Easy" Visibility="Hidden"/>
             <Button Canvas.Left="293" Canvas.Top="247" Content="6-8 letters" Click="Button_Click" Width="213" Name="Medium" Visibility="Hidden"/>
             <Button Canvas.Left="293" Canvas.Top="340" Content="Extrem" Click="Button_Click" Width="213" Name="Extrem" Visibility="Hidden"/>
             <Button Canvas.Left="293" Canvas.Top="154" Content="German words" Click="Button_Click" Width="213" Name="German" Visibility="Hidden"/>
             <Button Canvas.Left="293" Canvas.Top="247" Content="English words" Click="Button_Click" Width="213" Name="English" Visibility="Hidden"/>
+            <Button Canvas.Left="293" Canvas.Top="154" Content="5 Rounds" Click="Button_Click" Width="213" Name="FiveRounds" Visibility="Hidden"/>
+            <Button Canvas.Left="293" Canvas.Top="247" Content="10 Rounds" Click="Button_Click" Width="213" Name="TenRounds" Visibility="Hidden"/>
             <Button Canvas.Left="293" Canvas.Top="433" Content="Back" Click="Button_Click" Width="213"/>
         </Canvas>
     </DockPanel>
