@@ -408,6 +408,8 @@ namespace iSketch
 
         void Show_Scores()
         {
+            while (Menu.Host == null) ;
+
             string ScoreTxt ="Score:\n";
             foreach(Member member in Menu.MemberList[Menu.Host])
             {

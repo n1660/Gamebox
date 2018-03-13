@@ -27,26 +27,32 @@ namespace Server
                 AutoFlush = true
             };
 
-            String line = "void";
+            writer.WriteLine(iSketch.Menu.MemberList.Count);
+            String[] line = { "void" };
 
             while (true)
             {
-                line = reader.ReadLine();
+                line = reader.ReadLine().Split(';');
 
                 if (line == null)
                 {
                     Server.online--;
                     Console.WriteLine((Server.online != 0) ? ("A Client just logged off.\nStill online: " + Server.online.ToString()) : "... this loneliness ... is killing me ... :'-(");
                     break;
-                } else if (line.Trim().ToLower().Equals("bye"))
+                }
+                foreach (KeyValuePair<String, List<iSketch.Member>> kvp in iSketch.Menu.MemberList)
+                {
+                    foreach (iSketch.Member m in kvp.Value)
+                    {
+                        if (m.Adr.ToString() == reader.ReadLine().Split(';')[2])
+                            writer.WriteLine(reader.ReadLine().Split(';')[0] + ';' + m.Username);
+                    }
+                }
+                writer.WriteLine(line[0] + ';' + iSketch.Menu.MemberList[iSketch.Menu.Host][0].Get_Host_Username(line[2]));
+                if (line.Length == 1 && line[0].Trim().ToLower().Equals("bye"))
                 {
                     break;
                 }
-
-                line = String.Format("Echo from Server: {0}", line);
-
-                Console.WriteLine(line);
-                writer.WriteLine(line);
             }
 
             server.Stop();
