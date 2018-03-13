@@ -30,7 +30,7 @@
         </Grid.RowDefinitions>
 
 
-        <TextBlock Name="Your_Word" Grid.Row="0" Grid.Column="0" FontSize="16" FontFamily="Consolas" Margin="10,10,0,0"/>
+        <TextBlock Name="YourWord" Grid.Row="0" Grid.Column="0" FontSize="16" FontFamily="Consolas" Margin="10,10,0,0"/>
         <TextBlock Name="Countdown" Grid.Row="0" Grid.Column="1" FontSize="16" FontFamily="Consolas" Margin="190.4,10,9.8,0.4" TextAlignment="Center"/>
         <TextBlock Name="Rounds" Grid.Row="0" Grid.Column="1" FontSize="16" FontFamily="Consolas" Margin="10, 10, 130, 0" TextAlignment="Left"/>
         <Image Grid.Column="1" Grid.Row="0" Source="res/icons/clock2.png" Margin="93.4,0,-13.2,0.4"/>
@@ -55,13 +55,13 @@
                     <RowDefinition Height="8*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"  Margin="10" Text="Choose your word!" FontSize="25" TextAlignment="Center" Foreground="White"/>
-                <Button Name="word1_B" Grid.Column="0" Grid.Row="1" Margin="10" Click="Button_Click">
+                <Button Name="BtnWord1" Grid.Column="0" Grid.Row="1" Margin="10" Click="ButtonClick">
                     <TextBlock Name="word1" ></TextBlock>
                 </Button>
-                <Button Name="word2_B" Grid.Column="1" Grid.Row="1" Margin="10" Click="Button_Click">
+                <Button Name="BtnWord2" Grid.Column="1" Grid.Row="1" Margin="10" Click="ButtonClick">
                     <TextBlock Name="word2"></TextBlock>
                 </Button>
-                <Button Name="word3_B" Grid.Column="2" Grid.Row="1" Margin="10" Click="Button_Click">
+                <Button Name="BtnWord3" Grid.Column="2" Grid.Row="1" Margin="10" Click="ButtonClick">
                     <TextBlock Name="word3"></TextBlock>
                 </Button>
             </Grid>
@@ -76,13 +76,13 @@
 
             <GroupBox Grid.Column="0" Header="Thickness" Margin="10,10,10,10">
                 <StackPanel Orientation="Vertical">
-                    <RadioButton Name="Size_1" GroupName="Sizes" Click="Button_Click" Margin="0,5,0,0" Padding="5,2">
+                    <RadioButton Name="Size1" GroupName="Sizes" Click="ButtonClick" Margin="0,5,0,0" Padding="5,2">
                         <TextBlock Background="Black" Width="60" Height="10" />
                     </RadioButton>
-                    <RadioButton Name="Size_2" GroupName="Sizes" Click="Button_Click" Margin="0,5,0,0" IsChecked="True" Padding="5">
+                    <RadioButton Name="Size2" GroupName="Sizes" Click="ButtonClick" Margin="0,5,0,0" IsChecked="True" Padding="5">
                         <TextBlock Background="Black" Width="60" Height="7"/>
                     </RadioButton>
-                    <RadioButton Name="Size_3" GroupName="Sizes" Click="Button_Click" Margin="0,5,0,0" Padding="5">
+                    <RadioButton Name="Size3" GroupName="Sizes" Click="ButtonClick" Margin="0,5,0,0" Padding="5">
                         <TextBlock Background="Black" Width="60" Height="4" />
                     </RadioButton>
                 </StackPanel>
@@ -90,19 +90,19 @@
 
             <GroupBox Grid.Column="1" Header="Colours" Margin="10,10,10,10">
                 <UniformGrid Rows="3" Margin="10,10,10,10" Width="100">
-                    <Button Name="Colour_1" Click="Button_Click" Background="Black"/>
-                    <Button Name="Colour_2" Click="Button_Click" Background="#FF6F6262" />
-                    <Button Name="Colour_3" Click="Button_Click" Background="White" />
-                    <Button Name="Colour_4" Click="Button_Click" Background="#FF006EE7" />
-                    <Button Name="Colour_5" Click="Button_Click" Background="#FFCA0D0D" />
-                    <Button Name="Colour_6" Click="Button_Click" Background="#FFFCFD0A" />
-                    <Button Name="Colour_7" Click="Button_Click" Background="#FF41B006" />
-                    <Button Name="Colour_8" Click="Button_Click" Background="#FF763105" />
-                    <Button Name="Colour_9" Click="Button_Click" Background="#FF8E21E2" />
+                    <Button Name="Colour1" Click="ButtonClick" Background="Black"/>
+                    <Button Name="Colour2" Click="ButtonClick" Background="#FF6F6262" />
+                    <Button Name="Colour3" Click="ButtonClick" Background="White" />
+                    <Button Name="Colour4" Click="ButtonClick" Background="#FF006EE7" />
+                    <Button Name="Colour5" Click="ButtonClick" Background="#FFCA0D0D" />
+                    <Button Name="Colour6" Click="ButtonClick" Background="#FFFCFD0A" />
+                    <Button Name="Colour7" Click="ButtonClick" Background="#FF41B006" />
+                    <Button Name="Colour8" Click="ButtonClick" Background="#FF763105" />
+                    <Button Name="Colour9" Click="ButtonClick" Background="#FF8E21E2" />
                 </UniformGrid>
             </GroupBox>
 
-            <Button Grid.Column="2" Name="BTN_Clear" Margin="40,10,10,100" Click="Button_Click">Clear</Button>
+            <Button Grid.Column="2" Name="BtnClear" Margin="40,10,10,100" Click="ButtonClick">Clear</Button>
 
         </Grid>
 
@@ -119,13 +119,13 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBox Name="Chat_Window" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="10,10,10,10" Background="#FFC8C3C3"/>
-            <Popup VerticalAlignment="Top" Name="Popup_Word" Grid.Column="0" PopupAnimation="Fade" AllowsTransparency="True" Grid.ColumnSpan="2" Margin="0,46,109.2,0"  Placement="Mouse">
-                <TextBlock Name="Popup_Text"  Padding="7" />
+            <TextBox Name="TxtSolve" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="10,10,10,10" Background="#FFC8C3C3"/>
+            <Popup VerticalAlignment="Top" Name="PopupWord" Grid.Column="0" PopupAnimation="Fade" AllowsTransparency="True" Grid.ColumnSpan="2" Margin="0,46,109.2,0"  Placement="Mouse">
+                <TextBlock Name="PopupText"  Padding="7" />
             </Popup>
 
-            <Button Name="BTN_Submit" Grid.Row="1" Grid.Column="1" Margin="10,10,10.2,10" Click="Button_Click">Submit</Button>
-            <Button Name="BTN_HOME" Grid.Row="2" Grid.Column="1" Margin="10,10,10.2,10" Click="Button_Click">EXIT</Button>
+            <Button Name="BtnSubmit" Grid.Row="1" Grid.Column="1" Margin="10,10,10.2,10" Click="ButtonClick">Submit</Button>
+            <Button Name="BtnHome" Grid.Row="2" Grid.Column="1" Margin="10,10,10.2,10" Click="ButtonClick">EXIT</Button>
         </Grid>
 
 

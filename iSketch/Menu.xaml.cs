@@ -29,38 +29,35 @@ namespace iSketch
         public Menu()
         {
             InitializeComponent();
-
-            PlayerUsername.KeyDown += new KeyEventHandler(Key_Events);
+            PlayerUsername.KeyDown += new KeyEventHandler(KeyEvents);
             Username_Canvas.Visibility = Visibility.Hidden;
             //Popup_Username.IsOpen = true;
-            
+            Server.Server.StartServer();
+            Host = PlayerUsername.Text;
+            NewHost();
         }
 
-        private void Key_Events(object sender, KeyEventArgs k)
+        private void KeyEvents(object sender, KeyEventArgs k)
         {
             if (k.Key == Key.Enter)
             {
-                New_Host();
+                NewHost();
             }
         }
 
-        private void Button_Click_Menu(object sender, RoutedEventArgs e)
+        private void ButtonClickMenu(object sender, RoutedEventArgs e)
         {
             if (sender == this.New_Game_B)
             {
-                Server.Server.M_Server();
-                New_Host();
+                Server.Server.StartServer();
+                Host = PlayerUsername.Text;
+                NewHost();
             }
             else if(sender == this.Join_Game_B)
             {
                 Menu.member = new Member(PlayerUsername.Text, false);
-                Host = member.Hostname;
                 //member.Join_Game(new IPEndPoint(IPAddress.Loopback, 4444));
-
                 //MemberList[PlayerUsername.Text].Add(member);
-                MemberList.Add(Host, new List<Member>());
-                MemberList[Host].Add(member);
-                get_player_data();
 
                 Console.WriteLine("XXX");
 
@@ -84,33 +81,29 @@ namespace iSketch
             }
         }
 
-        public void New_Host()
+        public void NewHost()
         {
-            Host = PlayerUsername.Text;
-
             if(server == null)  // Ein Spieler kann nur ein Spiel hosten!
                 server = new Server.Server();
 
             if (!(MemberList.ContainsKey(PlayerUsername.Text)))
             {
-                Host = PlayerUsername.Text;
                 MemberList.Add(Host, new List<Member>());
                 Menu.member = new Member(PlayerUsername.Text, true); // Creating the host
                 MemberList[Host].Add(member);
 
-                get_player_data();
+                GetPlayerData();
                 Username_Canvas.Visibility = Visibility.Hidden;
                 MainWindow.win.Content = new Artist();          
             }
         }
 
-        public void get_player_data()
+        public void GetPlayerData()
         {
-          Popup_Username_Exists.IsOpen = false;
+        Popup_Username_Exists.IsOpen = false;
 
-            if(PlayerUsername.Text != null && (!MemberList.ContainsKey(PlayerUsername.Text) || MemberList[PlayerUsername.Text].Count == 0))
+            /*if(PlayerUsername.Text != null && (!MemberList.ContainsKey(PlayerUsername.Text) || MemberList[PlayerUsername.Text].Count == 0))
             {
-                bool Not_Only_Blanks = false;
                 for ( int i = 0; i < PlayerUsername.Text.Length; i++)
                 {
                     if (PlayerUsername.Text[i] != ' ')
@@ -120,7 +113,7 @@ namespace iSketch
                     }
                 }
 
-                /*if (Not_Only_Blanks)
+                if (Not_Only_Blanks)
                 {
                     if (MemberList.Count < Artist.Max_Players)
                     {
@@ -148,13 +141,9 @@ namespace iSketch
                         
                     }
 
-                }*/
+                }
 
-            }
+            }*/
         }
-
-
-
-
     }
 }

@@ -20,7 +20,6 @@ using System.Net.Sockets;
 
 namespace iSketch
 {
-
     // TODO: - Groß und kleinschreibung unbeachtet lassen!
     //       - Anzeige der Momentanen Runde neben Timer
     //       - Host darf bei erstellen eines Spiels Rundenanzahl bestimmen!
@@ -28,131 +27,138 @@ namespace iSketch
     //                                       -> Fragen ob neues Spiel? -> Host ( Wenn ja, neu mit Rundenbestimmung, sonst Alle ins Menu)
     public partial class Artist : Page
     {
-        private static int Timer_Seconds = 20;
-        private static int Timer_Minutes = 0;
-        public  int counter = Timer_Seconds + (Timer_Minutes*60);
+        private static int timerSeconds = 20;
+        private static int timerMinutes = 0;
+        public  int counter = timerSeconds + (timerMinutes*60);
         private System.Timers.Timer countdown2;
-        private int Popup_Counter = 3; // 3 sec
+        private int popupCounter = 3; // 3 sec
 
         public static bool registered = false;
 
         // Wordlist
-        private int List_Length;
-        private string random_word1;
-        private string random_word2;
-        private string random_word3;
+        private int listLength;
+        private string randomWord1;
+        private string randomWord2;
+        private string randomWord3;
 
-        private int Stroke_Thickness = 4;
+        private int strokeThickness = 4;
         private Point lastPoint;
-        private SolidColorBrush colour = Brushes.Black;
+        private SolidColorBrush color = Brushes.Black;
 
-        private int Max_Score = 300;
-        private static int Max_Time;
-        public static int Max_Rounds = 5;
-        public static int CURPLAYERS = 0;
-        private static int Current_Round = 1;
-        public static int Max_Players = 5;
+        private int maxScore = 300;
+        private static int maxTime;
+        public static int MAXROUNDS = 5;
+        private static int CurRound = 1;
+        public static int maxPlayers = 5;
 
-        public string Current_Artist;
-        public int Current_Artist_ID = 0;
+        public static String curArtist;
+        public int curArtistID = 0;
 
-        public Artist()
+        public Artist(String host = null)
         {
+            if (host != null)
+            {
+                Menu.Host = host;
+                Menu.MemberList.Add(Menu.Host, new List<Member>());
+                Menu.MemberList[Menu.Host].Add(Menu.member);
+            }
+
             Console.WriteLine("Artist Constructor");
             InitializeComponent();
+            Server.Connection.PAINTINGCANV = MyCanvas;
 
-            Max_Time = counter;
+            maxTime = counter;
 
-            this.List_Length = Get_List_Length();
-            Chat_Window.KeyDown += new KeyEventHandler(Key_Events);
-            this.Rounds.Text = "Round: " + Current_Round + "/" + Max_Rounds;
+            this.listLength = GetListLength();
+            TxtSolve.KeyDown += new KeyEventHandler(KeyEvents);
+            this.Rounds.Text = "Round: " + CurRound + "/" + MAXROUNDS;
             CreateContdown();
-            Set_ChooseWords();
-            Show_Scores();
+            SetWordsToChoose();
+            ShowScores();
             Console.WriteLine("Artist Constructor END");
         }
 
-        private void Key_Events(object sender, KeyEventArgs k)
+        private void KeyEvents(object sender, KeyEventArgs k)
         {
             if (k.Key == Key.Enter)
             {
-                Check_Input_Word();
+                CheckInputWord();
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ButtonClick(object sender, RoutedEventArgs e)
         {
-            if (sender == this.BTN_Clear)
+            if (sender == this.BtnClear)
                 this.MyCanvas.Children.Clear();
 
-            else if (sender == this.BTN_Submit)
+            else if (sender == this.BtnSubmit)
             {
-                Check_Input_Word();
+                CheckInputWord();
             }
-            else if (sender == this.BTN_HOME)
+            else if (sender == this.BtnHome)
             {
-                Stop_All2(); // Close Timer Thread!
+                StopAll2(); // Close Timer Thread!
                 MainWindow.win.Content = new Menu();
                 Member.instance = (Menu)MainWindow.win.Content;
                 // Aus der Liste entfernen mit entsprechenden ID 
                 // when host leaves
-                Current_Round = 1;
+                CurRound = 1;
             }
 
             // Colours
-            else if (sender == this.Colour_1)
-                colour = Brushes.Black;
-            else if (sender == this.Colour_2)
-                colour = (SolidColorBrush)this.Colour_2.Background;
-            else if (sender == this.Colour_3)
-                colour = Brushes.White;
-            else if (sender == this.Colour_4)
-                colour = (SolidColorBrush)this.Colour_4.Background;
-            else if (sender == this.Colour_5)
-                colour = (SolidColorBrush)this.Colour_5.Background;
-            else if (sender == this.Colour_6)
-                colour = (SolidColorBrush)this.Colour_6.Background;
-            else if (sender == this.Colour_7)
-                colour = (SolidColorBrush)this.Colour_7.Background;
-            else if (sender == this.Colour_8)
-                colour = (SolidColorBrush)this.Colour_8.Background;
-            else if (sender == this.Colour_9)
-                colour = (SolidColorBrush)this.Colour_9.Background;
+            else if (sender == this.Colour1)
+                color = Brushes.Black;
+            else if (sender == this.Colour2)
+                color = (SolidColorBrush)this.Colour2.Background;
+            else if (sender == this.Colour3)
+                color = Brushes.White;
+            else if (sender == this.Colour4)
+                color = (SolidColorBrush)this.Colour4.Background;
+            else if (sender == this.Colour5)
+                color = (SolidColorBrush)this.Colour5.Background;
+            else if (sender == this.Colour6)
+                color = (SolidColorBrush)this.Colour6.Background;
+            else if (sender == this.Colour7)
+                color = (SolidColorBrush)this.Colour7.Background;
+            else if (sender == this.Colour8)
+                color = (SolidColorBrush)this.Colour8.Background;
+            else if (sender == this.Colour9)
+                color = (SolidColorBrush)this.Colour9.Background;
 
             // Strocke Thickness
-            else if (sender == this.Size_1)
-                this.Stroke_Thickness = 8;
+            else if (sender == this.Size1)
+                this.strokeThickness = 8;
 
-            else if (sender == this.Size_2)
-                this.Stroke_Thickness = 4;
+            else if (sender == this.Size2)
+                this.strokeThickness = 4;
 
-            else if (sender == this.Size_3)
-                this.Stroke_Thickness = 2;
+            else if (sender == this.Size3)
+                this.strokeThickness = 2;
 
             // Choose Word
-            else if(sender == this.word1_B)
+            else if(sender == this.BtnWord1)
             {
                 this.ChooseWordCanvas.Visibility = Visibility.Hidden;
-                this.word1_B.IsEnabled = false;
-                this.Your_Word.Text = this.word1.Text;
+                this.BtnWord1.IsEnabled = false;
+                this.YourWord.Text = this.word1.Text;
                 this.MyCanvas.IsEnabled = true;
-                Start_All2();
+                StartAll2();
             }
-            else if (sender == this.word2_B)
+            else if (sender == this.BtnWord2)
             {
                 this.ChooseWordCanvas.Visibility = Visibility.Hidden;
-                this.word2_B.IsEnabled = false;
-                this.Your_Word.Text = this.word2.Text;
+                this.BtnWord2.IsEnabled = false;
+                this.YourWord.Text = this.word2.Text;
                 this.MyCanvas.IsEnabled = true;
-                Start_All2();
+                StartAll2();
             }
-            else if (sender == this.word3_B)
+            else if (sender == this.BtnWord3)
             {
                 this.ChooseWordCanvas.Visibility = Visibility.Hidden;
-                this.word3_B.IsEnabled = false;
-                this.Your_Word.Text = this.word3.Text;
+                this.BtnWord3.IsEnabled = false;
+                this.YourWord.Text = this.word3.Text;
                 this.MyCanvas.IsEnabled = true;
-                Start_All2();
+                StartAll2();
             }
         }
 
@@ -165,14 +171,14 @@ namespace iSketch
             this.lastPoint = p;
 
             Ellipse ell = new Ellipse();
-            ell.Width = this.Stroke_Thickness *1.5;
-            ell.Height = this.Stroke_Thickness *1.5;
+            ell.Width = this.strokeThickness *1.5;
+            ell.Height = this.strokeThickness *1.5;
 
-            ell.Stroke = colour;
-            ell.Fill = colour;
-            ell.StrokeThickness = Stroke_Thickness;
-            ell.SetValue(Canvas.LeftProperty, p.X - Stroke_Thickness);
-            ell.SetValue(Canvas.TopProperty, p.Y - Stroke_Thickness);
+            ell.Stroke = color;
+            ell.Fill = color;
+            ell.StrokeThickness = strokeThickness;
+            ell.SetValue(Canvas.LeftProperty, p.X - strokeThickness);
+            ell.SetValue(Canvas.TopProperty, p.Y - strokeThickness);
             this.MyCanvas.Children.Add(ell);
 
             // Verschicken des Punktes an die anderen
@@ -182,10 +188,10 @@ namespace iSketch
         {
             countdown2 = new System.Timers.Timer();
             countdown2.Interval = 1000; // 1 second timer
-            countdown2.Elapsed += Countdown2_Elapsed;
+            countdown2.Elapsed += Countdown2Elapse;
         }
 
-        private void Countdown2_Elapsed(object sender, ElapsedEventArgs e)
+        private void Countdown2Elapse(object sender, ElapsedEventArgs e)
         {
             counter--;
             Dispatcher.BeginInvoke((Action) (() =>       /*  Lambda Schreibweie */
@@ -194,33 +200,33 @@ namespace iSketch
 
                 if (counter == 0)
                 {
-                    Stop_All2();
-                    this.Chat_Window.Clear();
+                    StopAll2();
+                    this.TxtSolve.Clear();
                     this.MyCanvas.Children.Clear();
                     GoToNextPlayer("timer"); // Go to next player, when time is elapsed
                     //Set_ChooseWords();
                 };
 
-                if (Popup_Word.IsOpen == true)
+                if (PopupWord.IsOpen == true)
                 {
-                    Popup_Counter--;
-                    if (Popup_Counter == 0)
+                    popupCounter--;
+                    if (popupCounter == 0)
                     {
-                        Popup_Word.IsOpen = false;
-                        Popup_Counter = 3;
+                        PopupWord.IsOpen = false;
+                        popupCounter = 3;
                     }
                 }
             }));        
         }
 
-        private void Stop_All2()
+        private void StopAll2()
         {
             countdown2.Stop();
-            counter = Timer_Seconds + (Timer_Minutes * 60); // RESET countdown
-            Popup_Word.IsOpen = false; // Hide Popup
+            counter = timerSeconds + (timerMinutes * 60); // RESET countdown
+            PopupWord.IsOpen = false; // Hide Popup
         }
 
-        private void Start_All2()
+        private void StartAll2()
         {
             this.Countdown.Text = counter.ToString();
             countdown2.Start();
@@ -228,31 +234,41 @@ namespace iSketch
 
         private void MyCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+            if(Menu.member.ID != curArtistID)
+                return;
+
             // Sicherheitsabfrage ID -> Bist du derjenige der malen darf?
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                Point p = e.GetPosition(this.MyCanvas);
-
-                Line line = new Line();
-                line.StrokeStartLineCap = PenLineCap.Round; 
-                line.StrokeEndLineCap = PenLineCap.Round;
-                line.X1 = this.lastPoint.X;
-                line.Y1 = this.lastPoint.Y;
-                line.X2 = p.X;
-                line.Y2 = p.Y;
-                line.Stroke = colour; 
-                line.StrokeThickness = this.Stroke_Thickness; 
-                this.MyCanvas.Children.Add(line);
-
-                this.lastPoint = p;
-
+                DrawLine(e.GetPosition(this.MyCanvas));
                 // Sockets: senden des letzten Strichs an den anderen Rechner. toSend ... X1, X2, Y2, Y1
                 // String muss in einen String umgewandelt werden -> Muss beim Empfänger wieder zu einen Strich umgewandelt werden 
             }
         }
 
+        public void DrawLine(Point curpos)
+        {
+            curpos = Mouse.GetPosition(this.MyCanvas);
+            Line line = new Line
+            {
+                StrokeStartLineCap = PenLineCap.Round,
+                StrokeEndLineCap = PenLineCap.Round,
+                X1 = this.lastPoint.X,
+                Y1 = this.lastPoint.Y,
+                X2 = curpos.X,
+                Y2 = curpos.Y,
+                Stroke = color,
+                StrokeThickness = this.strokeThickness
+            };
+            this.MyCanvas.Children.Add(line);
+
+            this.lastPoint = curpos;
+            Console.WriteLine(Member.GetMmbByName(Menu.Host, curArtist).Writer.ToString());
+            Member.GetMmbByName(Menu.Host, curArtist).Writer.WriteLine(Menu.member.ID.ToString() + ';' + line.X1 + ';' + line.Y1 + ';' + line.X2 + ';' + line.Y2 + ';' + color + ';' + strokeThickness);
+        }
+
         // Manage Words
-        public int Get_List_Length()
+        public int GetListLength()
         {
             int count = 0;
             string line;
@@ -268,10 +284,10 @@ namespace iSketch
             return count;
         }
 
-        public string Get_Random_Word()
+        public string GetRndWord()
         {
             Random rnd = new Random();
-            int line_numb = rnd.Next(0, Get_List_Length());
+            int line_numb = rnd.Next(0, GetListLength());
             int count = 0;
             string line;
 
@@ -287,95 +303,95 @@ namespace iSketch
             return line;
         }
 
-        public void Set_ChooseWords()
+        public void SetWordsToChoose()
         { 
-            word1.Text = Get_Random_Word();
+            word1.Text = GetRndWord();
             while (word1.Text == null)
             {
-                word1.Text = Get_Random_Word();
+                word1.Text = GetRndWord();
             }
 
-            word2.Text = Get_Random_Word();
+            word2.Text = GetRndWord();
             while (word2.Text == word1.Text || word2.Text == null) // no dubplicates allwoded
             {
-                word2.Text = Get_Random_Word();
+                word2.Text = GetRndWord();
             }
 
-            word3.Text = Get_Random_Word();
+            word3.Text = GetRndWord();
             while (word1.Text == word3.Text || word2.Text == word3.Text || word3.Text == null) // no dubplicates allwoded
             {
-                word3.Text = Get_Random_Word();
+                word3.Text = GetRndWord();
             }
 
-            this.word1_B.IsEnabled = true;
-            this.word2_B.IsEnabled = true;
-            this.word3_B.IsEnabled = true;
+            this.BtnWord1.IsEnabled = true;
+            this.BtnWord2.IsEnabled = true;
+            this.BtnWord3.IsEnabled = true;
 
             this.ChooseWordCanvas.Visibility = Visibility.Visible;
 
             this.MyCanvas.IsEnabled = false;
-            Show_Scores();
+            ShowScores();
 
         }
 
-        public void Create_MessageBox()
+        public void CreateMsgBox()
         {
-            random_word1 = Get_Random_Word();
-            while (random_word1 == null)
+            randomWord1 = GetRndWord();
+            while (randomWord1 == null)
             {
-                random_word1 = Get_Random_Word();
+                randomWord1 = GetRndWord();
             }
 
-            random_word2 = Get_Random_Word();
-            while (random_word2 == random_word1 || random_word2 == null) // no dubplicates allwoded
+            randomWord2 = GetRndWord();
+            while (randomWord2 == randomWord1 || randomWord2 == null) // no dubplicates allwoded
             {
-                random_word2 = Get_Random_Word();
+                randomWord2 = GetRndWord();
             }
 
-            random_word3 = Get_Random_Word();
-            while (random_word1 == random_word3 || random_word2 == random_word3 || random_word3 == null) // no dubplicates allwoded
+            randomWord3 = GetRndWord();
+            while (randomWord1 == randomWord3 || randomWord2 == randomWord3 || randomWord3 == null) // no dubplicates allwoded
             {
-                random_word3 = Get_Random_Word();
+                randomWord3 = GetRndWord();
             }
         }
 
-        void Check_Input_Word()
+        void CheckInputWord()
         {
-            Popup_Word.IsOpen = false;
+            PopupWord.IsOpen = false;
 
-            if (this.Your_Word.Text == this.Chat_Window.Text)
+            if (this.YourWord.Text == this.TxtSolve.Text)
             {
                 // [0] Dies muss für mehrspieler angepasst werden. Receive der nachricht des anderen, zuweisung der richtigen ID
-                Menu.MemberList[Menu.Host][0].Guessed_Correctly = true;
-                Menu.MemberList[Menu.Host][0].Score += Calculate_Points();
+                Menu.MemberList[Menu.Host][0].GuessedCorrectly = true;
+                Menu.MemberList[Menu.Host][0].Score += CalculateScore();
 
                 Set_Popup("correct");
-                Popup_Word.IsOpen = true;
+                PopupWord.IsOpen = true;
 
                 GoToNextPlayer("");
             }
             else
             {
-                Compare_Imput_Word();
-                this.Chat_Window.Clear();
+                CompareInputWord();
+                this.TxtSolve.Clear();
             }
         }
 
-        void Compare_Imput_Word()
+        void CompareInputWord()
         {
             int faulty_letters = 0;
             Set_Popup("incorrect");
-            if (Chat_Window.Text.Length == Your_Word.Text.Length)
+            if (TxtSolve.Text.Length == YourWord.Text.Length)
             {
-                for (int i = 0; i < Chat_Window.Text.Length; i++)
+                for (int i = 0; i < TxtSolve.Text.Length; i++)
                 {
-                    if (Chat_Window.Text[i] != Your_Word.Text[i])
+                    if (TxtSolve.Text[i] != YourWord.Text[i])
                         faulty_letters++;
                 }
             }
 
             if (faulty_letters == 1) // Show Popup
-                Popup_Word.IsOpen = true;  
+                PopupWord.IsOpen = true;  
         }
        
         void Set_Popup(string situation)
@@ -385,39 +401,37 @@ namespace iSketch
                 BrushConverter bc = new BrushConverter();
                 Brush brush = (Brush)bc.ConvertFrom("#FFCEEE97");
                 brush.Freeze();
-                Popup_Text.Background = brush;
-                Popup_Text.Text = "Your word is correct! :)";
+                PopupText.Background = brush;
+                PopupText.Text = "Your word is correct! :)";
             }
             else if (situation == "incorrect")
             {
                 BrushConverter bc = new BrushConverter();
                 Brush brush = (Brush)bc.ConvertFrom("#FFF1BEE6");
                 brush.Freeze();
-                Popup_Text.Background = brush;
-                Popup_Text.Text = "Your word is almost correct!";
+                PopupText.Background = brush;
+                PopupText.Text = "Your word is almost correct!";
             }
         }
 
-        public int Calculate_Points()
+        public int CalculateScore()
         {
             double  percent = 0;
 
-            percent = (double) counter / (double) Max_Time;
+            percent = (double) counter / (double) maxTime;
 
             Console.WriteLine("Counter: "+ counter);
             Console.WriteLine("Percent: "+ percent);
 
-            return  (int) (Max_Score * percent);
+            return  (int) (maxScore * percent);
         }
 
-        void Show_Scores()
+        void ShowScores()
         {
-            //while (Menu.Host == null) ;
-
             string ScoreTxt ="Score:\n";
             foreach(Member member in Menu.MemberList[Menu.Host])
             {
-                ScoreTxt += member.Username + ":  " + member.Score + "\n" ;
+                ScoreTxt += member.Username + ": " + member.Score + "\n" ;
             }
 
             Scores.Text = ScoreTxt;
@@ -426,50 +440,51 @@ namespace iSketch
 
         void GoToNextPlayer(string position)
         {
-            bool next_player = true;
+            bool nextPlayer = true;
             for (int i = 0; i < Menu.MemberList[Menu.Host].Count; i++)
             {
-                if (Menu.MemberList[Menu.Host][i].Guessed_Correctly == false) // Check: Has everybody guessed the word correctly?
+                if (Menu.MemberList[Menu.Host][i].GuessedCorrectly == false) // Check: Has everybody guessed the word correctly?
                 {
-                    next_player = false;
+                    nextPlayer = false;
                     break;
                 }
             }
 
-            if (next_player || position == "timer")
+            if (nextPlayer || position == "timer")
             {
-                Stop_All2();
+                StopAll2();
 
-                this.Chat_Window.Clear();
+                this.TxtSolve.Clear();
                 this.MyCanvas.Children.Clear();
 
-                if (Current_Artist_ID + 1 >= Menu.MemberList[Menu.Host].Count) // if last player was painting, the next artist is the first player in the list
+                if (curArtistID + 1 >= Menu.MemberList[Menu.Host].Count) // if last player was painting, the next artist is the first player in the list
                 {
-                    Current_Artist_ID = 0;
-                    Current_Round++;
+                    curArtistID = 0;
+                    CurRound++;
 
-                    if (Current_Round == Max_Rounds +1)
+                    if (CurRound == MAXROUNDS +1)
                     {
-                        Current_Round = 1;
+                        CurRound = 1;
 
                         foreach(Member member in Menu.MemberList[Menu.Host]) // Scores zurücksetzen!
                         {
                             member.Score = 0;
                         }
+                        Server.Server.BroadcastScore();
                         // Spiel beenden bzw neue Runde anfragen
                     }
-                    this.Rounds.Text = "Round: " + Current_Round + "/" + Max_Rounds;
+                    this.Rounds.Text = "Round: " + CurRound + "/" + MAXROUNDS;
                 }
-                else Current_Artist_ID ++;
+                else curArtistID ++;
 
-                Set_ChooseWords();
+                SetWordsToChoose();
             }
             // Send Artist_ID if it changed to the others
         }
 
         void ShowRounds()
         {
-            this.Rounds.Text = "Round: " + Current_Round + "/" + Max_Rounds;
+            this.Rounds.Text = "Round: " + CurRound + "/" + MAXROUNDS;
         }
     }
 }

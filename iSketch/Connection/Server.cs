@@ -24,34 +24,39 @@ namespace Server
             Console.WriteLine("SCORES: " + playerBuilder.ToString());
             foreach (iSketch.Member member in iSketch.Menu.MemberList[iSketch.Menu.Host])
             {
-                if (member.writer == null) continue;
-                member.writer.WriteLine(playerBuilder.ToString());
+                if (member.Writer == null) continue;
+                member.Writer.WriteLine(playerBuilder.ToString());
             }
         }
 
-        public static void M_Server()
+        public static void StartServer()
         {
+
             IPAddress adr = IPAddress.Loopback;
             IPEndPoint end = new IPEndPoint(adr, 4444);
 
             TcpClient client;
-            Connection conn;
+            Connection conn = null;
             ThreadStart ts;
             Thread t;
             Thread serverThread = new Thread(() =>
             {
-
                 TcpListener server = new TcpListener(end);
-                server.Start();
-
-                iSketch.Artist.CURPLAYERS++;
-
+                try
+                {
+                    server.Start();
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("A");
+                }
+            
                 while (true)
                 {
                     Console.WriteLine("ready to accept clients ...");
                     try
                     {
-                        client = server.AcceptTcpClient();
+                        client = conn.server.AcceptTcpClient();
                     }
                     catch
                     {

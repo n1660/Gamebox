@@ -17,11 +17,11 @@ namespace iSketch
         public string Username { get; set; }
         public int Score { get; set; }
         public int Moves { get; set; }
-        public bool Guessed_Correctly { get; set; }
+        public bool GuessedCorrectly { get; set; }
 
-        public Stream stream { get; set; }
-        public StreamReader reader { get; set; }
-        public StreamWriter writer { get; set; }
+        public Stream Stream { get; set; }
+        public StreamReader Reader { get; set; }
+        public StreamWriter Writer { get; set; }
         public IPEndPoint End { get => end; set => end = value; }
         public IPAddress Adr { get => adr; set => adr = value; }
 
@@ -37,7 +37,7 @@ namespace iSketch
             this.Username = Username;
             this.Score = 0;
             this.Moves = 0; // neccessary??? 
-            this.Guessed_Correctly = false;
+            this.GuessedCorrectly = false;
 
             if (!host && Username != "")
             {
@@ -45,14 +45,14 @@ namespace iSketch
                 this.end = new IPEndPoint(adr, 4444);
                 this.client.Connect(end); // Will sich nicht connecten/ Host darf nicht connecten
                 Console.WriteLine("Connected.");
-                this.stream = client.GetStream();
-                this.reader = new StreamReader(stream, Encoding.ASCII);
-                this.writer = new StreamWriter(stream, Encoding.ASCII)
+                this.Stream = client.GetStream();
+                this.Reader = new StreamReader(Stream, Encoding.ASCII);
+                this.Writer = new StreamWriter(Stream, Encoding.ASCII)
                 {
                     AutoFlush = true
                 };
                 Console.WriteLine("Reading");
-                this.ID = Int32.Parse(reader.ReadLine());
+                this.ID = Int32.Parse(Reader.ReadLine());
                 Console.WriteLine("Got id " + ID);
                 this.Hostname = this.SendLoginPacket();
                 Console.WriteLine("got through, HOST: " + this.Hostname);
@@ -66,7 +66,7 @@ namespace iSketch
             }*/
         }
 
-        public void Join_Game(IPEndPoint ip)
+        public void JoinGame(IPEndPoint ip)
         {
            // show games, which are running -> select with Buttons (The Hosts Username)
             this.client.Connect(ip.Address, ip.Port);
@@ -80,10 +80,20 @@ namespace iSketch
 
         public String SendLoginPacket()
         {
-            writer.WriteLine(this.ID.ToString() + ";LoginPacket;" + this.Username);
-            String received = reader.ReadLine();
+            Writer.WriteLine(this.ID.ToString() + ";LoginPacket;" + this.Username);
+            String received = Reader.ReadLine();
             Console.WriteLine("[CLIENT] LOGGED IN SUCCESSFULLY: '" + received + "'");
             return received.Split(';')[1];
+        }
+
+        public static Member GetMmbByName (String hostName, String name)
+        {
+            foreach(Member mmb in Menu.MemberList[hostName])
+            {
+                if (mmb.Username == name)
+                    return mmb;
+            }
+            return null;
         }
     }
     // Bei Add -> Daten müssen auch an den andern geschickt werden
