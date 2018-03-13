@@ -36,6 +36,7 @@ namespace iSketch
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             this.Content = new Menu();
+            Member.instance = (Menu)App.Current.MainWindow.Content;
         }
     }
 }

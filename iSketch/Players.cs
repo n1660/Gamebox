@@ -11,6 +11,8 @@ namespace iSketch
 {
     public class Member //: IEquatable<Member>
     {
+        public static Menu instance;
+
         public int ID { get; set; } // Für Sockets als int -> ID wird vom Socket zugewiesen!
         public string Username { get; set; }
         public int Score { get; set; }
@@ -44,6 +46,16 @@ namespace iSketch
                 {
                     AutoFlush = true
                 };
+<<<<<<< HEAD
+=======
+
+                if (!(Menu.MemberList.ContainsKey(Username)))
+                {
+                    Menu.MemberList.Add(Username, new List<Member>());
+                    instance.get_player_data();
+                }
+            }
+>>>>>>> a0cb6389c73084a88d0649301f30db3dce43fd32
 
                 if (!(Menu.MemberList.ContainsKey(Username)))
                 {
@@ -57,6 +69,7 @@ namespace iSketch
         public void Join_Game(IPEndPoint ip)
         {
            // show games, which are running -> select with Buttons (The Hosts Username)
+<<<<<<< HEAD
             this.client.Connect(ip.Address, ip.Port);
             if (!(Menu.MemberList.ContainsKey(this.Username)))
             {
@@ -64,6 +77,10 @@ namespace iSketch
             }
             else
                 return;
+=======
+           this.client.Connect(ip.Address, ip.Port);
+
+>>>>>>> a0cb6389c73084a88d0649301f30db3dce43fd32
 
             this.ID = Int32.Parse(reader.ReadLine());
         }

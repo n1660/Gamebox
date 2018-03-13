@@ -95,7 +95,11 @@ namespace iSketch
         {
           Popup_Username_Exists.IsOpen = false;
 
+<<<<<<< HEAD
             if(PlayerUsername.Text != null && (!MemberList.ContainsKey(PlayerUsername.Text) || MemberList[PlayerUsername.Text].Count == 0))
+=======
+            if(PlayerUsername.Text != null && !(MemberList.ContainsKey(PlayerUsername.Text)))
+>>>>>>> a0cb6389c73084a88d0649301f30db3dce43fd32
             {
                 bool Not_Only_Blanks = false;
                 for ( int i = 0; i < PlayerUsername.Text.Length; i++)
