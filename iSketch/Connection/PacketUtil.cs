@@ -78,7 +78,7 @@ namespace iSketch.Connection
             {
                 owner.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    owner.ShowCorrectWord();
+                    owner.ShowAlmostCorrectWord();
                 }));
             }
             else if (arr[1] == "LINE")

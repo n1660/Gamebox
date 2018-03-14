@@ -56,10 +56,16 @@
         </Button>
 
         <Popup Name="Popup_Username_Exists" Grid.Column="1" Grid.Row="2" PopupAnimation="Fade" AllowsTransparency="True" Placement="Mouse">
-                <TextBlock Background="#FFFF4F4F">This username already exists"</TextBlock>
+            <TextBlock Background="#FFFF4F4F">This username already exists"</TextBlock>
         </Popup>
 
-        <Canvas Name="Username_Canvas" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Background="RosyBrown" Margin="53,49.8,47,50.4">
+        <Canvas Name="Username_Canvas" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Margin="53,49.8,47,50.4">
+            <Canvas.Background>
+                <RadialGradientBrush>
+                    <GradientStop Color="Black" Offset="1"/>
+                    <GradientStop Color="#FF6C0707"/>
+                </RadialGradientBrush>
+            </Canvas.Background>
             <Grid Width="{Binding ActualWidth, ElementName=Username_Canvas, Mode=OneWay}" Height="{Binding ActualHeight, ElementName=Username_Canvas, Mode=OneWay}" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -71,10 +77,10 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" TextAlignment="Center" Margin="2" Text="Insert your Username"/>
-                <TextBox Name="PlayerUsername" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,2" TextAlignment="Center"/>
-                <Button Name="Join_Game_B" Grid.Row="2" Grid.Column="0" Margin="2" Click="ButtonClickMenu">Join Game</Button>
-                <Button Name="New_Game_B" Grid.Row="3" Grid.Column="2" Margin="2" Click="ButtonClickMenu">New Game</Button>
+                <TextBlock Grid.Row="0" FontSize="30" Grid.Column="0" Grid.ColumnSpan="3" TextAlignment="Center" Margin="2" Foreground="White" Text="Insert your Username"/>
+                <TextBox Name="PlayerUsername" FontSize="25" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,2" TextAlignment="Center"/>
+                <Button Name="Join_Game_B" FontSize="25" Grid.Row="2" Grid.Column="0" Margin="10,2,2,5" Click="ButtonClickMenu" >Join Game</Button>
+                <Button Name="New_Game_B" FontSize="25" Grid.Row="3" Grid.Column="2" Margin="2,2,10,5" Click="ButtonClickMenu">New Game</Button>
                 <!--<Button Name="Canel_Username" Grid.Row="3" Grid.Column="2" Margin="2" Click="Button_Click_Menu">Cancel</Button>-->
             </Grid>
         </Canvas>
