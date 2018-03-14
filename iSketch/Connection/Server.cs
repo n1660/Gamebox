@@ -13,7 +13,11 @@ namespace Server
 {
     public class Server
     {
+        private static Connection conn = null;
+
         public static int online = 0;
+
+        public static Connection Conn { get => conn; set => conn = value; }
 
         public static void BroadcastScore()
         {
@@ -47,6 +51,7 @@ namespace Server
             App.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 Artist artist = (Artist)App.Current.MainWindow.Content;
+                Console.WriteLine("artist: " + artist.ToString() + "\npacket: " + packet + "\nwriter: " + Menu.member.Writer);
                 iSketch.Connection.PacketUtil.HandlePacket(artist, packet, Menu.member.Writer);
             }));
         }
@@ -112,24 +117,24 @@ namespace Server
 
         public static void StartServer()
         {
-
-            IPAddress adr = IPAddress.Loopback;
-            IPEndPoint end = new IPEndPoint(adr, 4444);
-
             TcpClient client;
-            Connection conn = null;
             ThreadStart ts;
             Thread t;
             Thread serverThread = new Thread(() =>
             {
+                IPAddress adr = IPAddress.Parse("192.169.43.253");
+                IPEndPoint end = new IPEndPoint(IPAddress.Any, 4444);
+
                 TcpListener server = new TcpListener(end);
                 try
                 {
                     server.Start();
+                   
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Console.WriteLine("A");
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
                 }
             
                 while (true)
@@ -146,9 +151,9 @@ namespace Server
                         continue;
                     }
                     Console.WriteLine(++online + " clients logged in");
-                    conn = new Connection(client, server);
+                    Server.conn = new Connection(client, server);
                     
-                    ts = new ThreadStart(conn.ServeSingleClient);
+                    ts = new ThreadStart(Server.conn.ServeSingleClient);
                     t = new Thread(ts);
                     t.Start();
                 }

@@ -315,7 +315,6 @@ namespace iSketch
             if(Menu.member.ID != curArtistID)
                 return;
 
-            // Sicherheitsabfrage ID -> Bist du derjenige der malen darf?
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 DrawLine(e.GetPosition(this.MyCanvas));
@@ -344,11 +343,11 @@ namespace iSketch
             String toSend = 
                     Menu.member.ID.ToString() + ';' 
                     + "LINE"  + ';'
-                    + line.X1 + ',' 
-                    + line.Y1 + ',' 
-                    + line.X2 + ',' 
-                    + line.Y2 + ',' 
-                    + color   + ',' 
+                    + line.X1 + '_' 
+                    + line.Y1 + '_' 
+                    + line.X2 + '_' 
+                    + line.Y2 + '_' 
+                    + color   + '_' 
                     + strokeThickness + ";"
                 ;
             Console.WriteLine("Sending line: '" + toSend + "'");

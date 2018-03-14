@@ -78,7 +78,7 @@ namespace iSketch.Connection
             {
                 owner.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    owner.ShowAlmostCorrectWord();
+                    owner.ShowCorrectWord();
                 }));
             }
             else if (arr[1] == "LINE")
@@ -86,7 +86,7 @@ namespace iSketch.Connection
                 int senderId = Int32.Parse(arr[0]);
                 Console.WriteLine("RECEIVED LINE " + senderId + " -> " + arr[2]);
                 if (senderId == Menu.member.ID) return; // The sender already drew the line on his canvas
-                String[] lineCoords = arr[2].Split(',');
+                String[] lineCoords = arr[2].Split('_');
                 owner.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     Point start = new Point
