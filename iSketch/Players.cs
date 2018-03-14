@@ -30,7 +30,7 @@ namespace iSketch
         public TcpClient Client { get => client; set => client = value; }
 
         private TcpClient client = new TcpClient();
-        private IPAddress adr = IPAddress.Parse("146.254.1.192");
+        private IPAddress adr = IPAddress.Parse("192.168.43.253");
         private IPEndPoint end;
 
         public Member (string Username, bool host)

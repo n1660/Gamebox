@@ -458,11 +458,10 @@ namespace iSketch
             if (Menu.member.ID == curArtistID)
                 return; // The artist can't send his word jesus christ papa bless
 
-            if (correctWord == null)
-                return; // Papa bless
-
             if (Menu.member.IsHost)
             {
+                if (correctWord == null)
+                    return; // Papa bless
                 CheckInputWord(Menu.member.Username, this.TxtSolve.Text);
             } else
             {
