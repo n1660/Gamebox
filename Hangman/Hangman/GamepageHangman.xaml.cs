@@ -15,11 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
-<<<<<<< HEAD
 using System.Timers;
-=======
 using System.Net.Cache;
->>>>>>> 5a2a099b581764b14508286c9208c113dc4e1d05
 
 namespace Hangman
 {
@@ -30,7 +27,8 @@ namespace Hangman
         string solution;
         string alreadyUsed = "";
         static int maxfehler = 9;
-        int StartPoints = Settings.points;
+        int startPoints = Settings.points;
+        int startRounds = Settings.countRounds;
         int anzfehler = 0;
         bool BonusUsed = false;
         bool BonusPopUp = false;
@@ -401,7 +399,7 @@ namespace Hangman
         }
         public void Check_Bonus()
         {
-            switch(StartPoints)     //Bonus abhängig von StartPunkte
+            switch(startPoints)     //Bonus abhängig von StartPunkte
             { 
                 case 100:
                     if (Settings.points >= 150 && !BonusUsed)
@@ -515,6 +513,10 @@ namespace Hangman
             {
                 canvas.Children.Remove(lbls[i]);
             }
+            canvas.Children.Remove(lblRounds[0]);
+            canvas.Children.Remove(lblPoints[0]);
+            Settings.countRounds = startRounds;
+            Settings.points = startPoints;
             Start();
         }
         public void MenuItem_Click_Quit(object sender, RoutedEventArgs e)

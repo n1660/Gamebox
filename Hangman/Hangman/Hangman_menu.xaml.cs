@@ -22,7 +22,7 @@ namespace Hangman
             InitializeComponent();
         }
 
-        public void SetNew()
+        public static void SetNew()
         {
             Settings.countRounds = 5;
             Settings.points = 100;
