@@ -30,7 +30,7 @@ namespace iSketch
         public TcpClient Client { get => client; set => client = value; }
 
         private TcpClient client = new TcpClient();
-        private IPAddress adr = IPAddress.Parse("146.254.1.192");
+        private IPAddress adr = IPAddress.Loopback;
         private IPEndPoint end;
 
         public Member (string Username, bool host)
@@ -75,6 +75,7 @@ namespace iSketch
         {
            // show games, which are running -> select with Buttons (The Hosts Username)
             this.client.Connect(ip.Address, ip.Port);
+          
             if (!(Menu.MemberList.ContainsKey(this.Username)))
             {
                 Menu.MemberList.Add(this.Username, new List<Member>());
