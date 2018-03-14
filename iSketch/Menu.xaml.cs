@@ -28,13 +28,15 @@ namespace iSketch
         
         public Menu()
         {
+
+            App.Current.MainWindow.Height = 300;
+            App.Current.MainWindow.Width = 300;
+
             InitializeComponent();
             PlayerUsername.KeyDown += new KeyEventHandler(KeyEvents);
             Username_Canvas.Visibility = Visibility.Hidden;
-            //Popup_Username.IsOpen = true;
-            Server.Server.StartServer();
-            Host = PlayerUsername.Text;
-            NewHost();
+            //Popup_Username.IsOpen = true;            
+            Host = PlayerUsername.Text;           
         }
 
         private void KeyEvents(object sender, KeyEventArgs k)
@@ -49,7 +51,6 @@ namespace iSketch
         {
             if (sender == this.New_Game_B)
             {
-                Server.Server.StartServer();
                 Host = PlayerUsername.Text;
                 NewHost();
             }
@@ -58,6 +59,12 @@ namespace iSketch
                 Menu.member = new Member(PlayerUsername.Text, false);
                 //member.Join_Game(new IPEndPoint(IPAddress.Loopback, 4444));
                 //MemberList[PlayerUsername.Text].Add(member);
+
+                List<Member> members = new List<Member>
+                {
+                    member
+                };
+                MemberList.Add(Menu.Host, members);
 
                 Console.WriteLine("XXX");
 
@@ -83,8 +90,11 @@ namespace iSketch
 
         public void NewHost()
         {
-            if(server == null)  // Ein Spieler kann nur ein Spiel hosten!
+            if (server == null)
+            {  // Ein Spieler kann nur ein Spiel hosten!
                 server = new Server.Server();
+                Server.Server.StartServer();
+            }
 
             if (!(MemberList.ContainsKey(PlayerUsername.Text)))
             {

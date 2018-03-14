@@ -17,6 +17,8 @@ using System.Windows.Threading;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
+using iSketch.Connection;
 
 namespace iSketch
 {
@@ -30,7 +32,7 @@ namespace iSketch
         private static int timerSeconds = 20;
         private static int timerMinutes = 0;
         public  int counter = timerSeconds + (timerMinutes*60);
-        private System.Timers.Timer countdown2;
+        public System.Timers.Timer countdown2;
         private int popupCounter = 3; // 3 sec
 
         public static bool registered = false;
@@ -54,8 +56,16 @@ namespace iSketch
         public static String curArtist;
         public int curArtistID = 0;
 
+        public long   startCountdownTime = -1;
+        public String correctWord;
+
+        public Thread receiverThread;
+
         public Artist(String host = null)
         {
+            App.Current.MainWindow.Height = 448.62;
+            App.Current.MainWindow.Width = 765;
+
             if (host != null)
             {
                 Menu.Host = host;
@@ -71,10 +81,37 @@ namespace iSketch
 
             this.listLength = GetListLength();
             TxtSolve.KeyDown += new KeyEventHandler(KeyEvents);
-            this.Rounds.Text = "Round: " + CurRound + "/" + MAXROUNDS;
+            this.Rounds.Text = "Round: " + CurRound + " of " + MAXROUNDS + "\n" + curArtist + " painting";
             CreateContdown();
             SetWordsToChoose();
             ShowScores();
+
+            if (!Menu.member.IsHost)
+            {
+
+                HideWordButtons();
+
+                this.receiverThread = new Thread(() =>
+                {
+                    StreamReader reader = Menu.member.Reader;
+                    StreamWriter writer = Menu.member.Writer;
+
+                    while (true)
+                    {
+                        Console.WriteLine("Reading...");
+                        String line = reader.ReadLine();
+                        if (line == null)
+                        {
+                            Console.WriteLine("Server closed connection");
+                            return;
+                        }
+                        Console.WriteLine("Received " + line);
+                        PacketUtil.HandlePacket(this, line, writer);
+                    }
+                });
+                this.receiverThread.Start();
+            }
+
             Console.WriteLine("Artist Constructor END");
         }
 
@@ -82,18 +119,36 @@ namespace iSketch
         {
             if (k.Key == Key.Enter)
             {
-                CheckInputWord();
+                //CheckInputWord();
+                SendWord();
             }
+        }
+
+        private void HideWordButtons()
+        {
+            this.ChooseWordCanvas.Visibility = Visibility.Hidden;
+            this.BtnWord1.IsEnabled = false;
+            this.BtnWord2.IsEnabled = false;
+            this.BtnWord3.IsEnabled = false;
         }
 
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
             if (sender == this.BtnClear)
-                this.MyCanvas.Children.Clear();
+            {
+                if (Menu.member.IsHost)
+                {
+                    Server.Server.BroadcastClear();
+                } else
+                {
+                    Menu.member.Writer.WriteLine("CLEAR");
+                }
 
+            }               
             else if (sender == this.BtnSubmit)
             {
-                CheckInputWord();
+                //CheckInputWord();
+                SendWord();
             }
             else if (sender == this.BtnHome)
             {
@@ -135,48 +190,55 @@ namespace iSketch
             else if (sender == this.Size3)
                 this.strokeThickness = 2;
 
+
             // Choose Word
             else if(sender == this.BtnWord1)
             {
-                this.ChooseWordCanvas.Visibility = Visibility.Hidden;
-                this.BtnWord1.IsEnabled = false;
                 this.YourWord.Text = this.word1.Text;
+                correctWord = this.YourWord.Text;
+                HideWordButtons();            
                 this.MyCanvas.IsEnabled = true;
                 StartAll2();
             }
             else if (sender == this.BtnWord2)
             {
-                this.ChooseWordCanvas.Visibility = Visibility.Hidden;
-                this.BtnWord2.IsEnabled = false;
                 this.YourWord.Text = this.word2.Text;
+                correctWord = this.YourWord.Text;
+                HideWordButtons();
                 this.MyCanvas.IsEnabled = true;
                 StartAll2();
             }
             else if (sender == this.BtnWord3)
             {
-                this.ChooseWordCanvas.Visibility = Visibility.Hidden;
-                this.BtnWord3.IsEnabled = false;
                 this.YourWord.Text = this.word3.Text;
+                correctWord = this.YourWord.Text;
+                HideWordButtons();
                 this.MyCanvas.IsEnabled = true;
                 StartAll2();
             }
         }
 
+
         // For Painting  
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
-        {   
+        {
             // Sicherheitsabfrage ID -> Bist du derjenige der malen darf?
+            if (Menu.member.ID != curArtistID)
+                return;
+
             Point p = e.GetPosition(this.MyCanvas); 
 
             this.lastPoint = p;
 
-            Ellipse ell = new Ellipse();
-            ell.Width = this.strokeThickness *1.5;
-            ell.Height = this.strokeThickness *1.5;
+            Ellipse ell = new Ellipse
+            {
+                Width = this.strokeThickness * 1.5,
+                Height = this.strokeThickness * 1.5,
 
-            ell.Stroke = color;
-            ell.Fill = color;
-            ell.StrokeThickness = strokeThickness;
+                Stroke = color,
+                Fill = color,
+                StrokeThickness = strokeThickness
+            };
             ell.SetValue(Canvas.LeftProperty, p.X - strokeThickness);
             ell.SetValue(Canvas.TopProperty, p.Y - strokeThickness);
             this.MyCanvas.Children.Add(ell);
@@ -224,12 +286,28 @@ namespace iSketch
             countdown2.Stop();
             counter = timerSeconds + (timerMinutes * 60); // RESET countdown
             PopupWord.IsOpen = false; // Hide Popup
+            this.correctWord = null;
         }
 
         private void StartAll2()
         {
-            this.Countdown.Text = counter.ToString();
-            countdown2.Start();
+            long startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 1500;
+
+
+            Console.WriteLine("Sending correctword: " + correctWord);
+            Server.Server.SendPacket("CORRECTWORD;" + correctWord);
+
+            String startPacket = Menu.member.ID + ";START;" + startTime;     
+
+            if (Menu.member.IsHost)
+            {
+                Server.Server.BroadcastStart(startPacket);
+            } else
+            {
+                Menu.member.Writer.WriteLine(startPacket);
+            }
+
+            // Countdown starts in PacketUtil.cs -> HandlePacket()
         }
 
         private void MyCanvas_MouseMove(object sender, MouseEventArgs e)
@@ -262,9 +340,26 @@ namespace iSketch
             };
             this.MyCanvas.Children.Add(line);
 
-            this.lastPoint = curpos;
-            Console.WriteLine(Member.GetMmbByName(Menu.Host, curArtist).Writer.ToString());
-            Member.GetMmbByName(Menu.Host, curArtist).Writer.WriteLine(Menu.member.ID.ToString() + ';' + line.X1 + ';' + line.Y1 + ';' + line.X2 + ';' + line.Y2 + ';' + color + ';' + strokeThickness);
+            this.lastPoint = curpos;            
+            String toSend = 
+                    Menu.member.ID.ToString() + ';' 
+                    + "LINE"  + ';'
+                    + line.X1 + ',' 
+                    + line.Y1 + ',' 
+                    + line.X2 + ',' 
+                    + line.Y2 + ',' 
+                    + color   + ',' 
+                    + strokeThickness + ";"
+                ;
+            Console.WriteLine("Sending line: '" + toSend + "'");
+            if (Menu.member.IsHost)
+            {
+                Server.Server.BroadcastLine(toSend);
+            }
+            else
+            {
+                Menu.member.Writer.WriteLine(toSend);
+            }
         }
 
         // Manage Words
@@ -304,7 +399,10 @@ namespace iSketch
         }
 
         public void SetWordsToChoose()
-        { 
+        {
+            if (Menu.member.ID != curArtistID)
+                return;
+
             word1.Text = GetRndWord();
             while (word1.Text == null)
             {
@@ -355,43 +453,104 @@ namespace iSketch
             }
         }
 
-        void CheckInputWord()
+        public void SendWord()
         {
-            PopupWord.IsOpen = false;
+            if (Menu.member.ID == curArtistID)
+                return; // The artist can't send his word jesus christ papa bless
 
-            if (this.YourWord.Text == this.TxtSolve.Text)
+            if (correctWord == null)
+                return; // Papa bless
+
+            if (Menu.member.IsHost)
             {
-                // [0] Dies muss für mehrspieler angepasst werden. Receive der nachricht des anderen, zuweisung der richtigen ID
-                Menu.MemberList[Menu.Host][0].GuessedCorrectly = true;
-                Menu.MemberList[Menu.Host][0].Score += CalculateScore();
-
-                Set_Popup("correct");
-                PopupWord.IsOpen = true;
-
-                GoToNextPlayer("");
-            }
-            else
+                CheckInputWord(Menu.member.Username, this.TxtSolve.Text);
+            } else
             {
-                CompareInputWord();
-                this.TxtSolve.Clear();
+                String packet = Menu.member.Username + ";CHECKWORD;" + this.TxtSolve.Text;
+                Console.WriteLine("SENDING WORD: " + packet);
+                Menu.member.Writer.WriteLine(packet);
             }
         }
 
-        void CompareInputWord()
+        public void ShowCorrectWord()
+        {
+            Set_Popup("correct");
+            PopupWord.IsOpen = true;
+            this.TxtSolve.Clear();
+        }
+
+        public void ShowAlmostCorrectWord()
+        {
+            Set_Popup("incorrect");
+            PopupWord.IsOpen = true;
+            this.TxtSolve.Clear();
+        }
+
+        public void CheckInputWord(String username, String word)
+        {
+            PopupWord.IsOpen = false;
+
+            Console.WriteLine("Checking word " + username + " -> " + word + "    correct: " + correctWord);
+
+            if (this.correctWord == word)
+            {
+                // [0] Dies muss für mehrspieler angepasst werden. Receive der nachricht des anderen, zuweisung der richtigen ID
+                foreach (Member member in Menu.MemberList[Menu.Host])
+                {
+                    Console.WriteLine("- Member " + member.Username + " == " + username + " ?");
+                    if (member.Username == username)
+                    {
+                        member.GuessedCorrectly = true;
+                        member.Score += CalculateScore();
+
+                        if (Menu.Host == username)
+                        {
+                            ShowCorrectWord();
+                        }
+                        else
+                        {
+                            Server.Server.SendPacket("CORRECT", username);
+                        }
+
+                        Server.Server.BroadcastScore();
+                        //ShowCorrectWord();
+
+                        //GoToNextPlayer("");
+
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                CompareInputWord(username, word);
+            }
+        }
+
+        void CompareInputWord(String username, String word)
         {
             int faulty_letters = 0;
-            Set_Popup("incorrect");
-            if (TxtSolve.Text.Length == YourWord.Text.Length)
+            if (word.Length == this.correctWord.Length)
             {
-                for (int i = 0; i < TxtSolve.Text.Length; i++)
+                for (int i = 0; i < word.Length; i++)
                 {
-                    if (TxtSolve.Text[i] != YourWord.Text[i])
+                    if (word[i] != this.correctWord[i])
                         faulty_letters++;
                 }
             }
 
-            if (faulty_letters == 1) // Show Popup
-                PopupWord.IsOpen = true;  
+            Console.WriteLine("Incorrect " + word + ", " + username);
+
+            if (faulty_letters == 1)
+            { // Show Popup: "almost correct word"
+                if (Menu.Host == username)
+                {
+                    ShowAlmostCorrectWord();
+                } else
+                {
+                    Server.Server.SendPacket("INCORRECT", username);
+                }                
+            }
         }
        
         void Set_Popup(string situation)
@@ -403,6 +562,7 @@ namespace iSketch
                 brush.Freeze();
                 PopupText.Background = brush;
                 PopupText.Text = "Your word is correct! :)";
+                TxtSolve.IsEnabled = BtnSubmit.IsEnabled = false;
             }
             else if (situation == "incorrect")
             {
@@ -426,7 +586,7 @@ namespace iSketch
             return  (int) (maxScore * percent);
         }
 
-        void ShowScores()
+        public void ShowScores()
         {
             string ScoreTxt ="Score:\n";
             foreach(Member member in Menu.MemberList[Menu.Host])
@@ -452,10 +612,12 @@ namespace iSketch
 
             if (nextPlayer || position == "timer")
             {
-                StopAll2();
+                StopAll2();            
 
                 this.TxtSolve.Clear();
                 this.MyCanvas.Children.Clear();
+                TxtSolve.IsEnabled = BtnSubmit.IsEnabled = true;
+                YourWord.Text = "";
 
                 if (curArtistID + 1 >= Menu.MemberList[Menu.Host].Count) // if last player was painting, the next artist is the first player in the list
                 {
@@ -464,6 +626,7 @@ namespace iSketch
 
                     if (CurRound == MAXROUNDS +1)
                     {
+                        //Game is over!
                         CurRound = 1;
 
                         foreach(Member member in Menu.MemberList[Menu.Host]) // Scores zurücksetzen!
@@ -473,9 +636,10 @@ namespace iSketch
                         Server.Server.BroadcastScore();
                         // Spiel beenden bzw neue Runde anfragen
                     }
-                    this.Rounds.Text = "Round: " + CurRound + "/" + MAXROUNDS;
+                    this.Rounds.Text = "Round: " + CurRound + " of " + MAXROUNDS + "\n" + curArtist + " painting";
                 }
-                else curArtistID ++;
+                else
+                    curArtistID ++;
 
                 SetWordsToChoose();
             }

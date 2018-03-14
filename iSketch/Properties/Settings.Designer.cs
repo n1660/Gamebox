@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace iSketch.Properties
+namespace Btn_iSketch.Properties
 {
 
 

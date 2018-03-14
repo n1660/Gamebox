@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Btn_iSketch;
+using iSketch;
+using iSketch.Connection;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
@@ -39,14 +42,15 @@ namespace Server
                 String[] received = { "void" };
 
                 while (true)
-                {
-                    if (received == null)
+                {                  
+                    String receivedLine = reader.ReadLine();
+                    if (receivedLine == null)
                     {
                         Server.online--;
                         Console.WriteLine((Server.online != 0) ? ("A Client just logged off.\nStill online: " + Server.online.ToString()) : "... this loneliness ... is killing me ... :'-(");
                         break;
                     }
-                    received = reader.ReadLine().Split(';');
+                    received = receivedLine.Split(';');
                     foreach (String str in received)
                     {
                         Console.WriteLine("SERVER received " + str);
@@ -63,55 +67,47 @@ namespace Server
                     {
                         break;
                     }
-                    else if (received[0] == "SCORE")
+                    else if (received[0] == "CORRECTWORD")
                     {
-                        String[] score = new String[2];
-                        foreach(String str in received)
+                        Console.WriteLine("Correctword: " + received[1]);
+                        String correctWord = received[1];
+                        iSketch.App.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            if (str == received[0])
-                                continue;
-
-                            score = str.Split('=');
-                            iSketch.Menu.MemberList[iSketch.Menu.Host][(iSketch.Member.GetMmbByName(iSketch.Menu.Host, score[0])).ID].Score = Int32.Parse(score[1]);
+                            Artist artist = (Artist)iSketch.App.Current.MainWindow.Content;
+                            artist.correctWord = correctWord;
+                        }));
+                    }
+                    else if (received.Length > 1) {
+                        if (received[1] == "LINE")
+                        {
+                            Console.WriteLine("RECEIVED LINE " + receivedLine);
+                            Server.BroadcastLine(receivedLine);
                         }
-                        writer.Write('\n');
-                    }
-                    else if (received[1] == "Line" && received[0] == iSketch.Member.GetMmbByName(iSketch.Menu.Host, iSketch.Artist.curArtist).ID.ToString())
-                    {
-                        Point start = new Point
+                        else if (received[1] == "LoginPacket")
                         {
-                            X = double.Parse(received[2]),
-                            Y = double.Parse(received[3])
-                        };
-                        Point end = new Point {
-                            X = double.Parse(received[4]),
-                            Y = double.Parse(received[5])
-                        };
+                            Console.WriteLine("User logged in: " + received[2]);
+                            iSketch.Member newMember = new iSketch.Member(received[2], true)
+                            {
+                                Writer = writer
+                            }; // Set host=true because it should not connect
+                            iSketch.Menu.MemberList[iSketch.Menu.Host].Add(newMember);
 
-                        Line line = new Line
+                            writer.WriteLine(received[0] + ';' + iSketch.Menu.Host);
+                            Server.BroadcastScore();
+                        }
+                        else if (received[1] == "START")
                         {
-                            StrokeStartLineCap = PenLineCap.Round,
-                            StrokeEndLineCap = PenLineCap.Round,
-                            X1 = start.X,
-                            Y1 = start.Y,
-                            X2 = end.X,
-                            Y2 = end.Y,
-                            Stroke = (SolidColorBrush)(new BrushConverter()).ConvertFromString(received[6]),
-                            StrokeThickness = double.Parse(received[7]),
-                        };
-                        PAINTINGCANV.Children.Add(line);
-                    }
-                    else if (received[1] == "LoginPacket")
-                    {
-                        Console.WriteLine("User logged in: " + received[2]);
-                        iSketch.Member newMember = new iSketch.Member(received[2], true)
+                            Console.WriteLine("Start: " + received[2]);
+                            Server.BroadcastStart(receivedLine);                        
+                        } else if (received[1] == "CHECKWORD")
                         {
-                            Writer = writer
-                        }; // Set host=true because it should not connect
-                        iSketch.Menu.MemberList[iSketch.Menu.Host].Add(newMember);
-                            
-                        writer.WriteLine(received[0] + ';' + iSketch.Menu.Host);
-                        Server.BroadcastScore();
+                            Console.WriteLine("Checkword: " + received[2]);
+                            iSketch.App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                Artist artist = (Artist)iSketch.App.Current.MainWindow.Content;
+                                artist.CheckInputWord(received[0], received[2]);
+                            }));
+                        }                        
                     }
                 }
 
@@ -123,8 +119,8 @@ namespace Server
             }
             catch (Exception e)
             {
-                Console.WriteLine("Connection closed!");
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Connection closed! ---> " + e.Message);
+                Console.WriteLine(e.StackTrace);
             }
         }
     }

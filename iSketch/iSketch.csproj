@@ -74,6 +74,7 @@
     </ApplicationDefinition>
     <Compile Include="Connection\ClientWPF.cs" />
     <Compile Include="Connection\ClientWindow.xaml.cs" />
+    <Compile Include="Connection\PacketUtil.cs" />
     <Compile Include="Connection\Server.cs" />
     <Page Include="Connection\ClientWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

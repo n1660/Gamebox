@@ -18,6 +18,7 @@ namespace iSketch
         public int Score { get; set; }
         public int Moves { get; set; }
         public bool GuessedCorrectly { get; set; }
+        public bool IsHost { get; set; }
 
         public Stream Stream { get; set; }
         public StreamReader Reader { get; set; }
@@ -29,7 +30,7 @@ namespace iSketch
         public TcpClient Client { get => client; set => client = value; }
 
         private TcpClient client = new TcpClient();
-        private IPAddress adr = IPAddress.Loopback;
+        private IPAddress adr = IPAddress.Parse("146.254.1.192");
         private IPEndPoint end;
 
         public Member (string Username, bool host)
@@ -55,8 +56,12 @@ namespace iSketch
                 this.ID = Int32.Parse(Reader.ReadLine());
                 Console.WriteLine("Got id " + ID);
                 this.Hostname = this.SendLoginPacket();
+                Menu.Host = this.Hostname;
                 Console.WriteLine("got through, HOST: " + this.Hostname);
             }
+
+            this.IsHost = host;
+
             Console.WriteLine("done " + host + ", " + Username);
             //new Socket(SocketType.Stream, ProtocolType.Tcp).Bind(new IPEndPoint(IPAddress.Loopback, 4444));
 
