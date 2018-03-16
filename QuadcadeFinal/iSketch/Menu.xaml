@@ -1,0 +1,88 @@
+﻿<Page x:Class="iSketch.Menu"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:iSketch"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      MinHeight="300" MinWidth="300"
+      Title="Menu">
+
+    <Page.Background>
+        <ImageBrush ImageSource="iSketch/res/backgrounds/red.jpg" Stretch="UniformToFill"/>
+    </Page.Background>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--<TextBlock Name="Title"  FontSize="15" Foreground="White" TextAlignment="Center">Menu</TextBlock>-->
+
+        <Image Grid.Column="1" Grid.Row="0" Source="iSketch/res/text.gif" />
+
+        <Button Grid.Row="1" Grid.Column="0" Name="iSketch" Click="ButtonClickMenu" Margin="10,10" Background="Transparent" BorderBrush="Black">
+            <Button.Template>
+                <ControlTemplate>
+                    <Image Source="iSketch/res/icons/paint.png" />
+                </ControlTemplate>
+            </Button.Template>
+
+        </Button>
+
+        <Button Grid.Row="1" Grid.Column="1" Name="Hangman" Click="ButtonClickMenu" Margin="10,10" Background="Transparent" BorderBrush="Black" BorderThickness="5">
+            <Button.Template>
+                <ControlTemplate>
+                    <Image Source="iSketch/res/icons/hang.png" />
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+        <Button Grid.Row="1" Grid.Column="2" Name="Snake" Click="ButtonClickMenu" Margin="10,10" Background="Transparent" BorderBrush="Black" BorderThickness="5">
+            <Button.Template>
+                <ControlTemplate>
+                    <Image Source="iSketch/res/icons/Snake.png" />
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+        <Popup Name="PopNameExists" Grid.Column="1" Grid.Row="2" PopupAnimation="Fade" AllowsTransparency="True" Placement="Mouse">
+                <TextBlock Background="#FFFF4F4F">This username already exists"</TextBlock>
+        </Popup>
+
+        <Canvas Name="CanvUsername" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Margin="53,49.8,47,50.4">
+            <Canvas.Background>
+                <RadialGradientBrush>
+                    <GradientStop Color="Black" Offset="1"/>
+                    <GradientStop Color="#FF6C0707"/>
+                </RadialGradientBrush>
+            </Canvas.Background>
+            <Grid Width="{Binding ActualWidth, ElementName=CanvUsername, Mode=OneWay}" Height="{Binding ActualHeight, ElementName=CanvUsername, Mode=OneWay}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" FontSize="30" Grid.Column="0" Grid.ColumnSpan="3" TextAlignment="Center" Margin="2" Foreground="White" Text="Insert your Username"/>
+                <TextBox Name="PlayerUsername" FontSize="25" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,2" TextAlignment="Center"/>
+                <Button Name="BtnJoin" FontSize="25" Grid.Row="2" Grid.Column="0" Margin="10,2,2,5" Click="ButtonClickMenu" >Join Game</Button>
+                <Button Name="BtnHost" FontSize="25" Grid.Row="3" Grid.Column="2" Margin="2,2,10,5" Click="ButtonClickMenu">New Game</Button>
+            </Grid>
+        </Canvas>
+
+    </Grid>
+</Page>

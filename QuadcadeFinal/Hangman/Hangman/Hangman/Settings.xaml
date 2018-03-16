@@ -1,0 +1,39 @@
+﻿<Page x:Class="Hangman.Settings"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Hangman"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="Settings" Height="600.142" Width="846.468" Background="LightCyan">
+    <Page.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="156"/>
+            <Setter Property="Height" Value="88"/>
+            <Setter Property="FontSize" Value="28.8"/>
+        </Style>
+        <Style TargetType="Image">
+            <Setter Property="Height" Value="300"/>
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="Canvas.Left" Value="512"/>
+            <Setter Property="Canvas.Top" Value="57"/>
+        </Style>
+    </Page.Resources>
+    <DockPanel>
+        <Canvas HorizontalAlignment="Left" Height="600" Width="846" VerticalAlignment="Top" Background="LightCyan" Name="canvas">
+            <Label Content="Settings" Height="80" Width="205" FontSize="48" Canvas.Left="293" Canvas.Top="45" FontWeight="Bold"/>
+            <Button Canvas.Left="293" Canvas.Top="154" Content="Difficulty" Click="Button_Click" Width="213" Name="Difficulty"/>
+            <Button Canvas.Left="293" Canvas.Top="247" Content="Language" Click="Button_Click" Width="213" Name="Language"/>
+            <Button Canvas.Left="293" Canvas.Top="340" Content="Rounds" Click="Button_Click" Width="213" Name="Rounds"/>
+            <Button Canvas.Left="293" Canvas.Top="154" Content="3-5 letters" Click="Button_Click" Width="213" Name ="Easy" Visibility="Hidden"/>
+            <Button Canvas.Left="293" Canvas.Top="247" Content="6-8 letters" Click="Button_Click" Width="213" Name="Medium" Visibility="Hidden"/>
+            <Button Canvas.Left="293" Canvas.Top="340" Content="Extrem" Click="Button_Click" Width="213" Name="Extrem" Visibility="Hidden"/>
+            <Button Canvas.Left="293" Canvas.Top="154" Content="German words" Click="Button_Click" Width="213" Name="German" Visibility="Hidden"/>
+            <Button Canvas.Left="293" Canvas.Top="247" Content="English words" Click="Button_Click" Width="213" Name="English" Visibility="Hidden"/>
+            <Button Canvas.Left="293" Canvas.Top="154" Content="5 Rounds" Click="Button_Click" Width="213" Name="FiveRounds" Visibility="Hidden"/>
+            <Button Canvas.Left="293" Canvas.Top="247" Content="10 Rounds" Click="Button_Click" Width="213" Name="TenRounds" Visibility="Hidden"/>
+            <Button Canvas.Left="293" Canvas.Top="433" Content="Back" Click="Button_Click" Width="213"/>
+        </Canvas>
+    </DockPanel>
+</Page>
